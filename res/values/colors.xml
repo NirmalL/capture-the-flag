@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (c) 2014 Nokia Corporation.
+    See the license text file delivered with this project for more information. 
+-->
+<resources>
+    <color name="fragment_background_color">#DDffffff</color>
+    <color name="fragment_base_background_color">#fcfcfc</color>
+</resources>

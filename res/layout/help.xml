@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (c) 2014 Nokia Corporation and/or its subsidiary(-ies).
+    See the license text file delivered with this project for more information.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp"
+    android:orientation="vertical" 
+    android:background="@color/fragment_base_background_color">
+
+    <TextView 
+        android:id="@+id/help_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/help_text" />
+
+</LinearLayout>

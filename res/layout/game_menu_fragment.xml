@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (c) 2014 Nokia Corporation and/or its subsidiary(-ies).
+    See the license text file delivered with this project for more information.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" 
+    android:paddingTop="30dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:background="@color/fragment_background_color">
+
+    <TextView android:id="@+id/user_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/finding_location"
+        />
+
+    <include
+        android:id="@+id/create_new_game"
+        layout="@layout/button" />
+
+    <ProgressBar
+        android:id="@+id/menu_loading_indicator"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center|center_horizontal"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout android:id="@+id/open_game_area"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+    </LinearLayout>
+
+</LinearLayout>

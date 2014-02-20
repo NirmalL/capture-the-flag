@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (c) 2014 Nokia Corporation and/or its subsidiary(-ies).
+    See the license text file delivered with this project for more information.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/fragment_base_background_color">
+
+    <LinearLayout 
+        android:id="@+id/sub_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" 
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:id="@+id/game_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/name_game"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <EditText
+            android:id="@+id/game_name_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:ems="10">
+            <requestFocus />
+        </EditText>
+
+        <TextView
+            android:id="@+id/create_game_type_your_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/type_your_name"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <EditText
+            android:id="@+id/create_game_player_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:ems="10" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/choose_side"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <RadioGroup
+            android:id="@+id/create_game_team_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radio0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:button="@drawable/blue_radio_button"
+                android:text="@string/blue_team" />
+
+            <RadioButton
+                android:id="@+id/radio1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@drawable/red_radio_button"
+                android:text="@string/red_team" />
+
+        </RadioGroup>
+
+        <TextView 
+            android:id="@+id/premium_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/premium_note" 
+            android:drawableLeft="@drawable/shopping_cart_icon_gray"/>
+
+        <TextView 
+            android:id="@+id/offline_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/new_game_is_offline"/>
+
+        <ProgressBar
+            android:id="@+id/create_game_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal" 
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/create_game_start_game"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/start_game" />
+
+    </LinearLayout>
+
+    <include layout="@layout/ruler"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/sub_layout"
+        android:layout_width="match_parent"
+        android:layout_height="2dp" />
+
+</RelativeLayout>

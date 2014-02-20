@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (c) 2014 Nokia Corporation and/or its subsidiary(-ies).
+    See the license text file delivered with this project for more information.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="10dp"
+    android:background="@color/fragment_base_background_color" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:layout_height="wrap_content" 
+        android:id="@+id/sub_layout">
+
+        <TextView
+            android:id="@+id/game_name"
+            style="?android:attr/listSeparatorTextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="@string/game"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/create_game_type_your_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/game_name"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="@string/type_your_name" />
+
+        <EditText
+            android:id="@+id/editText1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/create_game_type_your_name"
+            android:ems="10"
+            android:inputType="text"
+            android:singleLine="true">
+            <requestFocus />
+        </EditText>
+
+        <TextView
+            android:id="@+id/create_game_choose_side"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/editText1"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="@string/choose_side" />
+
+        <RadioGroup
+            android:id="@+id/radiobuttons"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/create_game_choose_side"
+            android:checkedButton="@+id/blue_team_choice"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@id/blue_team_choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@drawable/blue_radio_button"
+                android:text="@string/blue_team" />
+
+            <RadioButton
+                android:id="@+id/red_team_choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@drawable/red_radio_button"
+                android:text="@string/red_team" />
+
+        </RadioGroup>
+
+        <ProgressBar 
+            android:id="@+id/join_loading_indicator"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_below="@id/radiobuttons"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/join_game_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/radiobuttons"
+            android:text="@string/join_game" />
+
+    </RelativeLayout>
+
+    <include layout="@layout/ruler"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/sub_layout"
+        android:layout_width="match_parent"
+        android:layout_height="2dp" />
+
+</RelativeLayout>

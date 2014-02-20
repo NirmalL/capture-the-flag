@@ -1,0 +1,30 @@
+<!--
+    Copyright (c) 2014 Nokia Corporation and/or its subsidiary(-ies).
+    See the license text file delivered with this project for more information.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="0dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp"
+    tools:context=".MainActivity"
+    android:id="@+id/fragmentcontainer">
+
+    <RelativeLayout 
+        android:id="@+id/top_fragments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
+    </RelativeLayout>
+
+    <fragment
+        android:id="@+id/mapfragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/top_fragments"
+        class="com.nokia.example.capturetheflag.location.GameMap" />
+
+</RelativeLayout>

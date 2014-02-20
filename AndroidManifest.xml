@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (c) 2014 Nokia Corporation.
+    See the license text file delivered with this project for more information. 
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.nokia.example.capturetheflag"
+    android:versionCode="1"
+    android:versionName="1.0" >
+    
+    <uses-sdk
+        android:minSdkVersion="16"
+        android:targetSdkVersion="16" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    
+    <!-- Nokia Notifications permissions -->
+    <permission android:name="com.nokia.example.capturetheflag.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+    <uses-permission android:name="com.nokia.example.capturetheflag.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.nokia.pushnotifications.permission.RECEIVE" />
+    
+    <!-- Nokia In-App Payment permissions -->
+    <uses-permission android:name="com.nokia.payment.BILLING"/>
+    
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        
+        <uses-library android:name="com.here.android" android:required="true" />
+        
+        <!-- Note that the app ID and app token are application specific -->
+        <meta-data
+            android:name="com.here.android.maps.appid"
+            android:value="443043-a5a37df2d6d099f1f4c6" />
+        <meta-data
+            android:name="com.here.android.maps.apptoken"
+            android:value="ORwmw8fH1Sq9cqGsNadjqQ" />
+        
+        <activity
+            android:name="com.nokia.example.capturetheflag.MainActivity"
+            android:label="@string/app_name"
+            android:configChanges="orientation|screenSize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        <activity android:name="HelpActivity"></activity>
+        <activity android:name="AboutActivity"></activity>
+        
+        <!-- Receiver for Nokia push notifications -->
+        <receiver
+            android:name="com.nokia.push.PushBroadcastReceiver"
+            android:permission="com.nokia.pushnotifications.permission.SEND">
+            <intent-filter>
+                <!-- Receives the actual messages -->
+                <action android:name="com.nokia.pushnotifications.intent.RECEIVE" />
+                <!-- Receives the registration ID -->
+                <action android:name="com.nokia.pushnotifications.intent.REGISTRATION" />
+                <category android:name="com.nokia.example.capturetheflag" />
+            </intent-filter>
+        </receiver>
+        
+        <service android:name="com.nokia.example.capturetheflag.PushIntentService"></service>
+    </application>
+</manifest>

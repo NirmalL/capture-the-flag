@@ -1,0 +1,36 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="android:buttonStyle">@style/blue_button</item>
+        <item name="android:textViewStyle">@style/textview_base</item>
+        <item name="android:editTextStyle">@style/edittext_base</item>
+    </style>
+
+    <style name="blue_button" parent="@android:style/Widget.Button">
+            <item name="android:background">@drawable/custom_button</item>
+            <item name="android:textColor">#ffffff</item>
+            <item name="android:textSize">15dp</item>
+    </style>
+    <style name="textview_base" parent="@android:style/Widget.TextView">
+        <item name="android:textColor">#414141</item>
+    </style>
+    <style name="edittext_base" parent="@android:style/Widget.EditText">
+        <item name="android:background">@drawable/inputfield</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingRight">5dp</item>
+    </style>
+</resources>

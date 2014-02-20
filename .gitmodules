@@ -1,0 +1,6 @@
+[submodule "android-websockets"]
+	path = android-websockets
+	url = https://github.com/koush/android-websockets.git
+[submodule "AndroidAsync"]
+	path = AndroidAsync
+	url = https://github.com/koush/AndroidAsync.git

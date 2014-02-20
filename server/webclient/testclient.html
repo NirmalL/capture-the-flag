@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Test client</title>
+        <script src="http://morning-retreat-2441.herokuapp.com/socket.io/socket.io.js"></script>
+		<script src="jquery-2.1.0.min.js"></script>
+		<script src="parsley.min.js" ></script>
+        <script>
+        
+        window.onload = function() {
+            var socket = io.connect('http://morning-retreat-2441.herokuapp.com/');
+            var currentGame;
+            var currentPlayer;
+            socket.on('gamelist', function(data) {
+                var games = data.games;
+                var elem = $('#gamelist');
+                elem.html("");
+				var content = "";
+                for(var i = 0; i < games.length; i++) {
+                    content += games[i].name + "<button onclick=\"join("+ games[i].id +")\">join</button><br>";
+                }
+				elem.html(content);
+            });
+            socket.on('update-player', function(data) {
+				
+                var player = data['update-player'];
+                addText(player.name + " loc:" +player.latitude + " " +player.longitude);
+				
+            });
+            socket.on('joined', function(data) {
+               currentGame = data.game;
+               currentPlayer = data.player;
+               addText("joined to game:" + currentGame.name + "\n");
+            });
+            window.join = function(gameid) {
+			console.log("join to game:"+gameid);
+				if($('#client-form').parsley('validate')) {
+					var teamOption = document.getElementById("team");
+					var lat = parseFloat($('#lat').val());
+					var lon = parseFloat($('#long').val());
+					var reg = $('#playerRegId').val();
+					currentPlayer = {
+						"name": $('#playername').val(),
+						"id": 0,
+						"team": teamOption.options[teamOption.selectedIndex].value,
+						"latitude": lat,
+						"longitude": lon,
+						"regId":  reg              
+					};
+					socket.emit('join', {
+						"player": currentPlayer,
+						"gameid": gameid
+					});
+				}
+            }
+            
+            
+            function addText(text) {
+				var area = $('#serverresponse');
+				area.val(area.val() + '\n' + text);
+            }
+            $('#get_games').click(function() {
+				console.log("getting games");
+                socket.emit('gamelist');
+            });
+            $('#send_location').click(function() {
+			if($('#client-form').parsley('validate')) {
+				console.log("is valid lat long");
+				var lat = parseFloat($("#lat").val());
+				var lon = parseFloat($("#long").val());
+				currentPlayer.latitude = lat;
+				currentPlayer.longitude = lon;
+				socket.emit('update-player', {
+				  "gameid": currentGame.id, 
+				  "player": currentPlayer
+				});
+			}
+            });
+			$('#client-form').parsley();
+        }
+        </script>
+        </head>
+    <body>
+	<form id="client-form" onSubmit="return false;">
+            <div id="current_games">
+                <button id="get_games">get games</button>
+                <div id="gamelist">
+                
+                </div>
+            </div>
+            <div id="update_position">
+            latitude:
+            <input type="text" name="latitude" id="lat" value="61.485195" required parsley-type="number" parsley-trigger="change">
+            <br>
+            longitude:
+            <input type="text" name="longitude" id="long" value="21.79746" required parsley-type="number" parsley-trigger="change">
+            
+            </div>
+        <div id="playerdata">
+            Player details:<br>
+            Name*:
+            <input type="text" name="name" id="playername" value="webplayer" required parsley-trigger="change">
+            <br>
+            regId*:
+            <input type="text" name="regId" id="playerRegId" value="someid" required parsley-trigger="change">
+            team:
+            <select id="team">
+                <option value="">Red</option>
+                <option value="">Blue</option>
+            </select>
+        </div>
+        <button id="send_location">
+                send
+        </button><br>
+        
+        server response <br>
+        <textarea id="serverresponse" rows="10" cols=40 readonly></textarea>
+	</form>
+    </body>
+</html>
+
