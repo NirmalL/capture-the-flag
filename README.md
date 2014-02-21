@@ -11,6 +11,9 @@ in the game are randomly placed on the map within a fixed distance of the
 player creating the game. The team who manages to get to the flag of the
 opposing team first wins.
 
+![Main menu](https://raw.github.com/nokia-developer/capture-the-flag/master/doc/screenshots/ctf_screenshot_1_small.png)&nbsp;
+![Offline game ongoing](https://raw.github.com/nokia-developer/capture-the-flag/master/doc/screenshots/ctf_screenshot_2_small.png)
+
 This demo application is hosted in GitHub
 (https://github.com/nokia-developer/capture-the-flag) where you can find the
 source code and documentation of the latest release.
