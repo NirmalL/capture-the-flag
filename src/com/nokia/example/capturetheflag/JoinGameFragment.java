@@ -133,9 +133,10 @@ public class JoinGameFragment
                 break;
         }
         
-        GeoPosition pos = MapFactory.getPositioningManager().getPosition();
-        player.setLatitude(pos.getCoordinate().getLatitude());
-        player.setLongitude(pos.getCoordinate().getLongitude());
+        // TODO
+        //GeoPosition pos = MapFactory.getPositioningManager().getPosition();
+        //player.setLatitude(pos.getCoordinate().getLatitude());
+        //player.setLongitude(pos.getCoordinate().getLongitude());
         Controller.getInstance().getNetworkClient().emit(new JoinRequest(mGame, player));
     }
 }

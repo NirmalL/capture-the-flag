@@ -21,7 +21,6 @@ public class Player {
     public static final String BLUE = "blue";
     public static final String RED = "red";
 
-    private MapMarker mMarker;
     private String mName;
     private String mTeam = "none";
     private String mRegId;
@@ -101,13 +100,6 @@ public class Player {
 
     public String getTeam() {
         return mTeam;
-    }
-
-    public void setMarker(MapMarker marker) {
-        mMarker = marker;
-    }
-    public MapMarker getMarker() {
-        return mMarker;
     }
 
     public void setRegistrationId(String id) {

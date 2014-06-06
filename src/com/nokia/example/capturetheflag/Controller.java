@@ -18,22 +18,27 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.widget.Toast;
 
-import com.here.android.common.GeoCoordinate;
-import com.here.android.common.GeoPosition;
+/*
 import com.here.android.common.LocationMethod;
 import com.here.android.common.LocationStatus;
 import com.here.android.common.PositionListener;
 import com.here.android.mapping.MapFactory;
 import com.here.android.search.geocoder.ReverseGeocodeRequest;
+*/
 import com.nokia.example.capturetheflag.iap.PremiumHandler;
 import com.nokia.example.capturetheflag.iap.PremiumHandler.PremiumHandlerListener;
-import com.nokia.example.capturetheflag.location.GameMap;
+import com.nokia.example.capturetheflag.location.GameMapInterface;
+import com.nokia.example.capturetheflag.location.LocationManagerListener;
+import com.nokia.example.capturetheflag.location.LocationManagerFactory;
+import com.nokia.example.capturetheflag.location.LocationManagerInterface;
 import com.nokia.example.capturetheflag.network.FlagCapturedResponse;
 import com.nokia.example.capturetheflag.network.GameListResponse;
 import com.nokia.example.capturetheflag.network.JSONResponse;
@@ -58,7 +63,7 @@ import com.nokia.example.capturetheflag.network.NetworkClient;
  */
 public class Controller
     extends Fragment
-    implements PremiumHandlerListener, NetworkClient.NetworkListener, PositionListener
+    implements PremiumHandlerListener, NetworkClient.NetworkListener, LocationManagerListener
 {
     public static final String FRAGMENT_TAG = "Controller";
     private static final String TAG = "CtF/Controller";
@@ -67,13 +72,14 @@ public class Controller
     private PremiumHandler mPremium = new PremiumHandler();
     private Game mCurrentGame;
     private Player mPlayer;
-    private GameMap mMap;
+    private GameMapInterface mMap;
     private NetworkClient mClient;
     private SocketIONetworkClient mSocketClient;
     private OfflineClient mOfflineClient;
     private Handler mUIHandler;
     private int mIsConnected = -1;
     private boolean mIsLocationFound = false;
+    private LocationManagerInterface mLocationManager;
 
     /**
      * Receiver to handle push notifications. When push note is received parse
@@ -117,15 +123,21 @@ public class Controller
                 Settings.getServerPort(getActivity()));
         mOfflineClient = new OfflineClient();
         mOfflineClient.setListener(this);
+        // TODO: Do we need a Singleton?
+        mLocationManager = LocationManagerFactory.getLocationManagerInterface(getActivity());
+    	mLocationManager.addListener(this);
 
     }
 
+    public void setMap(GameMapInterface map) {
+    	mMap = map;
+    	// TODO, add to loc listener
+        //mMap.setPositionListener(this);
+    }
+    
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mMap = (GameMap) getFragmentManager()
-                .findFragmentById(R.id.mapfragment);
-        mMap.setPositionListener(this);
         mPremium.connect(activity);
     }
 
@@ -211,15 +223,13 @@ public class Controller
         
         if (!mCurrentGame.getPlayers().contains(update.getUpdatedPlayer())) {
             mCurrentGame.getPlayers().add(updated);
-        }
-        else {
+        } else {
             int i = mCurrentGame.getPlayers().indexOf(updated);
             Player old = mCurrentGame.getPlayers().get(i);
-            updated.setMarker(old.getMarker()); // Copy the marker from old to new
+            mMap.updateMarkerForPlayer(updated, old);
             mCurrentGame.getPlayers().set(i, updated);
         }
-        
-        mMap.updatePlayerMarker(updated);
+        updatePlayerMarker(updated);
     }
 
     @Override
@@ -284,48 +294,54 @@ public class Controller
         Player p = captured.getCapturer();
         FlagCaptured(p);
     }
-
+    
     @Override
-    public void onPositionFixChanged(LocationMethod arg0, LocationStatus arg1) {
-        // Not implemented
+    public void onLocationManagerReady(boolean success) {
+    	Log.d(TAG, "Location Manager Ready -" + (success ? "SUCCESS" : "FAILED"));
+        if(success && mLocationManager.isLocationAvailable()) {
+        	mLocationManager.start();
+        } else {
+            showEnableGPSDialog();        	
+        }
     }
 
     @Override
-    public void onPositionUpdated(LocationMethod arg0, GeoPosition position) {
-        mIsLocationFound = true;
+    public void onLocationUpdated(Location position) {
+    	if(!mIsLocationFound) {
+    		mMap.centerMapToUserPosition();
+            mIsLocationFound = true;
+    	}
         //Log.d(TAG, "Position updated");
         Player user = getPlayer();
         
         // Only if game is running, we send updated location to the server
-        if (user != null && getCurrentGame() != null
-                && !getCurrentGame().getHasEnded()) {
+        if (user != null && getCurrentGame() != null && !getCurrentGame().getHasEnded()) {
             Log.d(TAG, "updating user position");
-            GeoCoordinate coordinate = position.getCoordinate();
+            //GeoCoordinate coordinate = position. getCoordinate();
             
-            if (user.getLatitude() != coordinate.getLatitude()
-                    || user.getLongitude() != coordinate.getLongitude()) {
-                user.setLatitude(coordinate.getLatitude());
-                user.setLongitude(coordinate.getLongitude());
-                UpdatePlayerRequest upr = new UpdatePlayerRequest(user,
-                        getCurrentGame().getId());
+            if (user.getLatitude() != position.getLatitude() || user.getLongitude() != position.getLongitude()) {
+                user.setLatitude(position.getLatitude());
+                user.setLongitude(position.getLongitude());
+                UpdatePlayerRequest upr = new UpdatePlayerRequest(user, getCurrentGame().getId());
                 mClient.emit(upr);
                 
                 // Update the marker
-                mMap.updatePlayerMarker(user);
+                updatePlayerMarker(user);
             }
         }
-        
+  
         /*
          * If the menu is visible, we create and send the reverse geocode
          * request so that we can update the user location in the fragment.
          */
+            
         GameMenuFragment menu = (GameMenuFragment) getFragmentManager()
                 .findFragmentByTag(GameMenuFragment.FRAGMENT_TAG);
-        
-        if (menu != null) {
+        if (menu != null) {/*
             ReverseGeocodeRequest request = MapFactory.getGeocoder()
                     .createReverseGeocodeRequest(position.getCoordinate());
             request.execute(menu);
+            */
         }
     }
 
@@ -440,4 +456,43 @@ public class Controller
                 .add(dialog, GameEndedDialogFragment.FRAGMENT_TAG).commit();
         mCurrentGame.setHasEnded(true);
     }
+    
+    private void updatePlayerMarker(Player player) {
+    	if(!mMap.playerHasMarker(player)) {
+            Log.d(TAG, "New player - Show player joined toast");
+            String text = getString(R.string.player) + " " + player.getName() + " " + getString(R.string.joined);
+            Toast toast = Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+            toast.show();
+        }    
+        
+        mMap.updatePlayerMarkerPosition(player);    	
+    }
+    
+
+    private void showEnableGPSDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(getResources().getText(R.string.gps_not_enabled));
+        
+        builder.setPositiveButton(
+                getResources().getText(R.string.action_settings),
+                new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent i = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        getActivity().startActivity(i);
+                    }
+        });
+        
+        builder.setNegativeButton(
+                getResources().getText(R.string.cancel),
+                new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+        });
+        
+        builder.create().show();
+    }    
 }

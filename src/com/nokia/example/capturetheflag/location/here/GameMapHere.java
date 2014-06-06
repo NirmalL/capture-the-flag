@@ -3,35 +3,25 @@
  * See the license text file delivered with this project for more information.
  */
 
-package com.nokia.example.capturetheflag.location;
+package com.nokia.example.capturetheflag.location.here;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.DialogInterface.OnClickListener;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.widget.Toast;
 
 import com.here.android.common.GeoCoordinate;
-import com.here.android.common.GeoPosition;
 import com.here.android.common.Image;
-import com.here.android.common.LocationMethod;
-import com.here.android.common.LocationStatus;
-import com.here.android.common.PositionListener;
-import com.here.android.common.PositioningManager;
 import com.here.android.mapping.FragmentInitListener;
 import com.here.android.mapping.InitError;
 import com.here.android.mapping.Map;
@@ -39,9 +29,12 @@ import com.here.android.mapping.MapAnimation;
 import com.here.android.mapping.MapFactory;
 import com.here.android.mapping.MapFragment;
 import com.here.android.mapping.MapMarker;
-import com.here.android.mapping.MapObject;
 import com.nokia.example.capturetheflag.R;
 import com.nokia.example.capturetheflag.Settings;
+import com.nokia.example.capturetheflag.location.GameMapInterface;
+import com.nokia.example.capturetheflag.location.GameMapSettings;
+import com.nokia.example.capturetheflag.location.LocationManagerFactory;
+import com.nokia.example.capturetheflag.location.LocationManagerInterface;
 import com.nokia.example.capturetheflag.network.model.Game;
 import com.nokia.example.capturetheflag.network.model.Player;
 
@@ -49,17 +42,15 @@ import com.nokia.example.capturetheflag.network.model.Player;
  * Fragment that is responsible for showing the map and handle map related
  * actions like adding map markers etc.
  */
-public class GameMap extends MapFragment {
+public class GameMapHere extends MapFragment implements GameMapInterface {
     public static final double DEFAULT_MAP_ZOOM_LEVEL_IN_GAME = 14;
     private static final String TAG = "CtF/GameMap";
-    private static final double DEGREES_TO_RADS = Math.PI / 180;
-    private static final double CALC_CONSTANT = 2 * Math.PI * 6378137;
-    private static final double DEFAULT_LATITUDE = 61.497885;
-    private static final double DEFAULT_LONGITUDE = 23.770037;
 
+    private LocationManagerInterface mLocationManager;
     private Map mMap;
-    private PositioningManager mPosManager;
-    private ArrayList<MapObject> mMarkers = new ArrayList<MapObject>();
+    
+	private HashMap<Player, MapMarker> mPlayerMarkers = new HashMap<Player, MapMarker>();
+    //private ArrayList<MapObject> mMarkers = new ArrayList<MapObject>();
     private MapMarker mRedFlag = null;
     private MapMarker mBlueFlag = null;
     private Bitmap mRedFlagBitmap;
@@ -67,10 +58,10 @@ public class GameMap extends MapFragment {
     private HandlerThread mScaleThread;
     private Handler mScaleHandler;
     private Handler mUIHandler;
+
     private double mZoomLevel = -1.0;
     private double mCurrentMetersPerPixels = 1;
     private boolean mIsFirstTime = false;
-    private PositionListener mPositionListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,7 +70,7 @@ public class GameMap extends MapFragment {
         if (savedInstanceState == null) {
             mIsFirstTime = true;
         }
-        
+        mLocationManager = LocationManagerFactory.getLocationManagerInterface(getActivity());
         mRedFlagBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.base_red);
         mBlueFlagBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.base_blue);
         mScaleThread = new HandlerThread("ScaleThread");
@@ -102,7 +93,7 @@ public class GameMap extends MapFragment {
                     
                     if (mIsFirstTime) {
                         mMap.setCenter(
-                                MapFactory.createGeoCoordinate(DEFAULT_LATITUDE, DEFAULT_LONGITUDE),
+                                MapFactory.createGeoCoordinate(GameMapSettings.DEFAULT_LATITUDE, GameMapSettings.DEFAULT_LONGITUDE),
                                 MapAnimation.NONE);
                         
                         if (mZoomLevel > 0) {
@@ -113,9 +104,7 @@ public class GameMap extends MapFragment {
                         }
                     }
                     
-                    initLocation();
-                    
-                    View view = GameMap.this.getView();
+                    View view = GameMapHere.this.getView();
                     
                     view.setOnTouchListener(new OnTouchListener() {
                         @Override
@@ -145,28 +134,15 @@ public class GameMap extends MapFragment {
     @Override
     public void onPause() {
         super.onPause();
-        
-        if (mPosManager != null) {
-            Log.d(TAG, "Stopping position manager");
-            mPosManager.stop();
-            if(mPositionListener != null) {
-            	mPosManager.removePositionListener(mPositionListener);
-            }
-        }
+        // TODO: Should this done in controller instead?
+        mLocationManager.stop();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        
-        if (mPosManager != null) {
-            Log.d(TAG, "Starting position manager");
-            
-            mPosManager.start(LocationMethod.GPS_NETWORK);
-            if(mPositionListener != null) {
-                mPosManager.addPositionListener(mPositionListener);
-            }
-        }
+        // TODO: Should this done in controller instead?
+        mLocationManager.start();
     }
 
     @Override
@@ -175,94 +151,74 @@ public class GameMap extends MapFragment {
         mScaleThread.quit();
     }
 
-    public void setMarkers(Game game, Player user) {
-        ArrayList<Player> players = game.getPlayers();
-        ArrayList<MapObject> markers = new ArrayList<MapObject>();
-        
-        for (Player player : players) {
-            MapMarker marker = MarkerFactory.createPlayerMarker(
-                    player, getResources().getDisplayMetrics(), getResources());
-            Log.d(TAG, "Adding marker to: " + player.getLatitude() + "; "
-                    + player.getLongitude() + ", name: " + player.getName()
-                    + ", id: " + player.getId());
-            
-            player.setMarker(marker);
-            
-            if (player.equals(user)) {
-                Log.d(TAG, "User object marker added");
-                user.setMarker(marker);
-            }
-            
-            markers.add(marker);
-        }
-        
-        mRedFlag = MarkerFactory.createFlagMarker(
-                game.getRedFlag(), mRedFlagBitmap, calculateMarkerSize());
-        mBlueFlag = MarkerFactory.createFlagMarker(
-                game.getBlueFlag(), mBlueFlagBitmap, calculateMarkerSize());
-        updateMetersPerPixel();
-        
-        markers.add(mRedFlag);
-        markers.add(mBlueFlag);
-        addMarkers(markers);
+    @Override
+    public void clearMarkers() {
+        Log.d(TAG, "Clearing all markers");
+        removePlayerMarkers();
+        mMap.removeMapObject(mBlueFlag);
+        mMap.removeMapObject(mRedFlag);
     }
 
-    public void updatePlayerMarker(Player player) {
+	@Override
+	public void updateMarkerForPlayer(Player updated, Player old) {
+		MapMarker marker = getPlayerMarker(old);
+		mPlayerMarkers.put(updated, marker);
+		mPlayerMarkers.remove(old);
+	}
+
+    @Override
+    public void updatePlayerMarkerPosition(Player player) {
         Log.d(TAG, "Updating player with ID " + player.getId());
         
-        if (player.getMarker() == null) {
+        if (!playerHasMarker(player)) {
             // New player joined
             Log.d(TAG, "Adding new player with name " + player.getName());
-            MapMarker marker =  MarkerFactory.createPlayerMarker(
+            MapMarker marker =  MarkerFactoryHere.createPlayerMarker(
                     player, getResources().getDisplayMetrics(), getResources());
             Log.d(TAG, "New marker to: " + marker.getCoordinate().getLatitude()
                     + "; " + marker.getCoordinate().getLongitude());
-            player.setMarker(marker);
-            addMarker(marker);
-            showPlayerJoinedToast(player);
+            //player.setMarker(marker);
+            addPlayerMarker(player, marker);
         }
         else {
             Log.d(TAG, "Updating marker of existing player with name " + player.getName());
-            removeMarker(player.getMarker());
-            player.getMarker().setCoordinate(
-                    MapFactory.createGeoCoordinate(
-                            player.getLatitude(), player.getLongitude()));
-            addMarker(player.getMarker());
+            MapMarker marker = getPlayerMarker(player);
+            marker.setCoordinate(MapFactory.createGeoCoordinate(player.getLatitude(), player.getLongitude()));
         }
     }
-    private void showPlayerJoinedToast(Player p) {
-        Log.d(TAG, "show playerjoined toast");
-        String text = getString(R.string.player) + " " + p.getName() + " " +
-                        getString(R.string.joined);
-        Toast toast = Toast.makeText(getActivity(),
-                text, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
-        toast.show();
+
+	@Override
+	public boolean playerHasMarker(Player player) {
+		return mPlayerMarkers.containsKey(player);
+	}
+
+    @Override
+    public void setMarkers(Game game, Player user) {
+        ArrayList<Player> players = game.getPlayers();
+        
+        for (Player player : players) {
+            Log.d(TAG, "Adding marker to: " + player.getLatitude() + "; " + player.getLongitude() + ", name: " + player.getName() + ", id: " + player.getId());
+            MapMarker marker = MarkerFactoryHere.createPlayerMarker(player, getResources().getDisplayMetrics(), getResources());
+            addPlayerMarker(player, marker);
+        }
+        
+        mRedFlag = MarkerFactoryHere.createFlagMarker(
+                game.getRedFlag(), mRedFlagBitmap, calculateMarkerSize());
+        mBlueFlag = MarkerFactoryHere.createFlagMarker(
+                game.getBlueFlag(), mBlueFlagBitmap, calculateMarkerSize());
+        updateMetersPerPixel();
+        
+        mMap.addMapObject(mRedFlag);
+        mMap.addMapObject(mBlueFlag);
     }
 
-    public void clearMarkers() {
-        Log.d(TAG, "Clearing all (" + mMarkers.size() + ") markers");
-        mMap.removeMapObjects(mMarkers);
-        mMarkers.clear();
-    }
-
-    public GeoPosition getCurrentPosition() {
-        return mPosManager.getPosition();
-    }
-
-    /**
-     * For convenience.
-     */
+	@Override
     public void centerMapToUserPosition() {
-        setMapPosition(mPosManager.getPosition().getCoordinate(), mZoomLevel, MapAnimation.LINEAR);
+        setMapPosition(mLocationManager.getCurrentLocation(), mZoomLevel, MapAnimation.LINEAR);
     }
 
-    public void centerMapToUserPosition(double zoomLevel, MapAnimation animation) {
-        setMapPosition(mPosManager.getPosition().getCoordinate(), zoomLevel, animation);
-    }
-
-    public void setMapPosition(GeoCoordinate coordinate, double zoomLevel, MapAnimation animation) {
-        mMap.setCenter(coordinate, animation, zoomLevel, 0, 0);
+    public void setMapPosition(Location location, double zoomLevel, MapAnimation animation) {
+        mMap.setCenter(locationToGeoCoordinate(location), animation, zoomLevel, 0, 0);
         
         if (zoomLevel > 0 && mZoomLevel != zoomLevel) {
             mZoomLevel = zoomLevel;
@@ -303,69 +259,10 @@ public class GameMap extends MapFragment {
         return mZoomLevel;
     }
 
-    private void initLocation() {
-        mPosManager = MapFactory.getPositioningManager();
-        Log.d(TAG, "Position manager set");
-        LocationStatus status = mPosManager.getLocationStatus(LocationMethod.GPS);
-        
-        if (status == LocationStatus.OUT_OF_SERVICE) {
-            showEnableGPSDialog();
-        }
-        else {
-            mPosManager.start(LocationMethod.GPS_NETWORK);
-            if (mPositionListener != null) {
-                mPosManager.addPositionListener(mPositionListener);
-            }
-            GeoCoordinate currentloc = mPosManager.getPosition().getCoordinate();
-            mMap.setCenter(currentloc, MapAnimation.LINEAR);
-        }
-    }
-
-    private void showEnableGPSDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(getResources().getText(R.string.gps_not_enabled));
-        
-        builder.setPositiveButton(
-                getResources().getText(R.string.action_settings),
-                new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent i = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        getActivity().startActivity(i);
-                    }
-        });
-        
-        builder.setNegativeButton(
-                getResources().getText(R.string.cancel),
-                new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-        });
-        
-        builder.create().show();
-    }
-
-    private void addMarker(MapObject marker) {
-        mMap.addMapObject(marker);
-        mMarkers.add(marker);
-    }
-
-    private void removeMarker(MapObject marker) {
-        mMap.removeMapObject(marker);
-        mMarkers.remove(marker);
-    }
-
-    private void addMarkers(List<MapObject> markers) {
-        mMarkers.addAll(markers);
-        mMap.addMapObjects(markers);
-    }
-
     private void updateMetersPerPixel() {
-        GeoCoordinate coordinate = this.getCurrentPosition().getCoordinate();
+        Location coordinate = mLocationManager.getCurrentLocation();
         mCurrentMetersPerPixels =
-                (Math.cos(coordinate.getLatitude() * DEGREES_TO_RADS) * CALC_CONSTANT)
+                (Math.cos(coordinate.getLatitude() * GameMapSettings.DEGREES_TO_RADS) * GameMapSettings.CALC_CONSTANT)
                 / (256 * Math.pow(2, mMap.getZoomLevel()));
     }
 
@@ -417,14 +314,24 @@ public class GameMap extends MapFragment {
         int px = (int)((dp * displayMetrics.density) + 0.5);
         return px;
     }
+    
+    private GeoCoordinate locationToGeoCoordinate(Location location) {
+    	return MapFactory.createGeoCoordinate(location.getLatitude(), location.getLongitude());
+    }
 
-	public void setPositionListener(PositionListener listener) {
-		if (mPositionListener != listener) {
-			mPositionListener = listener;
-			if (mPosManager != null) {
+    private void addPlayerMarker(Player player, MapMarker marker) {
+    	mMap.addMapObject(marker);
+    	mPlayerMarkers.put(player, marker);
+    }
 
-				mPosManager.addPositionListener(listener);
-			}
+    private MapMarker getPlayerMarker(Player player) {
+    	return mPlayerMarkers.get(player);
+    }
+    
+    private void removePlayerMarkers() {
+    	for (MapMarker marker : mPlayerMarkers.values()) {
+			mMap.removeMapObject(marker);
 		}
-	}
+    	mPlayerMarkers.clear();
+    }
 }

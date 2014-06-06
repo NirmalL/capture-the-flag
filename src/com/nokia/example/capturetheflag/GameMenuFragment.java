@@ -36,7 +36,7 @@ import com.nokia.example.capturetheflag.network.model.ModelConstants;
  */
 public class GameMenuFragment
     extends Fragment
-    implements View.OnClickListener, ResultListener<Address>
+    implements View.OnClickListener//, ResultListener<Address>
 {
     public static final String FRAGMENT_TAG = "GameMenuFragment";
     private static final String TAG = "CtF/GameMenuFragment";
@@ -134,7 +134,7 @@ public class GameMenuFragment
     /**
      * Shows the address, found with reverse geocoding, to the user.
      */
-    @Override
+/*    @Override
     public void onCompleted(Address data, ErrorCode error) {
         if (getActivity() != null) {
             if (error != ErrorCode.NONE) {
@@ -153,7 +153,7 @@ public class GameMenuFragment
             }
         }
     }
-
+*/
     /**
      * Populates the view with "join game" buttons.
      * 

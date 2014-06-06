@@ -20,11 +20,17 @@
         android:layout_alignParentTop="true">
     </RelativeLayout>
 
-    <fragment
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/mapfragment"
+        android:layout_below="@id/top_fragments"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <!--fragment
         android:id="@+id/mapfragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/top_fragments"
-        class="com.nokia.example.capturetheflag.location.GameMap" />
+        class="com.nokia.example.capturetheflag.location.GameMapGoogle" /-->
 
 </RelativeLayout>
