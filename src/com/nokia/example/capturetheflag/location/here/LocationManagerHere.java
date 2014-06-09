@@ -23,7 +23,7 @@ import com.nokia.example.capturetheflag.location.LocationManagerInterface;
  * Location Manager implementation.
  * 
  * Implementation of {@link LocationManagerInterface} that uses Here APIs, i.e {@link PositioningManager}.
- *
+ * @see {@link LocationManagerInterface}, {@link LocationManagerBase} and {@link PositionListener}.
  */
 public class LocationManagerHere extends LocationManagerBase implements PositionListener {
 
@@ -83,13 +83,11 @@ public class LocationManagerHere extends LocationManagerBase implements Position
         Location location = new Location("");
         location.setLatitude(coords.getLatitude());
         location.setLongitude(coords.getLongitude());
-
         return location;
     }
 
     @Override
-    public void reverseGeocodeLocation(Location location,
-            final ReverseGeocodingResultListener listener) {
+    public void reverseGeocodeLocation(Location location, final ReverseGeocodingResultListener listener) {
         GeoCoordinate coords = MapFactory.createGeoCoordinate(location.getLatitude(), location.getLongitude());
         ReverseGeocodeRequest request = MapFactory.getGeocoder().createReverseGeocodeRequest(coords);
         request.execute(new ResultListener<Address>() {
@@ -106,10 +104,5 @@ public class LocationManagerHere extends LocationManagerBase implements Position
                 }
             };
         });
-
-        
-        
-        
-        
     }    
 }

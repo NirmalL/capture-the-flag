@@ -22,12 +22,13 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.nokia.example.capturetheflag.location.LocationManagerBase;
 import com.nokia.example.capturetheflag.location.LocationManagerInterface;
+import com.nokia.example.capturetheflag.location.LocationManagerListener;
 
 /**
  * Location Manager implementation.
  * 
  * Implementation of {@link LocationManagerInterface} that uses Google and Google Play Services APIs, i.e. {@link LocationClient} and {@link Geocoder}.
- *
+ * @see {@link LocationManagerInterface}, {@link LocationManagerListener}, {@link LocationClient} and {@link LocationListener}.
  */
 public class LocationManagerGoogle extends LocationManagerBase implements
     GooglePlayServicesClient.ConnectionCallbacks, 
