@@ -5,11 +5,9 @@
 
 package com.nokia.example.capturetheflag;
 
-import com.nokia.example.capturetheflag.iap.PremiumHandler;
-import com.nokia.example.capturetheflag.iap.PremiumHandler.PremiumHandlerListener;
-
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +15,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.nokia.example.capturetheflag.iap.PremiumHandler;
+import com.nokia.example.capturetheflag.iap.PremiumHandler.PremiumHandlerListener;
 
 /**
  * A fragment for upgrading the app to premium version. Requests price details
@@ -36,7 +37,6 @@ public class PurchasePremiumFragment extends Fragment implements PremiumHandlerL
                 .findFragmentByTag(Controller.FRAGMENT_TAG);
         mPremiumHandler = controller.getPremiumHandler();
         mPremiumHandler.addListener(this);
-        mPremiumHandler.requestPrice();
     }
 
     @Override
@@ -60,6 +60,13 @@ public class PurchasePremiumFragment extends Fragment implements PremiumHandlerL
         mPriceLine = (TextView) v.findViewById(R.id.premium_price_line);
         return v;
     }
+    
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+    	super.onActivityCreated(savedInstanceState);
+    	
+    	mPremiumHandler.requestPrice();
+    }
 
     @Override
     public void onDestroy() {
@@ -68,6 +75,10 @@ public class PurchasePremiumFragment extends Fragment implements PremiumHandlerL
         if (mPremiumHandler != null) {
             mPremiumHandler.removeListener(this);
         }
+    }
+    
+    public void handleActivityResult(int requestCode, int resultCode, Intent data) {
+    	mPremiumHandler.handleActivityResult(requestCode, resultCode, data);
     }
 
     @Override

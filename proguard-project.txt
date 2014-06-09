@@ -18,3 +18,9 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+# GOOGLE
+-keep class com.android.vending.billing.**
+
+# NOKIA
+-keep class com.nokia.payment.iap.aidl.**

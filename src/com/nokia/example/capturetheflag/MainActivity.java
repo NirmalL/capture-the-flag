@@ -43,16 +43,18 @@ public class MainActivity extends Activity implements
     private static final String INAPP_PURCHASE_DATA_KEY = "INAPP_PURCHASE_DATA";
     private static final String PRODUCT_ID_KEY = "productId";
 
+    PurchasePremiumFragment mPremiumFragment;
+    
     private GameMap mGameMap = null;
     private Controller mController = null;
     private MenuItem mBuyPremiumMenuItem = null;
     private BackCallback mBackKeyCallback = null;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        
         FragmentManager fragmanager = getFragmentManager();
         mController = (Controller) fragmanager
                 .findFragmentByTag(Controller.FRAGMENT_TAG);
@@ -63,7 +65,7 @@ public class MainActivity extends Activity implements
             fragmanager.beginTransaction()
                     .add(mController, Controller.FRAGMENT_TAG).commit();
         }
-
+        
         mGameMap = (GameMap) fragmanager.findFragmentById(R.id.mapfragment);
         setupPushNotification();
 
@@ -99,7 +101,7 @@ public class MainActivity extends Activity implements
         mBuyPremiumMenuItem.setVisible(!mController.isPremium());
         return true;
     }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         boolean retval = false;
@@ -107,9 +109,13 @@ public class MainActivity extends Activity implements
         switch (item.getItemId()) {
             case R.id.buy_premium_menuitem:
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                PurchasePremiumFragment premiumFragment = new PurchasePremiumFragment();
+                
+                if(mPremiumFragment == null) {
+                	mPremiumFragment = new PurchasePremiumFragment();
+                }
+                //PurchasePremiumFragment premiumFragment = new PurchasePremiumFragment();
                 transaction.addToBackStack(null);
-                transaction.add(R.id.fragmentcontainer, premiumFragment,
+                transaction.add(R.id.fragmentcontainer, mPremiumFragment,
                         PurchasePremiumFragment.FRAGMENT_TAG);
                 transaction.commit();
                 retval = true;
@@ -160,6 +166,10 @@ public class MainActivity extends Activity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    	if(mPremiumFragment != null) {
+    		mPremiumFragment.handleActivityResult(requestCode, resultCode, data);
+    	}
+    	
         if (resultCode == Activity.RESULT_OK) {
             if (data.getIntExtra("RESPONSE_CODE", -100) == 0) {
                 String purchaseData = data
