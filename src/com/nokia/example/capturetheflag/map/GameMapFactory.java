@@ -13,8 +13,8 @@ package com.nokia.example.capturetheflag.map;
 public class GameMapFactory {
 	
     private static final String HERE_MAP_CLASS_NAME = "com.here.android.mapping.Map";
-    private static final String HERE_GAME_MAP_CLASS_NAME = "com.nokia.example.capturetheflag.location.here.GameMapHere";
-    private static final String GOOGLE_GAME_MAP_CLASS_NAME = "com.nokia.example.capturetheflag.location.google.GameMapGoogle";    
+    private static final String HERE_GAME_MAP_CLASS_NAME = "com.nokia.example.capturetheflag.map.here.GameMapHere";
+    private static final String GOOGLE_GAME_MAP_CLASS_NAME = "com.nokia.example.capturetheflag.map.google.GameMapGoogle";    
     
     /**
      * Are Here Maps supported in this device
