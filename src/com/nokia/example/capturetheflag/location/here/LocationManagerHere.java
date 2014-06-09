@@ -63,13 +63,12 @@ public class LocationManagerHere extends LocationManagerBase implements Position
         location.setLatitude(coords.getLatitude());
         location.setLongitude(coords.getLongitude());
 
-        notifyListeners(location);
+        notifyListener(location);
     }
     
     @Override
     public void start() {
         if (mPosManager != null) {
-            Log.d(TAG, "Starting position manager");
             mPosManager.start(LocationMethod.GPS_NETWORK);
         }        
     }
@@ -77,7 +76,6 @@ public class LocationManagerHere extends LocationManagerBase implements Position
     @Override
     public void stop() {
         if (mPosManager != null) {
-            Log.d(TAG, "Stopping position manager");
             mPosManager.stop();
         }        
     }

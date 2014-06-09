@@ -5,8 +5,6 @@
 
 package com.nokia.example.capturetheflag.location;
 
-import java.util.ArrayList;
-
 import android.location.Location;
 
 /**
@@ -16,35 +14,34 @@ import android.location.Location;
  */
 public abstract class LocationManagerBase implements LocationManagerInterface {
 
-    protected ArrayList<LocationManagerListener> mListeners;
+    protected LocationManagerListener mListener;
 
     @Override
-    public void addListener(LocationManagerListener listener) {
-        if(!mListeners.contains(listener)) {
-            mListeners.add(listener);
+    public void setListener(LocationManagerListener listener) {
+        if(mListener != null) {
+           mListener = listener;
         }        
     }
 
     @Override
-    public void removeListener(LocationManagerListener listener) {
-        // Return value ignored
-        mListeners.remove(listener);
+    public void removeListener() {
+        mListener = null;
     }
     
     /**
      * Constructor.
      */
     protected LocationManagerBase() {
-        mListeners = new ArrayList<LocationManagerListener>();
+    	super();
     }
 
     /**
      * Notifies all the currently registered listeners of a change in location.
      * @param location New location, @see {@link Location}.
      */
-    protected void notifyListeners(Location location) {
-        for (LocationManagerListener listener : mListeners) {
-            listener.onLocationUpdated(location);
+    protected void notifyListener(Location location) {
+    	if(mListener != null) {
+            mListener.onLocationUpdated(location);
         }
     }
     
@@ -53,8 +50,8 @@ public abstract class LocationManagerBase implements LocationManagerInterface {
      * @param success <code>true</code> if connection was successful, <code>false</code> if not.
      */
     protected void notifyManagerReady(boolean success) {
-        for (LocationManagerListener listener : mListeners) {
-            listener.onLocationManagerReady(success);
+    	if(mListener != null) {
+            mListener.onLocationManagerReady(success);
         }
     }
 }

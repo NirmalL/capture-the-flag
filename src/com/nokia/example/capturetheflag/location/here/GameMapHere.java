@@ -132,20 +132,6 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        // TODO: Should this done in controller instead?
-        mLocationManager.stop();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        // TODO: Should this done in controller instead?
-        mLocationManager.start();
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
         mScaleThread.quit();

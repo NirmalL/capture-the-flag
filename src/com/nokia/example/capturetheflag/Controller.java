@@ -28,6 +28,7 @@ import android.view.Gravity;
 import android.widget.Toast;
 
 
+
 /*
 import com.here.android.common.LocationMethod;
 import com.here.android.common.LocationStatus;
@@ -127,7 +128,7 @@ public class Controller
         mOfflineClient.setListener(this);
         // TODO: Do we need a Singleton?
         mLocationManager = LocationManagerFactory.getLocationManagerInterface(getActivity());
-        mLocationManager.addListener(this);
+        mLocationManager.setListener(this);
 
     }
 
@@ -157,6 +158,8 @@ public class Controller
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(
                 mPushHandler);
         mClient.setConnectionIdle(true);
+        mLocationManager.stop();
+
     }
 
     @Override
@@ -168,6 +171,7 @@ public class Controller
                 mPushHandler,
                 new IntentFilter(PushIntentService.PUSH_MESSAGE_ACTION));
         mClient.setConnectionIdle(false);
+        mLocationManager.start();
     }
 
     @Override

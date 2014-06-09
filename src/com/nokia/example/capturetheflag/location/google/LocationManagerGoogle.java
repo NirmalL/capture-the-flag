@@ -82,7 +82,7 @@ public class LocationManagerGoogle extends LocationManagerBase implements
 
     @Override
     public void onLocationChanged(Location location) {
-        notifyListeners(location);
+        notifyListener(location);
     }
 
     @Override

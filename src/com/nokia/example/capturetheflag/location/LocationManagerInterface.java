@@ -46,16 +46,16 @@ public interface LocationManagerInterface {
     public void stop();
     
     /**
-     * Adds a new listener that will receive location updates through @see {@link LocationManagerListener}.
+     * Sets a listener that will receive location updates through @see {@link LocationManagerListener}.
+     * Any previously set listener will be removed.
      * @param listener to add @See {@link LocationManagerListener}.
      */
-    public void addListener(LocationManagerListener listener);
+    public void setListener(LocationManagerListener listener);
 
     /**
-     * Removes a location update listener.
-     * @param listener to remove @See {@link LocationManagerListener}.
+     * Removes the currently set location update listener.
      */
-    public void removeListener(LocationManagerListener listener);
+    public void removeListener();
     
     /**
      * Returns the current (or last received) location.
