@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import com.nokia.example.capturetheflag.iap.PremiumHandler;
 import com.nokia.example.capturetheflag.map.GameMapFactory;
 import com.nokia.example.capturetheflag.map.GameMapInterface;
+import com.nokia.example.capturetheflag.network.NetworkClient;
 import com.nokia.example.capturetheflag.network.model.Game;
 //import com.here.android.mapping.MapAnimation;
 //import com.nokia.push.PushRegistrar;
@@ -113,54 +114,16 @@ public class MainActivity extends Activity implements
         boolean retval = false;
 
         switch (item.getItemId()) {
-            case R.id.buy_premium_menuitem:
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                
-                if(mPremiumFragment == null) {
-                	mPremiumFragment = new PurchasePremiumFragment();
-                }
-                //PurchasePremiumFragment premiumFragment = new PurchasePremiumFragment();
-                transaction.addToBackStack(null);
-                transaction.add(R.id.fragmentcontainer, mPremiumFragment,
-                        PurchasePremiumFragment.FRAGMENT_TAG);
-                transaction.commit();
-                retval = true;
-                break;
-            case R.id.help_menuitem:
-                Intent intent = new Intent(this, HelpActivity.class);
-                startActivity(intent);
-                retval = true;
-                break;
-            case R.id.about_menuitem:
-                Intent i = new Intent(this, AboutActivity.class);
-                startActivity(i);
-                retval = true;
-                break;
-            case R.id.server_settings_menuitem:
-                final MainActivity context = this;
-                
-                ServerSettingsDialog dialog = new ServerSettingsDialog(this) {
-                    @Override
-                    public boolean onOkClicked(final String url, final String port) {
-                        Log.i(TAG, "Server URL set to " + url + " and port as " + port + ".");
-                        final int portAsInt = Integer.parseInt(port);
-                        Settings.setServerUrl(url, context);
-                        Settings.setServerPort(portAsInt, context);
-                        
-                        // Try to (re)connect
-                        NetworkClient client = mController.getNetworkClient();
-                        
-                        if (client.isConnected()) {
-                            client.disconnect();
-                        }
-                        
-                        client.connect(url, portAsInt);
-                        return true;
         case R.id.buy_premium_menuitem:
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            PurchasePremiumFragment premiumFragment = new PurchasePremiumFragment();
+        	FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            
+            if(mPremiumFragment == null) {
+            	mPremiumFragment = new PurchasePremiumFragment();
+            }
+            //PurchasePremiumFragment premiumFragment = new PurchasePremiumFragment();
             transaction.addToBackStack(null);
-            transaction.add(R.id.fragmentcontainer, premiumFragment, PurchasePremiumFragment.FRAGMENT_TAG);
+            transaction.add(R.id.fragmentcontainer, mPremiumFragment,
+                    PurchasePremiumFragment.FRAGMENT_TAG);
             transaction.commit();
             retval = true;
             break;
@@ -208,6 +171,7 @@ public class MainActivity extends Activity implements
 
         return retval;
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
