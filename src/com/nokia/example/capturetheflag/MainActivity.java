@@ -19,12 +19,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
+
 //import com.here.android.mapping.MapAnimation;
 import com.nokia.example.capturetheflag.iap.PremiumHandler;
 import com.nokia.example.capturetheflag.map.GameMapFactory;
 import com.nokia.example.capturetheflag.map.GameMapInterface;
 import com.nokia.example.capturetheflag.network.NetworkClient;
 import com.nokia.example.capturetheflag.network.model.Game;
+import com.nokia.example.capturetheflag.notifications.NotificationsManager;
 //import com.nokia.push.PushRegistrar;
 
 /**
@@ -71,9 +73,10 @@ public class MainActivity extends Activity implements
         android.app.FragmentTransaction fragmentTransaction = fragmanager.beginTransaction();
         fragmentTransaction.add(R.id.mapfragment, (Fragment)mGameMap);
         fragmentTransaction.commit();
+        
         mController.setMap(mGameMap);
 
-        setupPushNotification();
+        //setupPushNotification();
 
         if (savedInstanceState == null) {
             showGameMenu(null);
@@ -270,6 +273,8 @@ public class MainActivity extends Activity implements
     }
 
     private void setupPushNotification() {
+    	NotificationsManager m = NotificationsManager.getInstance(getApplicationContext());
+    	m.register(getApplicationContext());
 /*        Log.i(TAG, "Setting up Nokia Notifications...");
         PushRegistrar.checkDevice(this);
         PushRegistrar.checkManifest(this);
