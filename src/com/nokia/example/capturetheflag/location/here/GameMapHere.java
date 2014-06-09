@@ -43,14 +43,13 @@ import com.nokia.example.capturetheflag.network.model.Player;
  * actions like adding map markers etc.
  */
 public class GameMapHere extends MapFragment implements GameMapInterface {
-    public static final double DEFAULT_MAP_ZOOM_LEVEL_IN_GAME = 14;
+    private static final double DEFAULT_MAP_ZOOM_LEVEL_IN_GAME = 14;
     private static final String TAG = "CtF/GameMap";
 
     private LocationManagerInterface mLocationManager;
     private Map mMap;
     
     private HashMap<Player, MapMarker> mPlayerMarkers = new HashMap<Player, MapMarker>();
-    //private ArrayList<MapObject> mMarkers = new ArrayList<MapObject>();
     private MapMarker mRedFlag = null;
     private MapMarker mBlueFlag = null;
     private Bitmap mRedFlagBitmap;
@@ -179,7 +178,7 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
     }
 
     @Override
-    public void setMarkers(Game game, Player user) {
+    public void setMarkers(Game game) {
         ArrayList<Player> players = game.getPlayers();
         
         for (Player player : players) {
@@ -200,6 +199,7 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
 
     @Override
     public void centerMapToPosition(Location location) {
+    	mZoomLevel = DEFAULT_MAP_ZOOM_LEVEL_IN_GAME;
         setMapPosition(mLocationManager.getCurrentLocation(), mZoomLevel, MapAnimation.LINEAR);
     }
 

@@ -229,7 +229,7 @@ public class MainActivity extends Activity implements
      */
     public void startGame(Game game) {
         Log.d(TAG, "startGame()");
-        mGameMap.setMarkers(game, mController.getPlayer());
+        mGameMap.setMarkers(game);
     }
 
     public void unlockPremium() {

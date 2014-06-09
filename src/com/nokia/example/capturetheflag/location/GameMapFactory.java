@@ -16,8 +16,6 @@ public class GameMapFactory {
     private static final String HERE_GAME_MAP_CLASS_NAME = "com.nokia.example.capturetheflag.location.here.GameMapHere";
     private static final String GOOGLE_GAME_MAP_CLASS_NAME = "com.nokia.example.capturetheflag.location.google.GameMapGoogle";    
     
-    private static final String TAG = "CtF/MapFactory";
-
     /**
      * Are Here Maps supported in this device
      * @return    <code>true</code> if Here Maps are available, <code>false</code> if not.
@@ -39,7 +37,7 @@ public class GameMapFactory {
     public static GameMapInterface createGameMap() {
         GameMapInterface map = null;
         String className = isHereMapsAvailable() ? HERE_GAME_MAP_CLASS_NAME : GOOGLE_GAME_MAP_CLASS_NAME;
-        
+
         try {
 			map = (GameMapInterface)Class.forName(className).newInstance();
 		} catch (Exception e) {

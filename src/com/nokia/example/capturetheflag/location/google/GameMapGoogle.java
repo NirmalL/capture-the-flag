@@ -21,6 +21,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -35,7 +37,7 @@ import com.nokia.example.capturetheflag.network.model.Game;
 import com.nokia.example.capturetheflag.network.model.Player;
 
 public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCameraChangeListener {
-
+    private static final float DEFAULT_MAP_ZOOM_LEVEL_IN_GAME = 14;
     private static final String TAG = "CtF/GameMapGoogle";
     
     private LocationManagerInterface mLocationManager;
@@ -126,18 +128,12 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
     }
 
     @Override
-    public void setMarkers(Game game, Player user) {
+    public void setMarkers(Game game) {
         ArrayList<Player> players = game.getPlayers();
 
         for (Player player : players) {
-            MarkerOptions marker = MarkerFactoryGoogle.createPlayerMarker(player, getResources().getDisplayMetrics(), getResources());
             Log.d(TAG, "Adding marker to: " + player.getLatitude() + "; " + player.getLongitude() + ", name: " + player.getName() + ", id: " + player.getId());
-
-            if (player.equals(user)) {
-                Log.d(TAG, "User object marker added");
-                // TODO!!
-                // user.setMarker(marker);
-            }
+            MarkerOptions marker = MarkerFactoryGoogle.createPlayerMarker(player, getResources().getDisplayMetrics(), getResources());
             addPlayerMarker(player, marker);
         }
         
@@ -151,8 +147,8 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
     @Override
     public void centerMapToPosition(Location location) {
         LatLng lat = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(lat));
-        
+        mZoomLevel = DEFAULT_MAP_ZOOM_LEVEL_IN_GAME;
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lat, mZoomLevel));
         updateMetersPerPixel();        
     }
 
@@ -196,24 +192,19 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
             mScaleHandler.post(new Runnable() {
                 @Override
                     public void run() {
-                    return; /*
                         int size = calculateMarkerSize();
-                        
-                        final Image redFlagImage = MapFactory.createImage();
-                        redFlagImage.setBitmap(Bitmap.createScaledBitmap(mRedFlagBitmap, size, size, true));
-                        
-                        final Image blueFlagImage = MapFactory.createImage();
-                        blueFlagImage.setBitmap(Bitmap.createScaledBitmap(mBlueFlagBitmap, size, size, true));
-                        
+                        final BitmapDescriptor redFlagBitmapDesc = BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(mRedFlagBitmap, size, size, true));                        
+                        final BitmapDescriptor blueFlagBitmapDesc = BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(mBlueFlagBitmap, size, size, true));
+
                         mUIHandler.post(new Runnable() {
                             @Override
                             public void run() {
                                 if (mRedFlag != null && mBlueFlag != null) {
-                                    mRedFlag.setIcon(redFlagImage);
-                                    mBlueFlag.setIcon(blueFlagImage);
+                                    mRedFlag.setIcon(redFlagBitmapDesc);
+                                    mBlueFlag.setIcon(blueFlagBitmapDesc);
                                 }
                             }
-                        });*/
+                        });
                     }
             });
         }

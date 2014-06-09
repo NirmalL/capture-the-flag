@@ -18,7 +18,7 @@ public abstract class LocationManagerBase implements LocationManagerInterface {
 
     @Override
     public void setListener(LocationManagerListener listener) {
-        if(mListener != null) {
+        if(listener != null) {
            mListener = listener;
         }        
     }

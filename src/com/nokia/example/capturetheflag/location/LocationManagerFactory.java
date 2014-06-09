@@ -21,8 +21,6 @@ public class LocationManagerFactory {
 	private static final String HERE_LOCATION_CLASS_NAME = "com.nokia.example.capturetheflag.location.here.LocationManagerHere";
 	private static final String GOOGLE_LOCATION_CLASS_NAME = "com.nokia.example.capturetheflag.location.google.LocationManagerGoogle";
 
-    private static final String TAG = "CtF/LocationManagerFactory";
-
     private static LocationManagerInterface mInstance;
 
     /**

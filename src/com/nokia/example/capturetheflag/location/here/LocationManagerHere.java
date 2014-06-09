@@ -2,7 +2,6 @@ package com.nokia.example.capturetheflag.location.here;
 
 import android.app.Activity;
 import android.location.Location;
-import android.util.Log;
 
 import com.here.android.common.GeoCoordinate;
 import com.here.android.common.GeoPosition;
@@ -28,8 +27,6 @@ import com.nokia.example.capturetheflag.location.LocationManagerInterface;
  */
 public class LocationManagerHere extends LocationManagerBase implements PositionListener {
 
-    private static final String TAG = "CtF/LocationManagerHere";
-    
     private PositioningManager mPosManager;
     
     public LocationManagerHere(Activity activity) {

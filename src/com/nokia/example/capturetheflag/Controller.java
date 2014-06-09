@@ -19,7 +19,6 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
@@ -27,15 +26,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
-
-
-/*
-import com.here.android.common.LocationMethod;
-import com.here.android.common.LocationStatus;
-import com.here.android.common.PositionListener;
-import com.here.android.mapping.MapFactory;
-import com.here.android.search.geocoder.ReverseGeocodeRequest;
-*/
 import com.nokia.example.capturetheflag.iap.PremiumHandler;
 import com.nokia.example.capturetheflag.iap.PremiumHandler.PremiumHandlerListener;
 import com.nokia.example.capturetheflag.location.GameMapInterface;
@@ -129,7 +119,6 @@ public class Controller
         // TODO: Do we need a Singleton?
         mLocationManager = LocationManagerFactory.getLocationManagerInterface(getActivity());
         mLocationManager.setListener(this);
-
     }
 
     public void setMap(GameMapInterface map) {
