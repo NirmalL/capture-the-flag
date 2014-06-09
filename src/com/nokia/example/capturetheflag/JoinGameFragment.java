@@ -5,8 +5,8 @@
 
 package com.nokia.example.capturetheflag;
 
-import com.here.android.common.GeoPosition;
-import com.here.android.mapping.MapFactory;
+import com.nokia.example.capturetheflag.location.LocationManagerFactory;
+import com.nokia.example.capturetheflag.location.LocationManagerInterface;
 import com.nokia.example.capturetheflag.network.JoinRequest;
 import com.nokia.example.capturetheflag.network.model.Game;
 import com.nokia.example.capturetheflag.network.model.Player;
@@ -16,6 +16,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -133,9 +134,10 @@ public class JoinGameFragment
                 break;
         }
         
-        GeoPosition pos = MapFactory.getPositioningManager().getPosition();
-        player.setLatitude(pos.getCoordinate().getLatitude());
-        player.setLongitude(pos.getCoordinate().getLongitude());
+        LocationManagerInterface locationManager = LocationManagerFactory.getLocationManagerInterface(getActivity());
+        Location location = locationManager.getCurrentLocation();
+        player.setLocation(location);
+
         Controller.getInstance().getNetworkClient().emit(new JoinRequest(mGame, player));
     }
 }

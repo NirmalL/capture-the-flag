@@ -18,12 +18,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.here.android.mapping.MapAnimation;
+
+//import com.here.android.mapping.MapAnimation;
 import com.nokia.example.capturetheflag.iap.PremiumHandler;
-import com.nokia.example.capturetheflag.location.GameMap;
+import com.nokia.example.capturetheflag.map.GameMapFactory;
+import com.nokia.example.capturetheflag.map.GameMapInterface;
 import com.nokia.example.capturetheflag.network.NetworkClient;
 import com.nokia.example.capturetheflag.network.model.Game;
-import com.nokia.push.PushRegistrar;
+//import com.nokia.push.PushRegistrar;
 
 /**
  * Main Activity of the application. This Activity is responsible for
@@ -46,6 +48,7 @@ public class MainActivity extends Activity implements
     PurchasePremiumFragment mPremiumFragment;
     
     private GameMap mGameMap = null;
+    private GameMapInterface mGameMap = null;
     private Controller mController = null;
     private MenuItem mBuyPremiumMenuItem = null;
     private BackCallback mBackKeyCallback = null;
@@ -56,8 +59,8 @@ public class MainActivity extends Activity implements
         setContentView(R.layout.activity_main);
         
         FragmentManager fragmanager = getFragmentManager();
-        mController = (Controller) fragmanager
-                .findFragmentByTag(Controller.FRAGMENT_TAG);
+        
+        mController = (Controller) fragmanager.findFragmentByTag(Controller.FRAGMENT_TAG);
 
         // First time or fragment couldn't be retained
         if (mController == null) {
@@ -65,8 +68,14 @@ public class MainActivity extends Activity implements
             fragmanager.beginTransaction()
                     .add(mController, Controller.FRAGMENT_TAG).commit();
         }
-        
-        mGameMap = (GameMap) fragmanager.findFragmentById(R.id.mapfragment);
+
+        // Create and add the map fragment to the UI.
+        mGameMap = GameMapFactory.createGameMap();
+        android.app.FragmentTransaction fragmentTransaction = fragmanager.beginTransaction();
+        fragmentTransaction.add(R.id.mapfragment, (Fragment)mGameMap);
+        fragmentTransaction.commit();
+        mController.setMap(mGameMap);
+
         setupPushNotification();
 
         if (savedInstanceState == null) {
@@ -89,7 +98,7 @@ public class MainActivity extends Activity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        PushRegistrar.onDestroy(this);
+        //PushRegistrar.onDestroy(this);
         mController.cleanUp();
     }
 
@@ -105,7 +114,7 @@ public class MainActivity extends Activity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         boolean retval = false;
-        
+
         switch (item.getItemId()) {
             case R.id.buy_premium_menuitem:
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -150,17 +159,56 @@ public class MainActivity extends Activity implements
                         
                         client.connect(url, portAsInt);
                         return true;
+        case R.id.buy_premium_menuitem:
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            PurchasePremiumFragment premiumFragment = new PurchasePremiumFragment();
+            transaction.addToBackStack(null);
+            transaction.add(R.id.fragmentcontainer, premiumFragment, PurchasePremiumFragment.FRAGMENT_TAG);
+            transaction.commit();
+            retval = true;
+            break;
+        case R.id.help_menuitem:
+            Intent intent = new Intent(this, HelpActivity.class);
+            startActivity(intent);
+            retval = true;
+            break;
+        case R.id.about_menuitem:
+            Intent i = new Intent(this, AboutActivity.class);
+            startActivity(i);
+            retval = true;
+            break;
+        case R.id.server_settings_menuitem:
+            final MainActivity context = this;
+
+            ServerSettingsDialog dialog = new ServerSettingsDialog(this) {
+                @Override
+                public boolean onOkClicked(final String url, final String port) {
+                    Log.i(TAG, "Server URL set to " + url + " and port as "
+                            + port + ".");
+                    final int portAsInt = Integer.parseInt(port);
+                    Settings.setServerUrl(url, context);
+                    Settings.setServerPort(portAsInt, context);
+
+                    // Try to (re)connect
+                    NetworkClient client = mController.getNetworkClient();
+
+                    if (client.isConnected()) {
+                        client.disconnect();
                     }
-                };
-                
-                dialog.show();
-                retval = true;
-                break;
-            default:
-                retval = super.onOptionsItemSelected(item);
-                break;
+
+                    client.connect(url, portAsInt);
+                    return true;
+                }
+            };
+
+            dialog.show();
+            retval = true;
+            break;
+        default:
+            retval = super.onOptionsItemSelected(item);
+            break;
         }
-        
+
         return retval;
     }
 
@@ -174,11 +222,11 @@ public class MainActivity extends Activity implements
             if (data.getIntExtra("RESPONSE_CODE", -100) == 0) {
                 String purchaseData = data
                         .getStringExtra(INAPP_PURCHASE_DATA_KEY);
-                
+
                 try {
                     JSONObject json = new JSONObject(purchaseData);
                     String productId = json.getString(PRODUCT_ID_KEY);
-                    
+
                     if (productId.equals(PremiumHandler.PREMIUM_PRODUCT_ID)) {
                         /*
                          * Hide the premium menu item since the premium version
@@ -189,9 +237,10 @@ public class MainActivity extends Activity implements
                         Log.d(TAG, "Premium version already purchased.");
                         getFragmentManager().popBackStack();
                     }
-                }
-                catch (JSONException e) {
-                    Log.e(TAG, "Error in purchase result handling: " + e.getMessage(), e);
+                } catch (JSONException e) {
+                    Log.e(TAG,
+                            "Error in purchase result handling: "
+                                    + e.getMessage(), e);
                 }
             }
         }
@@ -231,9 +280,7 @@ public class MainActivity extends Activity implements
      */
     public void startGame(Game game) {
         Log.d(TAG, "startGame()");
-        mGameMap.setMarkers(game, mController.getPlayer());
-        mGameMap.centerMapToUserPosition(
-                GameMap.DEFAULT_MAP_ZOOM_LEVEL_IN_GAME, MapAnimation.LINEAR);
+        mGameMap.setMarkers(game);
     }
 
     public void unlockPremium() {
@@ -273,16 +320,17 @@ public class MainActivity extends Activity implements
     }
 
     private void setupPushNotification() {
-        Log.i(TAG, "Setting up Nokia Notifications...");
+/*        Log.i(TAG, "Setting up Nokia Notifications...");
         PushRegistrar.checkDevice(this);
         PushRegistrar.checkManifest(this);
         final String regId = PushRegistrar.getRegistrationId(this);
-        
+
         if (regId == null || regId.isEmpty()) {
             Log.i(TAG, "No registration ID stored.");
             PushRegistrar.register(this, PushIntentService.SENDER_ID);
         }
-    }
+*/    }
+
 
     /**
      * Interface for classes that need to know when back is pressed. Only to be

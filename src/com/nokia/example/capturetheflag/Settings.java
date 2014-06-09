@@ -25,7 +25,8 @@ public class Settings {
     /* When testing with emulator user 10.0.2.2 and your server is running on
      * the same computer.
      */
-    private static final String DEFAULT_SOCKET_URL = "http://capturetheflag-c9-nokiadeveloper.c9.io";
+//    private static final String DEFAULT_SOCKET_URL = "http://capturetheflag-c9-nokiadeveloper.c9.io";
+    private static final String DEFAULT_SOCKET_URL = "http://ctf-octo.herokuapp.com";
     private static final int DEFAULT_SOCKET_PORT = 80;
 
     public static String getServerUrl(Context context) {
