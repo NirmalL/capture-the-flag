@@ -22,7 +22,7 @@ import com.nokia.example.capturetheflag.network.model.Player;
  *
  */
 public class MarkerFactoryBase {
-	
+    
     private static final int PLAYER_NAME_MAX_LENGTH = 10;
     private static final int TEXT_MARGIN = 6;
     protected static final int PLAYER_NAME_SIZE = 15; // In dp
@@ -34,7 +34,7 @@ public class MarkerFactoryBase {
      * @param res Resources to use.
      * @return {@link Bitmap} Player marker bitmap.
      */
-	static protected Bitmap getBitmapForPlayer(final Player player, DisplayMetrics metrics, Resources res) {
+    static protected Bitmap getBitmapForPlayer(final Player player, DisplayMetrics metrics, Resources res) {
         Bitmap base = null;
         
         if (player.getTeam().equals(Player.BLUE)) {
@@ -68,14 +68,14 @@ public class MarkerFactoryBase {
         canvas.drawText(name, TEXT_MARGIN, y + textSize, paint);
         
         return img;
-	}
+    }
 
-	/**
-	 * Converts given density-independent pixel value to pixel value value using density from given display metrics.
-	 * @param dp The device-independent pixel value to convert.
-	 * @param metrics Display metrics to use for density.
-	 * @return Converted pixel value.
-	 */
+    /**
+     * Converts given density-independent pixel value to pixel value value using density from given display metrics.
+     * @param dp The device-independent pixel value to convert.
+     * @param metrics Display metrics to use for density.
+     * @return Converted pixel value.
+     */
     protected static int dpToPx(double dp, DisplayMetrics metrics) {
         return (int) (dp * metrics.density + 0.5f);
     }

@@ -15,37 +15,37 @@ import android.util.Log;
  * @see GameMapInterface.
  */
 public class GameMapFactory {
-	private static final String HERE_MAP_CLASS_NAME = "com.here.android.mapping.Map";
-	
-	private static final String TAG = "CtF/MapFactory";
+    private static final String HERE_MAP_CLASS_NAME = "com.here.android.mapping.Map";
+    
+    private static final String TAG = "CtF/MapFactory";
 
-	/**
-	 * Are Here Maps supported in this device
-	 * @return	<code>true</code> if Here Maps are available, <code>false</code> if not.
-	 */
-	public static boolean isHereMapsAvailable() {
-		boolean available = true;
-		try {
-			Class.forName(HERE_MAP_CLASS_NAME);
-		} catch (ClassNotFoundException e) {
-			available = false;
-		}
-		return available;
-	}
-	
-	/**
-	 * Returns a {@link GameMapInterface} implementation instance.
-	 * @return {@link GameMapInterface}.
-	 */
-	public static GameMapInterface createGameMap() {
-		GameMapInterface map = null;
+    /**
+     * Are Here Maps supported in this device
+     * @return    <code>true</code> if Here Maps are available, <code>false</code> if not.
+     */
+    public static boolean isHereMapsAvailable() {
+        boolean available = true;
+        try {
+            Class.forName(HERE_MAP_CLASS_NAME);
+        } catch (ClassNotFoundException e) {
+            available = false;
+        }
+        return available;
+    }
+    
+    /**
+     * Returns a {@link GameMapInterface} implementation instance.
+     * @return {@link GameMapInterface}.
+     */
+    public static GameMapInterface createGameMap() {
+        GameMapInterface map = null;
         if(isHereMapsAvailable()) {
-        	Log.d(TAG, "Using Here Maps");
+            Log.d(TAG, "Using Here Maps");
             map = new GameMapHere();
         } else {
-        	Log.d(TAG, "Using Google Maps");
-        	map = new GameMapGoogle();
+            Log.d(TAG, "Using Google Maps");
+            map = new GameMapGoogle();
         }
         return map;
-	}
+    }
 }

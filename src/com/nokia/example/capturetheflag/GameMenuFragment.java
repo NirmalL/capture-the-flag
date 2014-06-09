@@ -23,9 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.here.android.search.Address;
-import com.here.android.search.ErrorCode;
-import com.here.android.search.ResultListener;
+import com.nokia.example.capturetheflag.location.LocationManagerInterface.ReverseGeocodingResultListener;
 import com.nokia.example.capturetheflag.network.GameListRequest;
 import com.nokia.example.capturetheflag.network.model.Game;
 import com.nokia.example.capturetheflag.network.model.ModelConstants;
@@ -36,7 +34,7 @@ import com.nokia.example.capturetheflag.network.model.ModelConstants;
  */
 public class GameMenuFragment
     extends Fragment
-    implements View.OnClickListener//, ResultListener<Address>
+    implements View.OnClickListener, ReverseGeocodingResultListener //, ResultListener<Address>
 {
     public static final String FRAGMENT_TAG = "GameMenuFragment";
     private static final String TAG = "CtF/GameMenuFragment";
@@ -132,29 +130,6 @@ public class GameMenuFragment
     }
 
     /**
-     * Shows the address, found with reverse geocoding, to the user.
-     */
-/*    @Override
-    public void onCompleted(Address data, ErrorCode error) {
-        if (getActivity() != null) {
-            if (error != ErrorCode.NONE) {
-                mUserLocation.setText("Unable to find location");
-            }
-            else {
-                final String streetAddress =
-                        new String(data.getStreet() + " " + data.getHouseNumber()).trim();
-                
-                if (streetAddress.isEmpty()) {
-                    mUserLocation.setText(getString(R.string.no_street_address));
-                }
-                else {
-                    mUserLocation.setText(getString(R.string.you_are_at) + " " + streetAddress);
-                }
-            }
-        }
-    }
-*/
-    /**
      * Populates the view with "join game" buttons.
      * 
      * @param games
@@ -173,5 +148,24 @@ public class GameMenuFragment
             b.setOnClickListener(this);
             layout.addView(b);
         }
+    }
+
+    /**
+     * Shows the address, found with reverse geocoding, to the user.
+     */
+    @Override
+    public void onReverseGeocodingResult(String result) {
+        if (getActivity() != null) {
+            if (result == null) {
+                mUserLocation.setText("Unable to find location");
+            } else {
+                if (result.isEmpty()) {
+                    mUserLocation.setText(getString(R.string.no_street_address));
+                } else {
+                    mUserLocation.setText(getString(R.string.you_are_at) + " " + result);
+                }
+            }
+        }
+        
     }
 }

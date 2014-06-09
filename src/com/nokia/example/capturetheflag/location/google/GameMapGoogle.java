@@ -36,12 +36,12 @@ import com.nokia.example.capturetheflag.network.model.Player;
 
 public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCameraChangeListener {
 
-	private static final String TAG = "CtF/GameMapGoogle";
-	
+    private static final String TAG = "CtF/GameMapGoogle";
+    
     private LocationManagerInterface mLocationManager;
-	private GoogleMap mMap;
+    private GoogleMap mMap;
 
-	private HashMap<Player, Marker> mPlayerMarkers = new HashMap<Player, Marker>();
+    private HashMap<Player, Marker> mPlayerMarkers = new HashMap<Player, Marker>();
     private Marker mRedFlag;
     private Marker mBlueFlag;
     private Bitmap mRedFlagBitmap;
@@ -49,11 +49,11 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
     private HandlerThread mScaleThread;
     private Handler mScaleHandler;
     private Handler mUIHandler;
-	
+    
     private float mZoomLevel = -1.0f;
     private double mCurrentMetersPerPixels = 1;
     private boolean mIsFirstTime = false;
-	
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,95 +75,89 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
     public void onActivityCreated(Bundle savedInstanceState) {
        super.onActivityCreated(savedInstanceState);
 
-		mMap = getMap();
+        mMap = getMap();
         mMap.setOnCameraChangeListener(this);
     
         if (mIsFirstTime) {
-        	// TODO: No animation
-        	mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(GameMapSettings.DEFAULT_LATITUDE, GameMapSettings.DEFAULT_LONGITUDE)));
+            // Set up defaults
+            
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(GameMapSettings.DEFAULT_LATITUDE, GameMapSettings.DEFAULT_LONGITUDE)));
 
-        	if (mZoomLevel > 0) {
-        		mMap.animateCamera(CameraUpdateFactory.zoomTo(mZoomLevel));
+            if (mZoomLevel > 0) {
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(mZoomLevel));
             } else {
-        		mMap.animateCamera(CameraUpdateFactory.zoomTo((mMap.getMinZoomLevel() + mMap.getMaxZoomLevel()) / 2));
+                mMap.animateCamera(CameraUpdateFactory.zoomTo((mMap.getMinZoomLevel() + mMap.getMaxZoomLevel()) / 2));
             }
         }
     }
     
     @Override
-	public void clearMarkers() {
-		removePlayerMarkers();
-		mRedFlag.remove();
-		mBlueFlag.remove();
-	}
-
-	@Override
-	public void updateMarkerForPlayer(Player updated, Player old) {
-		Marker marker = getPlayerMarker(old);
-		mPlayerMarkers.put(updated, marker);
-		mPlayerMarkers.remove(old);
-	}
+    public void clearMarkers() {
+        removePlayerMarkers();
+        mRedFlag.remove();
+        mBlueFlag.remove();
+    }
 
     @Override
-	public void updatePlayerMarkerPosition(Player player) {
+    public void updateMarkerForPlayer(Player updated, Player old) {
+        Marker marker = getPlayerMarker(old);
+        mPlayerMarkers.put(updated, marker);
+        mPlayerMarkers.remove(old);
+    }
+
+    @Override
+    public void updatePlayerMarkerPosition(Player player) {
         Log.d(TAG, "Updating player with ID " + player.getId());
         
         if(!playerHasMarker(player)) {
             // New player joined
             Log.d(TAG, "Adding new player with name " + player.getName());
             MarkerOptions marker =  MarkerFactoryGoogle.createPlayerMarker(player, getResources().getDisplayMetrics(), getResources());
-            //Log.d(TAG, "New marker to: " + marker.getCoordinate().getLatitude() + "; " + marker.getCoordinate().getLongitude());
-            //player.setMarker(marker);
             addPlayerMarker(player, marker);
         } else {
             Log.d(TAG, "Updating marker of existing player with name " + player.getName() + "pos: " + player.getLatitude() + ", " + player.getLongitude());
             getPlayerMarker(player).setPosition(new LatLng(player.getLatitude(), player.getLongitude()));
-        }		
-	}
-
-	@Override
-    public boolean playerHasMarker(Player player) {
-		return mPlayerMarkers.containsKey(player);
+        }        
     }
 
-	@Override
-	public void setMarkers(Game game, Player user) {
+    @Override
+    public boolean playerHasMarker(Player player) {
+        return mPlayerMarkers.containsKey(player);
+    }
+
+    @Override
+    public void setMarkers(Game game, Player user) {
         ArrayList<Player> players = game.getPlayers();
-        //ArrayList<MarkerOptions> markers = new ArrayList<MarkerOptions>();
-        
+
         for (Player player : players) {
-        	MarkerOptions marker = MarkerFactoryGoogle.createPlayerMarker(player, getResources().getDisplayMetrics(), getResources());
+            MarkerOptions marker = MarkerFactoryGoogle.createPlayerMarker(player, getResources().getDisplayMetrics(), getResources());
             Log.d(TAG, "Adding marker to: " + player.getLatitude() + "; " + player.getLongitude() + ", name: " + player.getName() + ", id: " + player.getId());
-            // TODO!!
-            //player.setMarker(marker);
-            
+
             if (player.equals(user)) {
                 Log.d(TAG, "User object marker added");
                 // TODO!!
                 // user.setMarker(marker);
             }
             addPlayerMarker(player, marker);
-            //markers.add(marker);
         }
         
+        // Flag markers
         mRedFlag = mMap.addMarker(MarkerFactoryGoogle.createFlagMarker(game.getRedFlag(), mRedFlagBitmap, calculateMarkerSize()));
         mBlueFlag = mMap.addMarker(MarkerFactoryGoogle.createFlagMarker(game.getBlueFlag(), mBlueFlagBitmap, calculateMarkerSize()));
+
         updateMetersPerPixel();        
-	}
+    }
 
-	@Override
-	public void centerMapToUserPosition() {
-		Location loc = mLocationManager.getCurrentLocation();
-		LatLng lat = new LatLng(loc.getLatitude(), loc.getLongitude());
-		mMap.animateCamera(CameraUpdateFactory.newLatLng(lat));
-		
-        updateMetersPerPixel();		
-	}
+    @Override
+    public void centerMapToPosition(Location location) {
+        LatLng lat = new LatLng(location.getLatitude(), location.getLongitude());
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(lat));
+        
+        updateMetersPerPixel();        
+    }
 
-	@Override
-	public void onCameraChange(CameraPosition position) {
-		// TODO Auto-generated method stub
-		
+    @Override
+    public void onCameraChange(CameraPosition position) {
         final float level = position.zoom;
         
         if (level != mZoomLevel) {
@@ -171,28 +165,27 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
             scaleMarkers();
             mZoomLevel = level;
         }
-	}
+    }
 
     private void addPlayerMarker(Player player, MarkerOptions marker) {
-    	Marker m = mMap.addMarker(marker);
-    	Log.d(TAG, "Added marker:" + m.getPosition().latitude + ", " + m.getPosition().longitude);
-    	mPlayerMarkers.put(player, m);
+        Marker m = mMap.addMarker(marker);
+        Log.d(TAG, "Added marker:" + m.getPosition().latitude + ", " + m.getPosition().longitude);
+        mPlayerMarkers.put(player, m);
     }
 
     private Marker getPlayerMarker(Player player) {
-    	return mPlayerMarkers.get(player);
+        return mPlayerMarkers.get(player);
     }
     
     private void removePlayerMarkers() {
-    	for (Marker marker : mPlayerMarkers.values()) {
-			marker.remove();
-		}
-    	mPlayerMarkers.clear();
+        for (Marker marker : mPlayerMarkers.values()) {
+            marker.remove();
+        }
+        mPlayerMarkers.clear();
     }
     
     private void updateMetersPerPixel() {
-        Location coordinate = mLocationManager.getCurrentLocation();
-        mCurrentMetersPerPixels = (Math.cos(coordinate.getLatitude() * GameMapSettings.DEGREES_TO_RADS) * GameMapSettings.CALC_CONSTANT) / (256 * Math.pow(2, mZoomLevel));
+        mCurrentMetersPerPixels = GameMapSettings.calculateMetersPerPixel(mLocationManager.getCurrentLocation(), mZoomLevel);
     }
 
     /**
@@ -203,7 +196,7 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
             mScaleHandler.post(new Runnable() {
                 @Override
                     public void run() {
-                	return; /*
+                    return; /*
                         int size = calculateMarkerSize();
                         
                         final Image redFlagImage = MapFactory.createImage();

@@ -16,18 +16,18 @@ import android.util.Log;
  * Request for updating the player position, takes a player object and game ID.
  */
 public class UpdatePlayerRequest extends JSONRequest {
-	public static final String EVENT_NAME = "update-player";
+    public static final String EVENT_NAME = "update-player";
     private static final String TAG = "CtF/UpdatePlayerRequest";
     private Player mPlayer; 
     private int mGameId;
 
     public UpdatePlayerRequest(Player player, int gameId) {
-    	super(EVENT_NAME);
+        super(EVENT_NAME);
         mPlayer = player;
         mGameId = gameId;
     }
     public Player getUpdatedPlayer() {
-    	return mPlayer;
+        return mPlayer;
     }
 
     @Override

@@ -59,7 +59,7 @@ interface INokiaIAPService {
      *              in JSON format similar to:<br/>
      <br/>
      *              '{ "productId" : "1264321", "isvalid", true, "title" : "Product title",<br/> 
-     *				    "shortdescription" : "Short description of the product", <br/>
+     *                  "shortdescription" : "Short description of the product", <br/>
      *                  "description" : "Longer description of the product", "priceValue" : "3.00",<br/>
      *                  "price" : "$3.00", "currency", "USD",<br/>
      *                  "purchaseToken" : "ZXlKMlpYSWlPaUl4TGpBaUxDSjBlRzVKWkNJNklrNVFRVmxmVkVWVFZGOVVXRTVmTVRFeE1TSXNJbkJ5YjJSSlpDSTZJakV3TWpNMk1qUWlmUT09",<br/>

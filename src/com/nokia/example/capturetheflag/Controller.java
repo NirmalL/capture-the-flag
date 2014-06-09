@@ -19,12 +19,14 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
+
 
 /*
 import com.here.android.common.LocationMethod;
@@ -125,14 +127,12 @@ public class Controller
         mOfflineClient.setListener(this);
         // TODO: Do we need a Singleton?
         mLocationManager = LocationManagerFactory.getLocationManagerInterface(getActivity());
-    	mLocationManager.addListener(this);
+        mLocationManager.addListener(this);
 
     }
 
     public void setMap(GameMapInterface map) {
-    	mMap = map;
-    	// TODO, add to loc listener
-        //mMap.setPositionListener(this);
+        mMap = map;
     }
     
     @Override
@@ -297,28 +297,26 @@ public class Controller
     
     @Override
     public void onLocationManagerReady(boolean success) {
-    	Log.d(TAG, "Location Manager Ready -" + (success ? "SUCCESS" : "FAILED"));
+        Log.d(TAG, "Location Manager Ready -" + (success ? "SUCCESS" : "FAILED"));
         if(success && mLocationManager.isLocationAvailable()) {
-        	mLocationManager.start();
+            mLocationManager.start();
         } else {
-            showEnableGPSDialog();        	
+            showEnableGPSDialog();            
         }
     }
 
     @Override
     public void onLocationUpdated(Location position) {
-    	if(!mIsLocationFound) {
-    		mMap.centerMapToUserPosition();
+        if(!mIsLocationFound) {
+            mMap.centerMapToPosition(position);
             mIsLocationFound = true;
-    	}
+        }
         //Log.d(TAG, "Position updated");
         Player user = getPlayer();
         
         // Only if game is running, we send updated location to the server
         if (user != null && getCurrentGame() != null && !getCurrentGame().getHasEnded()) {
-            Log.d(TAG, "updating user position");
-            //GeoCoordinate coordinate = position. getCoordinate();
-            
+            Log.d(TAG, "updating user position");            
             if (user.getLatitude() != position.getLatitude() || user.getLongitude() != position.getLongitude()) {
                 user.setLatitude(position.getLatitude());
                 user.setLongitude(position.getLongitude());
@@ -337,11 +335,8 @@ public class Controller
             
         GameMenuFragment menu = (GameMenuFragment) getFragmentManager()
                 .findFragmentByTag(GameMenuFragment.FRAGMENT_TAG);
-        if (menu != null) {/*
-            ReverseGeocodeRequest request = MapFactory.getGeocoder()
-                    .createReverseGeocodeRequest(position.getCoordinate());
-            request.execute(menu);
-            */
+        if (menu != null) {
+            mLocationManager.reverseGeocodeLocation(position, menu);
         }
     }
 
@@ -458,7 +453,7 @@ public class Controller
     }
     
     private void updatePlayerMarker(Player player) {
-    	if(!mMap.playerHasMarker(player)) {
+        if(!mMap.playerHasMarker(player)) {
             Log.d(TAG, "New player - Show player joined toast");
             String text = getString(R.string.player) + " " + player.getName() + " " + getString(R.string.joined);
             Toast toast = Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT);
@@ -466,7 +461,7 @@ public class Controller
             toast.show();
         }    
         
-        mMap.updatePlayerMarkerPosition(player);    	
+        mMap.updatePlayerMarkerPosition(player);
     }
     
 

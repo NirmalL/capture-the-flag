@@ -11,39 +11,47 @@ import com.nokia.example.capturetheflag.location.here.LocationManagerHere;
 import android.app.Activity;
 import android.util.Log;
 
+/**
+ * Factory class for instantiating either Here or Google specific implementation
+ * of the {@link LocationManagerInterface}.
+ * 
+ * @see LocationManagerInterface.ReverseGeocodingResultListener
+ * 
+ */
 public class LocationManagerFactory {
-	private static final String HERE_POSITIONING_CLASS_NAME = "com.here.android.common.PositioningManager";
-		
-	private static final String TAG = "CtF/LocationManagerFactory";
+    private static final String HERE_POSITIONING_CLASS_NAME = "com.here.android.common.PositioningManager";
 
-	private static LocationManagerInterface mInstance;	
-	
-	/**
-	 * Are Here Positioning Services supported in this device
-	 * 
-	 * @return	true if Here Positioning Services are available
-	 */
-	public static boolean isHerePositioningAvailable() {
-		boolean available = true;
-		try {
-			Class.forName(HERE_POSITIONING_CLASS_NAME);
-		} catch (ClassNotFoundException e) {
-			available = false;
-		}
-		return available;
-	}
+    private static final String TAG = "CtF/LocationManagerFactory";
 
-	public static LocationManagerInterface getLocationManagerInterface(Activity activity) {
-		if(mInstance == null) {
-			if(isHerePositioningAvailable()) {
-				Log.d(TAG, "Using Here for positioning");
-				mInstance = new LocationManagerHere(activity);
-			} else {
-				Log.d(TAG, "Using Google for positioning");
-				mInstance = new LocationManagerGoogle(activity);
-			}
-		}
-		
-		return mInstance;
-	}
+    private static LocationManagerInterface mInstance;
+
+    /**
+     * Are Here Positioning Services supported in this device
+     * 
+     * @return true if Here Positioning Services are available
+     */
+    public static boolean isHerePositioningAvailable() {
+        boolean available = true;
+        try {
+            Class.forName(HERE_POSITIONING_CLASS_NAME);
+        } catch (ClassNotFoundException e) {
+            available = false;
+        }
+        return available;
+    }
+
+    public static LocationManagerInterface getLocationManagerInterface(
+            Activity activity) {
+        if (mInstance == null) {
+            if (isHerePositioningAvailable()) {
+                Log.d(TAG, "Using Here for positioning");
+                mInstance = new LocationManagerHere(activity);
+            } else {
+                Log.d(TAG, "Using Google for positioning");
+                mInstance = new LocationManagerGoogle(activity);
+            }
+        }
+
+        return mInstance;
+    }
 }

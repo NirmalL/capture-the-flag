@@ -12,7 +12,7 @@ import org.json.JSONObject;
  */
 public class GameListRequest extends JSONRequest {
     public GameListRequest() {
-    	super("gamelist");
+        super("gamelist");
     }
 
     @Override

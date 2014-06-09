@@ -5,7 +5,12 @@
 
 package com.nokia.example.capturetheflag.location.google;
 
+import java.io.IOException;
+import java.util.List;
+
 import android.app.Activity;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,89 +21,116 @@ import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.nokia.example.capturetheflag.location.LocationManagerBase;
+import com.nokia.example.capturetheflag.location.LocationManagerInterface;
 
 /**
- * Location Manager implementation that uses Google Play Services and Google-specific APIs, i.e. {@link LocationClient}.
+ * Location Manager implementation.
+ * 
+ * Implementation of {@link LocationManagerInterface} that uses Google and Google Play Services APIs, i.e. {@link LocationClient} and {@link Geocoder}.
  *
  */
 public class LocationManagerGoogle extends LocationManagerBase implements
-	GooglePlayServicesClient.ConnectionCallbacks, 
-	GooglePlayServicesClient.OnConnectionFailedListener, 
-	LocationListener {
-	
-	private static final String TAG ="CtF/LocationManagerGoogle";
+    GooglePlayServicesClient.ConnectionCallbacks, 
+    GooglePlayServicesClient.OnConnectionFailedListener, 
+    LocationListener {
+    
+    private static final String TAG ="CtF/LocationManagerGoogle";
 
-	// Milliseconds per second
     private static final int MILLISECONDS_PER_SECOND = 1000;
-    // Update frequency in seconds
-    public static final int UPDATE_INTERVAL_IN_SECONDS = 5;
-    // Update frequency in milliseconds
+    private static final int UPDATE_INTERVAL_IN_SECONDS = 5;
     private static final long UPDATE_INTERVAL = MILLISECONDS_PER_SECOND * UPDATE_INTERVAL_IN_SECONDS;
-    // The fastest update frequency, in seconds
     private static final int FASTEST_INTERVAL_IN_SECONDS = 1;
-    // A fast frequency ceiling in milliseconds
-    private static final long FASTEST_INTERVAL = MILLISECONDS_PER_SECOND * FASTEST_INTERVAL_IN_SECONDS;	
-	
+    private static final long FASTEST_INTERVAL = MILLISECONDS_PER_SECOND * FASTEST_INTERVAL_IN_SECONDS;    
+    
     private LocationRequest mLocationRequest;
-	private LocationClient mLocationClient;
-	
-	public LocationManagerGoogle(Activity activity) {
-		super();
+    private LocationClient mLocationClient;
+    private Geocoder mGeoCoder;
+    
+    /**
+     * Constructor
+     * @param activity
+     */
+    public LocationManagerGoogle(Activity activity) {
+        super();
         mLocationClient = new LocationClient(activity.getApplicationContext(), this, this);
+        mGeoCoder = new Geocoder(activity.getApplicationContext());
+
         mLocationClient.connect();
-	}
-	
-	@Override
-	public boolean isLocationAvailable() {
-		return true;
-	}
+    }
+    
+    @Override
+    public boolean isLocationAvailable() {
+        return true;
+    }
 
-	@Override
-	public void start() {
-		if (mLocationClient.isConnected()) {
-			mLocationClient.requestLocationUpdates(mLocationRequest, this);
-		}
-	}
+    @Override
+    public void start() {
+        if (mLocationClient.isConnected()) {
+            mLocationClient.requestLocationUpdates(mLocationRequest, this);
+        }
+    }
 
-	@Override
-	public void stop() {
-		mLocationClient.removeLocationUpdates(this);
-	}
+    @Override
+    public void stop() {
+        mLocationClient.removeLocationUpdates(this);
+    }
 
-	@Override
-	public Location getCurrentLocation() {
-		return mLocationClient.getLastLocation();
-	}
+    @Override
+    public Location getCurrentLocation() {
+        return mLocationClient.getLastLocation();
+    }
 
-	@Override
-	public void onLocationChanged(Location location) {
-		notifyListeners(location);
-	}
+    @Override
+    public void onLocationChanged(Location location) {
+        notifyListeners(location);
+    }
 
-	@Override
-	public void onConnectionFailed(ConnectionResult result) {
-		// Connecting to LocationClient failed, notify the listeners.
-		Log.d(TAG, "Connection failed!");
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        // Connecting to LocationClient failed, notify the listeners.
+        Log.d(TAG, "Connection failed!");
         notifyManagerReady(false);
-	}
+    }
 
-	@Override
-	public void onConnected(Bundle connectionHint) {
-		Log.d(TAG, "Connected!");
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        Log.d(TAG, "Connected!");
 
-		// Create the LocationRequest object
+        // Create the LocationRequest object
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(UPDATE_INTERVAL);
         mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
         
-		// Connecting to LocationClient succeeded, notify the listeners.
+        // Connecting to LocationClient succeeded, notify the listeners.
         notifyManagerReady(true);
-	}
+    }
 
-	@Override
-	public void onDisconnected() {
-		// Not implemented
-	}
+    @Override
+    public void onDisconnected() {
+        // Not implemented
+    }
 
+    @Override
+    public void reverseGeocodeLocation(Location location, final ReverseGeocodingResultListener listener) {
+
+        List<Address> matches = null;
+        try {
+            matches = mGeoCoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        String result = null;
+        
+        if(matches != null) {
+            Address bestMatch = (matches.isEmpty() ? null : matches.get(0));
+            if(bestMatch != null) {
+                result = bestMatch.getAddressLine(0);
+            }
+        }
+        
+        listener.onReverseGeocodingResult(result);
+    }
 }

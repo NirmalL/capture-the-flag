@@ -49,7 +49,7 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
     private LocationManagerInterface mLocationManager;
     private Map mMap;
     
-	private HashMap<Player, MapMarker> mPlayerMarkers = new HashMap<Player, MapMarker>();
+    private HashMap<Player, MapMarker> mPlayerMarkers = new HashMap<Player, MapMarker>();
     //private ArrayList<MapObject> mMarkers = new ArrayList<MapObject>();
     private MapMarker mRedFlag = null;
     private MapMarker mBlueFlag = null;
@@ -159,12 +159,12 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
         mMap.removeMapObject(mRedFlag);
     }
 
-	@Override
-	public void updateMarkerForPlayer(Player updated, Player old) {
-		MapMarker marker = getPlayerMarker(old);
-		mPlayerMarkers.put(updated, marker);
-		mPlayerMarkers.remove(old);
-	}
+    @Override
+    public void updateMarkerForPlayer(Player updated, Player old) {
+        MapMarker marker = getPlayerMarker(old);
+        mPlayerMarkers.put(updated, marker);
+        mPlayerMarkers.remove(old);
+    }
 
     @Override
     public void updatePlayerMarkerPosition(Player player) {
@@ -187,10 +187,10 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
         }
     }
 
-	@Override
-	public boolean playerHasMarker(Player player) {
-		return mPlayerMarkers.containsKey(player);
-	}
+    @Override
+    public boolean playerHasMarker(Player player) {
+        return mPlayerMarkers.containsKey(player);
+    }
 
     @Override
     public void setMarkers(Game game, Player user) {
@@ -212,8 +212,8 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
         mMap.addMapObject(mBlueFlag);
     }
 
-	@Override
-    public void centerMapToUserPosition() {
+    @Override
+    public void centerMapToPosition(Location location) {
         setMapPosition(mLocationManager.getCurrentLocation(), mZoomLevel, MapAnimation.LINEAR);
     }
 
@@ -260,10 +260,7 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
     }
 
     private void updateMetersPerPixel() {
-        Location coordinate = mLocationManager.getCurrentLocation();
-        mCurrentMetersPerPixels =
-                (Math.cos(coordinate.getLatitude() * GameMapSettings.DEGREES_TO_RADS) * GameMapSettings.CALC_CONSTANT)
-                / (256 * Math.pow(2, mMap.getZoomLevel()));
+        mCurrentMetersPerPixels = GameMapSettings.calculateMetersPerPixel(mLocationManager.getCurrentLocation(), mZoomLevel);
     }
 
     /**
@@ -316,22 +313,22 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
     }
     
     private GeoCoordinate locationToGeoCoordinate(Location location) {
-    	return MapFactory.createGeoCoordinate(location.getLatitude(), location.getLongitude());
+        return MapFactory.createGeoCoordinate(location.getLatitude(), location.getLongitude());
     }
 
     private void addPlayerMarker(Player player, MapMarker marker) {
-    	mMap.addMapObject(marker);
-    	mPlayerMarkers.put(player, marker);
+        mMap.addMapObject(marker);
+        mPlayerMarkers.put(player, marker);
     }
 
     private MapMarker getPlayerMarker(Player player) {
-    	return mPlayerMarkers.get(player);
+        return mPlayerMarkers.get(player);
     }
     
     private void removePlayerMarkers() {
-    	for (MapMarker marker : mPlayerMarkers.values()) {
-			mMap.removeMapObject(marker);
-		}
-    	mPlayerMarkers.clear();
+        for (MapMarker marker : mPlayerMarkers.values()) {
+            mMap.removeMapObject(marker);
+        }
+        mPlayerMarkers.clear();
     }
 }

@@ -16,20 +16,20 @@ import com.nokia.example.capturetheflag.network.model.Player;
  * Request for joining a game.
  */
 public class JoinRequest extends JSONRequest {
-	public static final String EVENT_NAME = "join";
+    public static final String EVENT_NAME = "join";
     private Game mGame;
     private Player mPlayer;
 
     public JoinRequest(Game game, Player player) {
-    	super(EVENT_NAME);
+        super(EVENT_NAME);
         mGame = game;
         mPlayer = player;
     }
     public Game getGame() {
-    	return mGame;
+        return mGame;
     }
     public Player getPlayer() {
-    	return mPlayer;
+        return mPlayer;
     }
 
     @Override

@@ -8,7 +8,7 @@ package com.nokia.example.capturetheflag.network.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.here.android.mapping.MapMarker;
+import android.location.Location;
 
 /**
  * Represents a single player in a game. Player object also contains the marker
@@ -62,6 +62,11 @@ public class Player {
         return result;
     }
 
+    public void setLocation(Location location) {
+        mLatitude = location.getLatitude();
+        mLongitude = location.getLongitude();
+    }
+    
     public void setLatitude(double latitude) {
         mLatitude = latitude;
     }
