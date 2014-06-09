@@ -28,10 +28,10 @@ import android.widget.Toast;
 
 import com.nokia.example.capturetheflag.iap.PremiumHandler;
 import com.nokia.example.capturetheflag.iap.PremiumHandler.PremiumHandlerListener;
-import com.nokia.example.capturetheflag.location.GameMapInterface;
 import com.nokia.example.capturetheflag.location.LocationManagerListener;
 import com.nokia.example.capturetheflag.location.LocationManagerFactory;
 import com.nokia.example.capturetheflag.location.LocationManagerInterface;
+import com.nokia.example.capturetheflag.map.GameMapInterface;
 import com.nokia.example.capturetheflag.network.FlagCapturedResponse;
 import com.nokia.example.capturetheflag.network.GameListResponse;
 import com.nokia.example.capturetheflag.network.JSONResponse;

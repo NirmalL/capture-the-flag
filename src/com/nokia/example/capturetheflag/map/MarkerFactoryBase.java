@@ -3,7 +3,7 @@
  * See the license text file delivered with this project for more information.
  */
 
-package com.nokia.example.capturetheflag.location;
+package com.nokia.example.capturetheflag.map;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;

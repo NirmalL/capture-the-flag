@@ -3,7 +3,7 @@
  * See the license text file delivered with this project for more information.
  */
 
-package com.nokia.example.capturetheflag.location.here;
+package com.nokia.example.capturetheflag.map.here;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -14,7 +14,7 @@ import com.here.android.common.GeoCoordinate;
 import com.here.android.common.Image;
 import com.here.android.mapping.MapFactory;
 import com.here.android.mapping.MapMarker;
-import com.nokia.example.capturetheflag.location.MarkerFactoryBase;
+import com.nokia.example.capturetheflag.map.MarkerFactoryBase;
 import com.nokia.example.capturetheflag.network.model.Flag;
 import com.nokia.example.capturetheflag.network.model.Player;
 

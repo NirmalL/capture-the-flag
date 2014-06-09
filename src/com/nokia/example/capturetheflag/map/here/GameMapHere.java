@@ -3,7 +3,7 @@
  * See the license text file delivered with this project for more information.
  */
 
-package com.nokia.example.capturetheflag.location.here;
+package com.nokia.example.capturetheflag.map.here;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,10 +31,10 @@ import com.here.android.mapping.MapFragment;
 import com.here.android.mapping.MapMarker;
 import com.nokia.example.capturetheflag.R;
 import com.nokia.example.capturetheflag.Settings;
-import com.nokia.example.capturetheflag.location.GameMapInterface;
-import com.nokia.example.capturetheflag.location.GameMapSettings;
 import com.nokia.example.capturetheflag.location.LocationManagerFactory;
 import com.nokia.example.capturetheflag.location.LocationManagerInterface;
+import com.nokia.example.capturetheflag.map.GameMapInterface;
+import com.nokia.example.capturetheflag.map.GameMapUtils;
 import com.nokia.example.capturetheflag.network.model.Game;
 import com.nokia.example.capturetheflag.network.model.Player;
 
@@ -92,7 +92,7 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
                     
                     if (mIsFirstTime) {
                         mMap.setCenter(
-                                MapFactory.createGeoCoordinate(GameMapSettings.DEFAULT_LATITUDE, GameMapSettings.DEFAULT_LONGITUDE),
+                                MapFactory.createGeoCoordinate(GameMapUtils.DEFAULT_LATITUDE, GameMapUtils.DEFAULT_LONGITUDE),
                                 MapAnimation.NONE);
                         
                         if (mZoomLevel > 0) {
@@ -246,7 +246,7 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
     }
 
     private void updateMetersPerPixel() {
-        mCurrentMetersPerPixels = GameMapSettings.calculateMetersPerPixel(mLocationManager.getCurrentLocation(), mZoomLevel);
+        mCurrentMetersPerPixels = GameMapUtils.calculateMetersPerPixel(mLocationManager.getCurrentLocation(), mZoomLevel);
     }
 
     /**

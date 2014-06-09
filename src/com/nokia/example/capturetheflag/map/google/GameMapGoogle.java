@@ -3,7 +3,7 @@
  * See the license text file delivered with this project for more information.
  */
 
-package com.nokia.example.capturetheflag.location.google;
+package com.nokia.example.capturetheflag.map.google;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,10 +29,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.nokia.example.capturetheflag.R;
 import com.nokia.example.capturetheflag.Settings;
-import com.nokia.example.capturetheflag.location.GameMapInterface;
-import com.nokia.example.capturetheflag.location.GameMapSettings;
 import com.nokia.example.capturetheflag.location.LocationManagerFactory;
 import com.nokia.example.capturetheflag.location.LocationManagerInterface;
+import com.nokia.example.capturetheflag.map.GameMapInterface;
+import com.nokia.example.capturetheflag.map.GameMapUtils;
 import com.nokia.example.capturetheflag.network.model.Game;
 import com.nokia.example.capturetheflag.network.model.Player;
 
@@ -83,7 +83,7 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
         if (mIsFirstTime) {
             // Set up defaults
             
-            mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(GameMapSettings.DEFAULT_LATITUDE, GameMapSettings.DEFAULT_LONGITUDE)));
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(GameMapUtils.DEFAULT_LATITUDE, GameMapUtils.DEFAULT_LONGITUDE)));
 
             if (mZoomLevel > 0) {
                 mMap.animateCamera(CameraUpdateFactory.zoomTo(mZoomLevel));
@@ -181,7 +181,7 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
     }
     
     private void updateMetersPerPixel() {
-        mCurrentMetersPerPixels = GameMapSettings.calculateMetersPerPixel(mLocationManager.getCurrentLocation(), mZoomLevel);
+        mCurrentMetersPerPixels = GameMapUtils.calculateMetersPerPixel(mLocationManager.getCurrentLocation(), mZoomLevel);
     }
 
     /**

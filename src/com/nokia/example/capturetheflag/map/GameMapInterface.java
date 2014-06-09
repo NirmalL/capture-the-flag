@@ -3,12 +3,12 @@
  * See the license text file delivered with this project for more information.
  */
 
-package com.nokia.example.capturetheflag.location;
+package com.nokia.example.capturetheflag.map;
 
 import android.location.Location;
 
-import com.nokia.example.capturetheflag.location.google.GameMapGoogle;
-import com.nokia.example.capturetheflag.location.here.GameMapHere;
+import com.nokia.example.capturetheflag.map.google.GameMapGoogle;
+import com.nokia.example.capturetheflag.map.here.GameMapHere;
 import com.nokia.example.capturetheflag.network.model.Game;
 import com.nokia.example.capturetheflag.network.model.Player;
 
