@@ -24,7 +24,8 @@
     <uses-permission android:name="com.nokia.example.capturetheflag.permission.C2D_MESSAGE" />
     <uses-permission android:name="com.nokia.pushnotifications.permission.RECEIVE" />
     
-    <!-- Nokia In-App Payment permissions -->
+    <!-- In-App Payment permissions -->
+    <uses-permission android:name="com.android.vending.BILLING" />
     <uses-permission android:name="com.nokia.payment.BILLING"/>
     
     <!--  Google Cloud Messaging permissions -->
