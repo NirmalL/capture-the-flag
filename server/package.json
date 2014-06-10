@@ -5,7 +5,9 @@
   "main": "server.js",
   "dependencies": {
     "request": "~2.29.0",
-    "socket.io": "~0.9.16"
+    "socket.io": "~0.9.16",
+    "node-gcm": "0.9.11",
+    "lodash": "2.4.1"
   },
   "devDependencies": {},
   "scripts": {
