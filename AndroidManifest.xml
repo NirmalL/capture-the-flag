@@ -67,7 +67,7 @@
         
         <!-- Receiver for Nokia push notifications -->
         <receiver
-            android:name="com.nokia.push.PushBroadcastReceiver"
+            android:name="com.nokia.example.capturetheflag.notifications.nokia.NokiaNotificationsBroadcastReceiver"
             android:permission="com.nokia.pushnotifications.permission.SEND">
             <intent-filter>
                 <!-- Receives the actual messages -->
@@ -77,7 +77,7 @@
                 <category android:name="com.nokia.example.capturetheflag" />
             </intent-filter>
         </receiver>
-        <service android:name="com.nokia.example.capturetheflag.PushIntentService" />
+        <service android:name="com.nokia.example.capturetheflag.notifications.nokia.NokiaNotificationsIntentService" />
 
         <!-- Receiver for Google push notifications -->    
         <receiver

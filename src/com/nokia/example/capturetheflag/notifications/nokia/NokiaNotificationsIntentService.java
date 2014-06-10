@@ -3,7 +3,7 @@
  * See the license text file delivered with this project for more information.
  */
 
-package com.nokia.example.capturetheflag;
+package com.nokia.example.capturetheflag.notifications.nokia;
 
 import com.nokia.example.capturetheflag.notifications.NotificationsUtils;
 import com.nokia.push.PushBaseIntentService;
@@ -17,14 +17,14 @@ import android.util.Log;
  * IntentService responsible for handling push notification messages.
  * @see {@link PushBaseIntentService}.
  */
-public class PushIntentService extends PushBaseIntentService {
+public class NokiaNotificationsIntentService extends PushBaseIntentService {
     public static final String SENDER_ID = "capture-the-flag"; // Sender ID for Nokia Notifications
     private static final String TAG = "CtF/PushIntentService";
 
     /**
      * Constructor.
      */
-    public PushIntentService() {
+    public NokiaNotificationsIntentService() {
     }
 
     @Override
@@ -48,6 +48,8 @@ public class PushIntentService extends PushBaseIntentService {
 
         Bundle extras = intent.getExtras();
         NotificationsUtils.broadcastGameMessage(extras.getString("payload"), this);
+        
+        NokiaNotificationsBroadcastReceiver.completeWakefulIntent(intent);
     }
 
     @Override

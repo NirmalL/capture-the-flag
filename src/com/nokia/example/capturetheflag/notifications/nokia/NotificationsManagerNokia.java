@@ -3,7 +3,6 @@ package com.nokia.example.capturetheflag.notifications.nokia;
 import android.content.Context;
 import android.util.Log;
 
-import com.nokia.example.capturetheflag.PushIntentService;
 import com.nokia.example.capturetheflag.notifications.NotificationsManagerBase;
 import com.nokia.example.capturetheflag.notifications.NotificationsManagerInterface;
 import com.nokia.push.PushRegistrar;
@@ -39,7 +38,7 @@ public class NotificationsManagerNokia extends NotificationsManagerBase {
         final String registrationId = getRegistrationId();
         if (registrationId == null || registrationId.isEmpty()) {
             Log.d(TAG, "Registering to Nokia Notifications...");
-            PushRegistrar.register(mContext, PushIntentService.SENDER_ID);
+            PushRegistrar.register(mContext, NokiaNotificationsIntentService.SENDER_ID);
         } else {
             Log.d(TAG, "Registered to Nokia Notifications using existing id: " + registrationId);            
         }
