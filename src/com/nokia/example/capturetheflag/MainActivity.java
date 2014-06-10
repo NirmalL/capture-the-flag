@@ -20,18 +20,18 @@ import android.view.MenuItem;
 
 
 
+
 //import com.here.android.mapping.MapAnimation;
 import com.nokia.example.capturetheflag.iap.PremiumHandler;
 import com.nokia.example.capturetheflag.map.GameMapFactory;
 import com.nokia.example.capturetheflag.map.GameMapInterface;
 import com.nokia.example.capturetheflag.network.NetworkClient;
 import com.nokia.example.capturetheflag.network.model.Game;
-import com.nokia.example.capturetheflag.notifications.NotificationsManager;
-//import com.nokia.push.PushRegistrar;
+import com.nokia.example.capturetheflag.notifications.NotificationsManagerFactory;
 
 /**
  * Main Activity of the application. This Activity is responsible for
- * initialisation and de-initialisation of push notifications. Also when IAP
+ * initialization and de-initialization of push notifications. Also when IAP
  * request is made the results are received on the onActivityResult() method.
  * 
  * Note that this class overrides the default back button behavior because while
@@ -76,8 +76,9 @@ public class MainActivity extends Activity implements
         
         mController.setMap(mGameMap);
 
-        //setupPushNotification();
-
+        // Set up push notifications
+        NotificationsManagerFactory.getInstance(getApplicationContext()).register();
+        
         if (savedInstanceState == null) {
             showGameMenu(null);
         }
@@ -98,8 +99,8 @@ public class MainActivity extends Activity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //PushRegistrar.onDestroy(this);
         mController.cleanUp();
+        NotificationsManagerFactory.getInstance(getApplicationContext()).onDestroy();;
     }
 
     @Override
@@ -271,21 +272,6 @@ public class MainActivity extends Activity implements
                 GameMenuFragment.FRAGMENT_TAG);
         transaction.commit();
     }
-
-    private void setupPushNotification() {
-    	NotificationsManager m = NotificationsManager.getInstance(getApplicationContext());
-    	m.register(getApplicationContext());
-/*        Log.i(TAG, "Setting up Nokia Notifications...");
-        PushRegistrar.checkDevice(this);
-        PushRegistrar.checkManifest(this);
-        final String regId = PushRegistrar.getRegistrationId(this);
-
-        if (regId == null || regId.isEmpty()) {
-            Log.i(TAG, "No registration ID stored.");
-            PushRegistrar.register(this, PushIntentService.SENDER_ID);
-        }
-*/    }
-
 
     /**
      * Interface for classes that need to know when back is pressed. Only to be

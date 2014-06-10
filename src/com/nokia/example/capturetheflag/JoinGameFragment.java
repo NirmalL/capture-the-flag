@@ -10,7 +10,7 @@ import com.nokia.example.capturetheflag.location.LocationManagerInterface;
 import com.nokia.example.capturetheflag.network.JoinRequest;
 import com.nokia.example.capturetheflag.network.model.Game;
 import com.nokia.example.capturetheflag.network.model.Player;
-import com.nokia.push.PushRegistrar;
+import com.nokia.example.capturetheflag.notifications.NotificationsManagerFactory;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -119,7 +119,7 @@ public class JoinGameFragment
 
     private void joinGame() {
         Player player = new Player(0, Settings.getUsername(getActivity()));
-        player.setRegistrationId(PushRegistrar.getRegistrationId(getActivity()));
+        player.setRegistrationId(NotificationsManagerFactory.getInstance(getActivity()).getRegistrationId());
         RadioGroup group = (RadioGroup)getView().findViewById(R.id.radiobuttons);
         
         switch(group.getCheckedRadioButtonId()) {

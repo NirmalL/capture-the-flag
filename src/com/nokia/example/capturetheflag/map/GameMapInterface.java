@@ -21,9 +21,9 @@ import com.nokia.example.capturetheflag.network.model.Player;
  */
 public interface GameMapInterface {
 
-	/**
-	 * Clears all markers from map.
-	 */
+    /**
+     * Clears all markers from map.
+     */
     public void clearMarkers();
 
     /**

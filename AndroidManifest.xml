@@ -18,7 +18,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    
+        
     <!-- Nokia Notifications permissions -->
     <permission android:name="com.nokia.example.capturetheflag.permission.C2D_MESSAGE" android:protectionLevel="signature" />
     <uses-permission android:name="com.nokia.example.capturetheflag.permission.C2D_MESSAGE" />
@@ -27,7 +27,10 @@
     <!-- Nokia In-App Payment permissions -->
     <uses-permission android:name="com.nokia.payment.BILLING"/>
     
-    
+    <!--  Google Cloud Messaging permissions -->
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+        
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -45,7 +48,7 @@
             android:value="ORwmw8fH1Sq9cqGsNadjqQ" />
 
         <!--  Google Play Services -->
-	    <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
+        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
         <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyATw2JpBHaSdITNxsKiiKGtmfJwSrjAyQc"/>
         
         <activity
@@ -73,7 +76,18 @@
                 <category android:name="com.nokia.example.capturetheflag" />
             </intent-filter>
         </receiver>
-        
-        <service android:name="com.nokia.example.capturetheflag.PushIntentService"></service>
+        <service android:name="com.nokia.example.capturetheflag.notifications.nokia.PushIntentService"></service>
+
+        <!-- Receiver for Google push notifications -->    
+        <receiver
+            android:name="com.nokia.example.capturetheflag.notifications.google.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="com.nokiaexample.capturetheflag" />
+            </intent-filter>
+        </receiver>
+        <service android:name="com.nokia.example.capturetheflag.notifications.google.GcmIntentService" />
+
     </application>
 </manifest>

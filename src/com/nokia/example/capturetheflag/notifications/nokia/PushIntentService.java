@@ -3,7 +3,7 @@
  * See the license text file delivered with this project for more information.
  */
 
-package com.nokia.example.capturetheflag;
+package com.nokia.example.capturetheflag.notifications.nokia;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +12,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.nokia.example.capturetheflag.network.model.ModelConstants;
+import com.nokia.example.capturetheflag.notifications.NotificationsManagerFactory;
 import com.nokia.push.PushBaseIntentService;
 
 /**
@@ -19,7 +20,6 @@ import com.nokia.push.PushBaseIntentService;
  */
 public class PushIntentService extends PushBaseIntentService {
     public static final String SENDER_ID = "capture-the-flag"; // Sender ID for Nokia Notifications
-    public static final String PUSH_MESSAGE_ACTION = "com.nokia.example.capturetheflag.PUSH_MESSAGE_ACTION";
     private static final String TAG = "CtF/PushIntentService";
 
     /**
@@ -47,7 +47,7 @@ public class PushIntentService extends PushBaseIntentService {
     protected void onMessage(Context context, Intent intent) {
         Log.i(TAG, "Received message. Extras: " + intent.getExtras());
         Bundle extras = intent.getExtras();
-        Intent i = new Intent(PUSH_MESSAGE_ACTION);
+        Intent i = new Intent(NotificationsManagerFactory.PUSH_MESSAGE_ACTION);
         i.putExtra(ModelConstants.CAPTURER_KEY, extras.getString("payload"));
         LocalBroadcastManager.getInstance(this).sendBroadcast(i);
     }

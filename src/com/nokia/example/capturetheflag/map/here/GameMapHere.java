@@ -199,7 +199,7 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
 
     @Override
     public void centerMapToPosition(Location location) {
-    	mZoomLevel = DEFAULT_MAP_ZOOM_LEVEL_IN_GAME;
+        mZoomLevel = DEFAULT_MAP_ZOOM_LEVEL_IN_GAME;
         setMapPosition(mLocationManager.getCurrentLocation(), mZoomLevel, MapAnimation.LINEAR);
     }
 

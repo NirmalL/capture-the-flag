@@ -7,16 +7,6 @@ package com.nokia.example.capturetheflag;
 
 import java.util.Random;
 
-import com.here.android.common.GeoCoordinate;
-import com.here.android.common.GeoPosition;
-import com.here.android.mapping.MapFactory;
-import com.nokia.example.capturetheflag.network.JoinRequest;
-import com.nokia.example.capturetheflag.network.model.Flag;
-import com.nokia.example.capturetheflag.network.model.Game;
-import com.nokia.example.capturetheflag.network.model.ModelConstants;
-import com.nokia.example.capturetheflag.network.model.Player;
-import com.nokia.push.PushRegistrar;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
@@ -30,6 +20,16 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+
+import com.here.android.common.GeoCoordinate;
+import com.here.android.common.GeoPosition;
+import com.here.android.mapping.MapFactory;
+import com.nokia.example.capturetheflag.network.JoinRequest;
+import com.nokia.example.capturetheflag.network.model.Flag;
+import com.nokia.example.capturetheflag.network.model.Game;
+import com.nokia.example.capturetheflag.network.model.ModelConstants;
+import com.nokia.example.capturetheflag.network.model.Player;
+import com.nokia.example.capturetheflag.notifications.NotificationsManagerFactory;
 
 /**
  * UI for creating a game. It uses user's current position and randomly creates 
@@ -120,7 +120,7 @@ public class CreateGameFragment
             game.setPremium(controller.isPremium());
             generateFlags(pos.getCoordinate(), game);
             Player player = new Player(0, mPlayerName.getText().toString());
-            player.setRegistrationId(PushRegistrar.getRegistrationId(getActivity()));
+            player.setRegistrationId(NotificationsManagerFactory.getInstance(getActivity()).getRegistrationId());
             Settings.setUsername(mPlayerName.getText().toString(), getActivity());
             
             switch (mTeamSelection.getCheckedRadioButtonId()) {

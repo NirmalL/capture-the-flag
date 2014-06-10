@@ -32,7 +32,7 @@ public abstract class LocationManagerBase implements LocationManagerInterface {
      * Constructor.
      */
     protected LocationManagerBase() {
-    	super();
+        super();
     }
 
     /**
@@ -40,7 +40,7 @@ public abstract class LocationManagerBase implements LocationManagerInterface {
      * @param location New location, @see {@link Location}.
      */
     protected void notifyListener(Location location) {
-    	if(mListener != null) {
+        if(mListener != null) {
             mListener.onLocationUpdated(location);
         }
     }
@@ -50,7 +50,7 @@ public abstract class LocationManagerBase implements LocationManagerInterface {
      * @param success <code>true</code> if connection was successful, <code>false</code> if not.
      */
     protected void notifyManagerReady(boolean success) {
-    	if(mListener != null) {
+        if(mListener != null) {
             mListener.onLocationManagerReady(success);
         }
     }

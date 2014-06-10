@@ -44,6 +44,7 @@ import com.nokia.example.capturetheflag.network.model.Game;
 import com.nokia.example.capturetheflag.network.model.ModelConstants;
 import com.nokia.example.capturetheflag.network.model.Player;
 import com.nokia.example.capturetheflag.network.NetworkClient;
+import com.nokia.example.capturetheflag.notifications.NotificationsManagerFactory;
 
 /**
  * Controller class is responsible for communicating server responses back to
@@ -144,6 +145,7 @@ public class Controller
     public void onPause() {
         super.onPause();
         Log.d(TAG, "Unregistering broadcast receiver");
+
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(
                 mPushHandler);
         mClient.setConnectionIdle(true);
@@ -158,7 +160,7 @@ public class Controller
         
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(
                 mPushHandler,
-                new IntentFilter(PushIntentService.PUSH_MESSAGE_ACTION));
+                new IntentFilter(NotificationsManagerFactory.PUSH_MESSAGE_ACTION));
         mClient.setConnectionIdle(false);
         mLocationManager.start();
     }
