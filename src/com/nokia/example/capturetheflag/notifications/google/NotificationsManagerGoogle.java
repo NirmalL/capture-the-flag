@@ -17,16 +17,42 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.*;
 import com.nokia.example.capturetheflag.notifications.NotificationsManagerBase;
-import com.nokia.example.capturetheflag.notifications.NotificationsManagerInterface.NotificationServiceType;
+import com.nokia.example.capturetheflag.notifications.NotificationsManagerInterface;
 
+/**
+ * Google-specific implementation of the {@link NotificationsManagerInterface}.
+ * Uses {@link GoogleCloudMessaging} for registering the application for push 
+ * notifications.
+ */
 public class NotificationsManagerGoogle extends NotificationsManagerBase {
     private static final String TAG = "CtF/NotificationsManagerGoogle";
 
     private static final String PREFS_KEY_REGISTRATION_ID = "registration_id";    
     private static final String GCM_SENDER_ID = "1006294830624";
     
-    private GoogleCloudMessaging gcm;
+    private GoogleCloudMessaging mGcm;
     
+    /**
+     * Constructor.
+     * 
+     * Constructs the Google Cloud Messaging specific Notifications Manager instance.
+     * 
+     * @param context Context.
+     */
+    public NotificationsManagerGoogle(Context context) {
+        super(context);
+
+        if(checkPlayServices()) {
+            mGcm = GoogleCloudMessaging.getInstance(context);
+        } else {
+            Log.d(TAG, "Google Play Services not available!");
+        }
+    }
+    
+    /**
+     * Registers the application to the {@link GoogleCloudMessaging} for receiving 
+     * push notifications.
+     */
     @Override
     public void register() {
         String registrationId = getRegistrationId();
@@ -37,21 +63,18 @@ public class NotificationsManagerGoogle extends NotificationsManagerBase {
         }
     };
     
-    
+    /**
+     * Checks whether Google Play Services are available or not.    
+     * @return <code>true</code> if Google Play Services are available, <code>false</code> if not.
+     */
     private boolean checkPlayServices() {
         final int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(mContext);
         return resultCode == ConnectionResult.SUCCESS;
     }    
 
-    public NotificationsManagerGoogle(Context context) {
-        super(context);
-
-        if(checkPlayServices()) {
-            gcm = GoogleCloudMessaging.getInstance(context);
-        }
-    }
-
     /** 
+     * Stores the application's registration to {@link SharedPreferences}.
+     * @param registrationId Registration id to store.
      */
     private void storeRegistrationId(String registrationId) {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -59,7 +82,8 @@ public class NotificationsManagerGoogle extends NotificationsManagerBase {
     }
     
     /** 
-     * @return The notification/registration ID if available, null otherwise.
+     * Returns the application's registration id.
+     * @return The registration id if available, null otherwise.
      */
     public String getRegistrationId() {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -67,28 +91,36 @@ public class NotificationsManagerGoogle extends NotificationsManagerBase {
     }
 
     /**
-     * Executes the necessary operations when the application is terminated.
+     * Closes the Google Cloud Messaging connection when the application is terminated.
      */
     public void onDestroy() {
-        gcm.close();
+        mGcm.close();
     }
     
     @Override
     public NotificationServiceType getServiceType() {
-        return NotificationServiceType.NOKIA_PUSH_MESSAGING;
+        return NotificationServiceType.GOOGLE_CLOUD_MESSAGING;
     }
     
+    /**
+     * Registers the application to Google Cloud Messaging in the background
+     * and stores the received registration id for later use.
+     * 
+     * Registration is blocking so the operation is executed using 
+     * {@link AsyncTask} so that the UI does not get blocked.
+     */
     private void registerInBackground() {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                try {
-                    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(mContext);
-                    String registrationId = gcm.register(GCM_SENDER_ID);
-                    storeRegistrationId(registrationId);
-                    Log.d(TAG, "Registered to Google Cloud Messaging:" + registrationId);
-                } catch (IOException ex) {
-                    Log.d(TAG, "IO ERROR REGISTERING: " + ex.toString());
+                if(mGcm != null) {
+                    try {
+                        String registrationId = mGcm.register(GCM_SENDER_ID);
+                        storeRegistrationId(registrationId);
+                        Log.d(TAG, "Registered to Google Cloud Messaging:" + registrationId);
+                    } catch (IOException ex) {
+                        Log.d(TAG, "IO ERROR REGISTERING: " + ex.toString());
+                    }
                 }
                 return null;
             }

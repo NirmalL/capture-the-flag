@@ -6,42 +6,41 @@
 package com.nokia.example.capturetheflag.notifications.google;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.nokia.example.capturetheflag.network.model.ModelConstants;
-import com.nokia.example.capturetheflag.notifications.NotificationsManagerFactory;
+import com.nokia.example.capturetheflag.notifications.NotificationsUtils;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
+/**
+ * GCM Push Notification {@link IntentService}.
+ *
+ * Receives GCM messages from {@link GcmBroadcastReceiver} and processes them.
+ */
 public class GcmIntentService extends IntentService {
-    private static final String TAG = "CtF/GcmIntentService";
+
     public static final int NOTIFICATION_ID = 1;
 
+    /**
+     * Constructor.
+     */
     public GcmIntentService() {
         super("GcmIntentService");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d(TAG, "GCM onHandleIntent");
+        // Extract GCM message type
+        // Only messages of type GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE are handled.
         Bundle extras = intent.getExtras();
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
-
         String messageType = gcm.getMessageType(intent);
 
         if (!extras.isEmpty() && (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType))) {
-            sendNotification(extras.getString("payload"));
+            NotificationsUtils.broadcastGameMessage(extras.getString("payload"), this);
         }
 
         // Release the wake lock provided by the GcmBroadcastReceiver.
        GcmBroadcastReceiver.completeWakefulIntent(intent);
-    }
-
-    private void sendNotification(String msg) {
-        Intent i = new Intent(NotificationsManagerFactory.PUSH_MESSAGE_ACTION);
-        i.putExtra(ModelConstants.CAPTURER_KEY, msg);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(i);
     }
 }

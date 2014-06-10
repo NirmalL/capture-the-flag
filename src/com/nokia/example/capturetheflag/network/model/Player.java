@@ -21,12 +21,16 @@ public class Player {
     public static final String BLUE = "blue";
     public static final String RED = "red";
 
+    public static final String PLATFORM_NOKIA = "nokia";
+    public static final String PLATFORM_GOOGLE = "google";
+
     private String mName;
     private String mTeam = "none";
     private String mRegId;
     private double mLatitude;
     private double mLongitude;
     private int mId;
+    private String mPlatformType;
 
     public Player(int id, String name) {
         mId = id;
@@ -114,6 +118,14 @@ public class Player {
     public String getRegistrationId() {
         return mRegId;
     }
+    
+    public void setPlatformType(String platformType) {
+        mPlatformType = platformType;
+    }
+    
+    public String getPlatformType() {
+        return mPlatformType;
+    }
 
     public JSONObject toJSON() throws JSONException {
         JSONObject obj = new JSONObject();
@@ -123,6 +135,7 @@ public class Player {
         obj.put(ModelConstants.LONGITUDE_KEY, getLongitude());
         obj.put(ModelConstants.TEAM_KEY, getTeam());
         obj.put(ModelConstants.REGISTRATION_ID_KEY, getRegistrationId());
+        obj.put(ModelConstants.PLATFORM_TYPE_KEY, getPlatformType());
         return obj;
     }
 }

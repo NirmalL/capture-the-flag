@@ -3,20 +3,19 @@
  * See the license text file delivered with this project for more information.
  */
 
-package com.nokia.example.capturetheflag.notifications.nokia;
+package com.nokia.example.capturetheflag;
+
+import com.nokia.example.capturetheflag.notifications.NotificationsUtils;
+import com.nokia.push.PushBaseIntentService;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-
-import com.nokia.example.capturetheflag.network.model.ModelConstants;
-import com.nokia.example.capturetheflag.notifications.NotificationsManagerFactory;
-import com.nokia.push.PushBaseIntentService;
 
 /**
  * IntentService responsible for handling push notification messages.
+ * @see {@link PushBaseIntentService}.
  */
 public class PushIntentService extends PushBaseIntentService {
     public static final String SENDER_ID = "capture-the-flag"; // Sender ID for Nokia Notifications
@@ -46,16 +45,14 @@ public class PushIntentService extends PushBaseIntentService {
     @Override
     protected void onMessage(Context context, Intent intent) {
         Log.i(TAG, "Received message. Extras: " + intent.getExtras());
+
         Bundle extras = intent.getExtras();
-        Intent i = new Intent(NotificationsManagerFactory.PUSH_MESSAGE_ACTION);
-        i.putExtra(ModelConstants.CAPTURER_KEY, extras.getString("payload"));
-        LocalBroadcastManager.getInstance(this).sendBroadcast(i);
+        NotificationsUtils.broadcastGameMessage(extras.getString("payload"), this);
     }
 
     @Override
     protected void onDeletedMessages(Context context, int total) {
-        Log.i(TAG, "Received deleted messages notification");
-       
+        Log.i(TAG, "Received deleted messages notification");       
     }
 
     @Override

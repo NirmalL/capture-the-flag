@@ -444,7 +444,10 @@ public class Controller
         dialog.setArguments(bundle);
         getFragmentManager().beginTransaction()
                 .add(dialog, GameEndedDialogFragment.FRAGMENT_TAG).commit();
-        mCurrentGame.setHasEnded(true);
+
+        if(mCurrentGame != null) {
+            mCurrentGame.setHasEnded(true);
+        }
     }
     
     private void updatePlayerMarker(Player player) {

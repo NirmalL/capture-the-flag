@@ -77,7 +77,7 @@
                 <category android:name="com.nokia.example.capturetheflag" />
             </intent-filter>
         </receiver>
-        <service android:name="com.nokia.example.capturetheflag.notifications.nokia.PushIntentService"></service>
+        <service android:name="com.nokia.example.capturetheflag.PushIntentService" />
 
         <!-- Receiver for Google push notifications -->    
         <receiver

@@ -28,12 +28,12 @@ public class NotificationsManagerFactory {
      */
     public static NotificationsManagerInterface getInstance(Context context) {        
         if (mInstance == null) {
-
+            
             // Check the device for supported notifications service
             try {
                 PushRegistrar.checkDevice(context);
                 mInstance = new NotificationsManagerNokia(context);
-                Log.i(TAG, "Using Nokia Push Notifications");
+                Log.i(TAG, "Using Nokia Notifications");
             } catch (UnsupportedOperationException e1) {
                 try {
                     mInstance = new NotificationsManagerGoogle(context);

@@ -30,6 +30,7 @@ public class ModelConstants {
     public static final String CAPTURER_KEY = "capturer";
     public static final String CAPTURED_BY_PLAYER_KEY = "captured_by_player";
     public static final String PLAYER_NAME_KEY = "player_name";
+    public static final String PLATFORM_TYPE_KEY = "platform";
 
     // Types for JSON responses
     public static final String GAME_LIST_TYPE = "gamelist";
