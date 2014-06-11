@@ -11,7 +11,7 @@ import org.json.JSONObject;
 import android.util.Log;
 
 /**
- * Object representing the flag on the map.
+ * Object representing a flag on the map.
  */
 public class Flag {
     public static final int RED = 0;

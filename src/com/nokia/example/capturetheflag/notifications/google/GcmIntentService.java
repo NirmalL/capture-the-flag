@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2014 Microsoft Mobile.
+ * Copyright (c) 2014 Microsoft Mobile.
  * See the license text file delivered with this project for more information.
  */
 
@@ -13,7 +13,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 /**
- * GCM Push Notification {@link IntentService}.
+ * Intent service responsible for handling Google Cloud Messaging (GCM) push messages.
  *
  * Receives GCM messages from {@link GcmBroadcastReceiver} and processes them.
  */

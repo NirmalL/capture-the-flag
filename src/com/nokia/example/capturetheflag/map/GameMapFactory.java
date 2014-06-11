@@ -5,7 +5,6 @@
 
 package com.nokia.example.capturetheflag.map;
 
-
 /**
  * Factory class for instantiating either Here or Google Maps UI map fragment.
  * @see GameMapInterface.

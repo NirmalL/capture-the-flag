@@ -45,7 +45,6 @@ public class JoinRequest extends JSONRequest {
             e.printStackTrace();
         }
 
-        
         return obj;
     }
 }

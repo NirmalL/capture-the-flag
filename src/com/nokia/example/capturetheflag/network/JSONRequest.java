@@ -20,5 +20,6 @@ public abstract class JSONRequest {
     public String getEventName() {
         return mEventName;
     }
+    
     public abstract JSONObject getRequestData();
 }

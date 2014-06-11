@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2014 Microsoft Mobile.
+ * Copyright (c) 2014 Microsoft Mobile.
  * See the license text file delivered with this project for more information.
  */
 
@@ -12,6 +12,10 @@ import com.nokia.example.capturetheflag.notifications.google.NotificationsManage
 import com.nokia.example.capturetheflag.notifications.nokia.NotificationsManagerNokia;
 import com.nokia.push.PushRegistrar;
 
+/**
+ * Factory class instantiating the platform specific {@link NotificationsManagerInterface}
+ * instance.
+ */
 public class NotificationsManagerFactory {
     
     public static final String PUSH_MESSAGE_ACTION = "com.nokia.example.capturetheflag.PUSH_MESSAGE_ACTION";
@@ -20,11 +24,10 @@ public class NotificationsManagerFactory {
     private static NotificationsManagerInterface mInstance;
     
     /**
-     * Provides the singleton instance.
+     * Provides the Notifications Manager singleton instance.
      * 
      * @param context The application context.
      * @return The singleton instance of this class.
-     * @throws NullPointerException If the context is null.
      */
     public static NotificationsManagerInterface getInstance(Context context) {        
         if (mInstance == null) {

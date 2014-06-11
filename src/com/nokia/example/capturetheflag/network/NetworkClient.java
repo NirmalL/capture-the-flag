@@ -5,6 +5,9 @@
 
 package com.nokia.example.capturetheflag.network;
 
+/**
+ * Abstract base class for network clients.
+ */
 public abstract class NetworkClient {
 
     protected NetworkListener mListener;
@@ -53,6 +56,9 @@ public abstract class NetworkClient {
     
     public abstract void cleanUp();
 
+    /**
+     * Listener interface for network clients.
+     */
     public static interface NetworkListener {
         public void onError(JSONResponse resp);
         public void onUpdatePlayerMessage(UpdatePlayerResponse resp);

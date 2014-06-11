@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2014 Microsoft Mobile.
+ * Copyright (c) 2014 Microsoft Mobile.
  * See the license text file delivered with this project for more information.
  */
 
@@ -55,11 +55,8 @@ public class NotificationsManagerGoogle extends NotificationsManagerBase {
      */
     @Override
     public void register() {
-        String registrationId = getRegistrationId();
-        if(registrationId == null || registrationId.isEmpty()) {
+        if(!hasRegistrationId()) {
             registerInBackground();
-        } else {
-            Log.d(TAG, "Registered to Google Cloud Messaging using existing id:" + registrationId);
         }
     };
     

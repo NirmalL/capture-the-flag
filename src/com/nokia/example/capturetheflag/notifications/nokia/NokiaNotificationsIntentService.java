@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2014 Microsoft Mobile.
+ * Copyright (c) 2014 Microsoft Mobile.
  * See the license text file delivered with this project for more information.
  */
 
@@ -14,7 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 /**
- * IntentService responsible for handling push notification messages.
+ * Intent service responsible for handling Nokia Notifications push messages.
  * @see {@link PushBaseIntentService}.
  */
 public class NokiaNotificationsIntentService extends PushBaseIntentService {

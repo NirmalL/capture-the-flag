@@ -1,19 +1,21 @@
-package com.nokia.example.capturetheflag.notifications.nokia;
+/**
+ * Copyright (c) 2014 Microsoft Mobile.
+ * See the license text file delivered with this project for more information.
+ */
 
-import android.content.Context;
-import android.util.Log;
+package com.nokia.example.capturetheflag.notifications.nokia;
 
 import com.nokia.example.capturetheflag.notifications.NotificationsManagerBase;
 import com.nokia.example.capturetheflag.notifications.NotificationsManagerInterface;
 import com.nokia.push.PushRegistrar;
 
+import android.content.Context;
+
 /**
- * Nokia-specific implementation of the {@link NotificationsManagerInterface}.
+ * Nokia specific implementation of the {@link NotificationsManagerInterface}.
  * Uses {@link PushRegistrar} for registering the application for push notifications.
  */
 public class NotificationsManagerNokia extends NotificationsManagerBase {
-
-    private static final String TAG = "CtF/NotificationsManagerNokia";
 
     /**
      * Constructor.
@@ -35,12 +37,9 @@ public class NotificationsManagerNokia extends NotificationsManagerBase {
     public void register() {
         PushRegistrar.checkDevice(mContext);
         PushRegistrar.checkManifest(mContext);
-        final String registrationId = getRegistrationId();
-        if (registrationId == null || registrationId.isEmpty()) {
-            Log.d(TAG, "Registering to Nokia Notifications...");
+
+        if(!hasRegistrationId()) {
             PushRegistrar.register(mContext, NokiaNotificationsIntentService.SENDER_ID);
-        } else {
-            Log.d(TAG, "Registered to Nokia Notifications using existing id: " + registrationId);            
         }
     }
 
@@ -50,7 +49,6 @@ public class NotificationsManagerNokia extends NotificationsManagerBase {
      */
     @Override
     public String getRegistrationId() {
-        Log.d(TAG, "registration id: " + PushRegistrar.getRegistrationId(mContext));
         return PushRegistrar.getRegistrationId(mContext);
     }
 

@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) 2014 Microsoft Mobile.
+ * See the license text file delivered with this project for more information.
+ */
+
 package com.nokia.example.capturetheflag.notifications;
 
 import com.nokia.example.capturetheflag.network.model.ModelConstants;

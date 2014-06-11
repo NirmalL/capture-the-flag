@@ -5,7 +5,6 @@
 
 package com.nokia.example.capturetheflag.network;
 
-
 import com.nokia.example.capturetheflag.network.model.Player;
 
 /**

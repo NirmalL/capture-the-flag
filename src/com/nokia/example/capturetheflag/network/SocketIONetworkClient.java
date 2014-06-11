@@ -23,6 +23,9 @@ import com.koushikdutta.async.http.socketio.SocketIOClient;
 import com.nokia.example.capturetheflag.network.model.Game;
 import com.nokia.example.capturetheflag.network.model.Player;
 
+/**
+ * Socket I/O version of the network client, @see {@link NetworkClient}.
+ */
 public class SocketIONetworkClient
     extends NetworkClient
     implements ConnectCallback
