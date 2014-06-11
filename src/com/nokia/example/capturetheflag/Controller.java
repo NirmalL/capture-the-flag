@@ -26,16 +26,15 @@ import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
-import com.nokia.example.capturetheflag.iap.PremiumHandler;
-import com.nokia.example.capturetheflag.iap.PremiumHandler.PremiumHandlerListener;
-import com.nokia.example.capturetheflag.location.LocationManagerListener;
 import com.nokia.example.capturetheflag.location.LocationManagerFactory;
 import com.nokia.example.capturetheflag.location.LocationManagerInterface;
+import com.nokia.example.capturetheflag.location.LocationManagerListener;
 import com.nokia.example.capturetheflag.map.GameMapInterface;
 import com.nokia.example.capturetheflag.network.FlagCapturedResponse;
 import com.nokia.example.capturetheflag.network.GameListResponse;
 import com.nokia.example.capturetheflag.network.JSONResponse;
 import com.nokia.example.capturetheflag.network.JoinedResponse;
+import com.nokia.example.capturetheflag.network.NetworkClient;
 import com.nokia.example.capturetheflag.network.OfflineClient;
 import com.nokia.example.capturetheflag.network.SocketIONetworkClient;
 import com.nokia.example.capturetheflag.network.UpdatePlayerRequest;
@@ -43,12 +42,11 @@ import com.nokia.example.capturetheflag.network.UpdatePlayerResponse;
 import com.nokia.example.capturetheflag.network.model.Game;
 import com.nokia.example.capturetheflag.network.model.ModelConstants;
 import com.nokia.example.capturetheflag.network.model.Player;
-import com.nokia.example.capturetheflag.network.NetworkClient;
 
 /**
  * Controller class is responsible for communicating server responses back to
- * the UI. It listens for message events from the server and from the IAP
- * server. It also maintains a state about the current Game and Player objects.
+ * the UI. It listens for message events from the server. 
+ * It also maintains a state about the current Game and Player objects.
  * 
  * The class is implemented as a Fragment but it's a retained fragment, meaning
  * that it doesn't have an UI and it will be kept alive if possible i.e. if
@@ -56,13 +54,12 @@ import com.nokia.example.capturetheflag.network.NetworkClient;
  */
 public class Controller
     extends Fragment
-    implements PremiumHandlerListener, NetworkClient.NetworkListener, LocationManagerListener
+    implements NetworkClient.NetworkListener, LocationManagerListener
 {
     public static final String FRAGMENT_TAG = "Controller";
     private static final String TAG = "CtF/Controller";
 
     private static Controller mSelf;
-    private PremiumHandler mPremium = new PremiumHandler();
     private Game mCurrentGame;
     private Player mPlayer;
     private GameMapInterface mMap;
@@ -107,7 +104,6 @@ public class Controller
         mSelf = this;
         mUIHandler = new Handler();
         setRetainInstance(true);
-        mPremium.addListener(this);
         mSocketClient = new SocketIONetworkClient();
         mClient = mSocketClient;
         mClient.setListener(this);
@@ -128,7 +124,6 @@ public class Controller
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mPremium.connect(activity);
     }
 
     @Override
@@ -251,32 +246,7 @@ public class Controller
         
         errordialog.create().show();
     }
-
-    @Override
-    public void IapInitialized(int resultcode) {
-        Log.d(TAG, "IAP is initialized");
-        mPremium.checkIfPremiumPurchased();
-    }
-
-    @Override
-    public void setPremiumPurchased(boolean isPurchased) {
-        Log.d(TAG, "Premium purchased: " + isPurchased);
-        
-        /*
-         * TODO: - Hide the loading indicator/splash screen - If premium, notify
-         * activity
-         */
-        
-        if (isPurchased) {
-            ((MainActivity) getActivity()).unlockPremium();
-        }
-    }
-
-    @Override
-    public void onPriceReceived(String premiumPrice) {
-        // Not implemented
-    }
-
+    
     /**
      * In case you don't want to use the push notifications to inform users that
      * the game has ended, you can enable the ending info to be sent via TCP
@@ -396,21 +366,16 @@ public class Controller
         return mPlayer;
     }
 
-    public PremiumHandler getPremiumHandler() {
-        return mPremium;
-    }
-
     /**
      * Call this in activity's onDestroy() to release possible handles to the
      * activity object.
      */
     public void cleanUp() {
-        mPremium.cleanup();
         mClient.disconnect();
     }
 
     public NetworkClient getNetworkClient() {
-        return mClient;
+    	return mClient;
     }
 
     /**

@@ -6,18 +6,13 @@
 package com.nokia.example.capturetheflag.iap;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.json.JSONObject;
-import org.onepf.oms.OpenIabHelper;
-import org.onepf.oms.appstore.googleUtils.IabHelper;
-import org.onepf.oms.appstore.googleUtils.IabResult;
-import org.onepf.oms.appstore.googleUtils.Inventory;
-import org.onepf.oms.appstore.googleUtils.Purchase;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.AsyncTask;
@@ -30,12 +25,17 @@ import com.nokia.example.capturetheflag.Settings;
 import com.nokia.payment.iap.aidl.INokiaIAPService;
 
 /**
+ * @deprecated
+ * 
+ * Not used in current implementation, where IAP is handled via OpenIAB
+ * 
  * Class to handling all the server communication related to IAP. Almost
  * identical to the class used in IAP example.
  */
 public class PremiumHandler implements ServiceConnection {
     public static final String ITEM_TYPE_INAPP = "inapp";
-    public static final String PREMIUM_PRODUCT_ID = "1023610"; // Test ID 
+    public static final String PREMIUM_PRODUCT_ID = "1023610"; // Test ID
+    
     public static final int RESULT_OK = 0;    
     private static final String TAG = "CtF/PremiumHandler";
     private static final String RESPONSE_CODE_KEY = "RESPONSE_CODE";
@@ -45,20 +45,7 @@ public class PremiumHandler implements ServiceConnection {
     private static final String PRODUCT_ID_KEY = "productId";
     private static final String PRICE_KEY = "price";
     private static final int BILLING_API_VERSION = 3;
-    
-    String base64EncodedPublicKey   = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA8A4rv1uXF5mqJGrtGkQ5PQGpyNIgcZhvRD3yNLC5T+NlIlvMlkuGUmgZnXHfPdORZT/s5QXa2ytjffOyDVgXpHrZ0J9bRoR+hePP4o0ANzdEY/ehkt0EsifB2Kjhok+kTNpikplwuFtIJnIyFyukcesPAXksu2LTQAEzYwlMeJ8W4ToDHw6U5gEXLZcMKiDVTFA0pb89wVfb76Uerv9c6lrydKZiTn/gxg8J1yrz7vNzX7IzoWPO0+pXLnkcgqtEHePF2DIW1D29GkNJOt6xH3IvyS4ZI+1xs3wuSg8vWq3fQP/XIVHZQOqd5pmJY0tdgzboHuqq3ebtNrBI6Ky0SwIDAQAB";
-    
-    static final String SKU_PREMIUM = "android.test.purchased";
-    
-    static {
-    	OpenIabHelper.mapSku(SKU_PREMIUM, OpenIabHelper.NAME_NOKIA, PREMIUM_PRODUCT_ID);
-    }
-    
-    OpenIabHelper mHelper;
-    private boolean mIsPremium;
-    
-    static final int RC_REQUEST = 10001;
-    
+        
     private INokiaIAPService mService;
     private Activity mActivity;
     private ArrayList<PremiumHandlerListener> mListeners;
@@ -72,96 +59,17 @@ public class PremiumHandler implements ServiceConnection {
         Log.d(TAG, "Connecting");
         mActivity = a;
         
-        /* Old one
         Intent paymentEnabler = new Intent("com.nokia.payment.iapenabler.InAppBillingService.BIND");
         paymentEnabler.setPackage("com.nokia.payment.iapenabler"); 
         a.bindService(paymentEnabler, this, Context.BIND_AUTO_CREATE);
-        */
-        
-        Map<String, String> storeKeys = new HashMap<String, String>();
-       // storeKeys.put(OpenIabHelper.NAME_GOOGLE, base64EncodedPublicKey);
-        
-        mHelper = new OpenIabHelper(mActivity, storeKeys);
-        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-            public void onIabSetupFinished(IabResult result) {
-                if (!result.isSuccess()) {
-                    //complain("Problem setting up in-app billing: " + result);
-                	
-                	Log.e(TAG, "Problem setting up in-app billing: " + result);
-                    
-                    return;
-                }
-                Log.d(TAG, "Setup successful. Querying inventory.");
-                	mHelper.queryInventoryAsync(mGotInventoryListener);
-                }
-        });
         
     }
-    
-    IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
-    	public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
-            Log.d(TAG, "Query inventory finished.");
-            if (result.isFailure()) {
-                //complain("Failed to query inventory: " + result);
-                Log.d(TAG, "Failed to query inventory: " + result);
-                return;
-            }
 
-            Log.d(TAG, "Query inventory was successful.");
-            
-            /*
-             * Check for items we own. Notice that for each purchase, we check
-             * the developer payload to see if it's correct! See
-             * verifyDeveloperPayload().
-             */
-            
-            // Do we have the premium upgrade?
-            Purchase premiumPurchase = inventory.getPurchase(SKU_PREMIUM);
-            mIsPremium = (premiumPurchase != null && verifyDeveloperPayload(premiumPurchase));
-            Log.d(TAG, "User is " + (mIsPremium ? "PREMIUM" : "NOT PREMIUM"));
-                        
-            //TODO notify listener!
-            // updateUi();
-            
-            //TODO implement some wait screen
-            //setWaitScreen(false);
-            Log.d(TAG, "Initial inventory query finished; enabling main UI.");
-        }
-    };
     
     public void handleActivityResult(int requestCode, int resultCode, Intent data) {
-    	mHelper.handleActivityResult(requestCode, resultCode, data);
+    	
     }
-    
-    /** Verifies the developer payload of a purchase. */
-    boolean verifyDeveloperPayload(Purchase p) {
-        String payload = p.getDeveloperPayload();
-        
-        /*
-         * TODO: verify that the developer payload of the purchase is correct. It will be
-         * the same one that you sent when initiating the purchase.
-         * 
-         * WARNING: Locally generating a random string when starting a purchase and 
-         * verifying it here might seem like a good approach, but this will fail in the 
-         * case where the user purchases an item on one device and then uses your app on 
-         * a different device, because on the other device you will not have access to the
-         * random string you originally generated.
-         *
-         * So a good developer payload has these characteristics:
-         * 
-         * 1. If two different users purchase an item, the payload is different between them,
-         *    so that one user's purchase can't be replayed to another user.
-         * 
-         * 2. The payload must be such that you can verify it even when the app wasn't the
-         *    one who initiated the purchase flow (so that items purchased by the user on 
-         *    one device work on other devices owned by the user).
-         * 
-         * Using your own server to store and verify developer payloads across app
-         * installations is recommended.
-         */
-        
-        return true;
-    }
+  
     
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
@@ -189,6 +97,8 @@ public class PremiumHandler implements ServiceConnection {
     public void onServiceDisconnected(ComponentName name) {
         mService = null;
     }
+   
+    
 
     /**
      * Check if the premium version has been purchased. The result will be sent
@@ -263,7 +173,6 @@ public class PremiumHandler implements ServiceConnection {
     }
 
     public void purchasePremium() {
-    	/*
         AsyncTask<Void, Void, Void> purchase = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
@@ -291,11 +200,6 @@ public class PremiumHandler implements ServiceConnection {
         };
         
         purchase.execute();
-        */
-    	
-    	String payload = "set this payload where you can recognize user";
-    	
-    	mHelper.launchPurchaseFlow(mActivity, SKU_PREMIUM, RC_REQUEST, 	mPurchaseFinishedListener, payload);
     }
 
     public void requestPrice() {
@@ -349,39 +253,8 @@ public class PremiumHandler implements ServiceConnection {
             }
         };
         
-        //getPrices.execute();
-        notifyPrice("0,00");
+        getPrices.execute();
     }
-    
- // Callback for when a purchase is finished
-    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
-        public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
-            Log.d(TAG, "Purchase finished: " + result + ", purchase: " + purchase);
-            if (result.isFailure()) {
-            	Log.d(TAG, "Error purchasing: " + result);
-                //complain("Error purchasing: " + result);
-                //setWaitScreen(false);
-                return;
-            }
-            
-            if (!verifyDeveloperPayload(purchase)) {
-                //complain("Error purchasing. Authenticity verification failed.");
-                //setWaitScreen(false);
-                return;
-            }
-
-            Log.d(TAG, "Purchase successful.");
-
-            if (purchase.getSku().equals(SKU_PREMIUM)) {
-                // bought the premium upgrade!
-                Log.d(TAG, "Purchase is premium upgrade. Congratulating user.");
-                //alert("Thank you for upgrading to premium!");
-                mIsPremium = true;
-                //updateUi();
-                //setWaitScreen(false);
-            }
-        }
-    };
 
     public void cleanup() {
         mActivity.unbindService(this);

@@ -6,17 +6,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/fragment_base_background_color"
+    android:orientation="vertical"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@color/fragment_base_background_color"
-    android:orientation="vertical">
+    android:paddingTop="@dimen/activity_vertical_margin" >
 
-    <TextView 
+    <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/thank_you"
-        android:layout_marginBottom="@dimen/activity_vertical_margin" />
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:text="@string/thank_you" />
 
     <TextView
         android:layout_width="fill_parent"
@@ -25,12 +25,31 @@
         android:text="@string/upgrade_info" />
 
     <TextView
+        android:id="@+id/premium_title_line"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:gravity="center"
+        android:text="@string/fetching_product_info" />
+
+    <TextView
+        android:id="@+id/premium_description_line"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:gravity="center"
+        android:text="" />
+
+    <TextView
         android:id="@+id/premium_price_line"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/fetching_price" />
-    
-    <Button android:id="@+id/buy_premium"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:gravity="center"
+        android:text="" />
+
+    <Button
+        android:id="@+id/buy_premium"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/upgrade" />
