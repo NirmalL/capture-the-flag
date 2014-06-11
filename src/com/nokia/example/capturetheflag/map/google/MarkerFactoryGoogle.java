@@ -18,7 +18,7 @@ import com.nokia.example.capturetheflag.network.model.Flag;
 import com.nokia.example.capturetheflag.network.model.Player;
 
 /**
- * Helper class using Android APIs for creating map markers, e.g. player or flag marker.
+ * Helper class using Google APIs for creating map markers, e.g. player or flag marker.
  */
 public class MarkerFactoryGoogle extends MarkerFactoryBase {
     
@@ -26,7 +26,8 @@ public class MarkerFactoryGoogle extends MarkerFactoryBase {
     private static final float ANCHOR_V = 1.0f;
 
     /**
-     * Creates and returns a {@link MarkerOptions} instance for a player marker to be used for creating a new marker on the Google map.
+     * Creates and returns a {@link MarkerOptions} instance for a player marker 
+     * to be used for creating a new marker on the Google map.
      * @param player Player data, @see {@link Player}.
      * @param metrics Display metrics to use for size calculations.
      * @param res Resources to use.
@@ -41,7 +42,8 @@ public class MarkerFactoryGoogle extends MarkerFactoryBase {
     }
 
     /**
-     * Creates and returns a {@link MarkerOptions} instance for a flag marker to be used for creating a new marker on the Google map.
+     * Creates and returns a {@link MarkerOptions} instance for a flag marker 
+     * to be used for creating a new marker on the Google map.
      * @param player Player data, @see {@link Player}.
      * @param metrics Display metrics to use for size calculations.
      * @param res Resources to use.

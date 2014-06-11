@@ -15,6 +15,7 @@ import android.graphics.Paint.Style;
 import android.util.DisplayMetrics;
 
 import com.nokia.example.capturetheflag.R;
+import com.nokia.example.capturetheflag.Settings;
 import com.nokia.example.capturetheflag.network.model.Player;
 
 /**
@@ -29,10 +30,11 @@ public class MarkerFactoryBase {
 
     /**
      * Creates and returns a bitmap for player marker.
-     * @param player @see {@link Player}.
-     * @param metrics Display metrics for size calculation.
-     * @param res Resources to use.
-     * @return {@link Bitmap} Player marker bitmap.
+     * 
+     * @param player {@link Player}.
+     * @param metrics {@link DisplayMetrics} for marker bitmap size calculation.
+     * @param res {@link Resources} to use.
+     * @return {@link Bitmap} {@link Player} marker bitmap.
      */
     static protected Bitmap getBitmapForPlayer(final Player player, DisplayMetrics metrics, Resources res) {
         Bitmap base = null;
@@ -71,12 +73,32 @@ public class MarkerFactoryBase {
     }
 
     /**
-     * Converts given density-independent pixel value to pixel value value using density from given display metrics.
+     * Calculates marker size for given {@link DisplayMetrics} and meters per pixel.
+     * @param displayMetrics {@link DisplayMetrics}.
+     * @param currentMetersPerPixels Meters per pixel.
+     * @return Marker size in pixels.
+     */
+    public static int calculateMarkerSize(DisplayMetrics displayMetrics, double currentMetersPerPixels) {
+        int size = (int) (Settings.BASE_SIZE / currentMetersPerPixels);
+        int minimumSize = dpToPx(Settings.MINIMUM_MARKER_SIZE, displayMetrics);
+        
+        if (size < minimumSize) {
+            size = minimumSize;
+        }
+        
+        return size;
+    }
+    
+    /**
+     * Converts given density-independent pixel value to pixel value value using 
+     * density from given display metrics.
+     * 
      * @param dp The device-independent pixel value to convert.
-     * @param metrics Display metrics to use for density.
+     * @param metrics {@link DisplayMetrics} to use for density.
      * @return Converted pixel value.
      */
     protected static int dpToPx(double dp, DisplayMetrics metrics) {
         return (int) (dp * metrics.density + 0.5f);
     }
+
 }

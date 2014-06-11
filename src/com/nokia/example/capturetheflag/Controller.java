@@ -42,6 +42,7 @@ import com.nokia.example.capturetheflag.network.UpdatePlayerResponse;
 import com.nokia.example.capturetheflag.network.model.Game;
 import com.nokia.example.capturetheflag.network.model.ModelConstants;
 import com.nokia.example.capturetheflag.network.model.Player;
+import com.nokia.example.capturetheflag.notifications.NotificationsManagerFactory;
 
 /**
  * Controller class is responsible for communicating server responses back to
@@ -113,7 +114,7 @@ public class Controller
         mOfflineClient = new OfflineClient();
         mOfflineClient.setListener(this);
         // TODO: Do we need a Singleton?
-        mLocationManager = LocationManagerFactory.getLocationManagerInterface(getActivity());
+        mLocationManager = LocationManagerFactory.getInstance(getActivity());
         mLocationManager.setListener(this);
     }
 
@@ -139,6 +140,7 @@ public class Controller
     public void onPause() {
         super.onPause();
         Log.d(TAG, "Unregistering broadcast receiver");
+
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(
                 mPushHandler);
         mClient.setConnectionIdle(true);
@@ -153,7 +155,7 @@ public class Controller
         
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(
                 mPushHandler,
-                new IntentFilter(PushIntentService.PUSH_MESSAGE_ACTION));
+                new IntentFilter(NotificationsManagerFactory.PUSH_MESSAGE_ACTION));
         mClient.setConnectionIdle(false);
         mLocationManager.start();
     }
@@ -407,7 +409,10 @@ public class Controller
         dialog.setArguments(bundle);
         getFragmentManager().beginTransaction()
                 .add(dialog, GameEndedDialogFragment.FRAGMENT_TAG).commit();
-        mCurrentGame.setHasEnded(true);
+
+        if(mCurrentGame != null) {
+            mCurrentGame.setHasEnded(true);
+        }
     }
     
     private void updatePlayerMarker(Player player) {

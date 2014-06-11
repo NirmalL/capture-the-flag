@@ -7,18 +7,9 @@ package com.nokia.example.capturetheflag;
 
 import java.util.Random;
 
-import com.here.android.common.GeoCoordinate;
-import com.here.android.common.GeoPosition;
-import com.here.android.mapping.MapFactory;
-import com.nokia.example.capturetheflag.network.JoinRequest;
-import com.nokia.example.capturetheflag.network.model.Flag;
-import com.nokia.example.capturetheflag.network.model.Game;
-import com.nokia.example.capturetheflag.network.model.ModelConstants;
-import com.nokia.example.capturetheflag.network.model.Player;
-import com.nokia.push.PushRegistrar;
-
 import android.app.Activity;
 import android.app.Fragment;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,6 +21,16 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+
+import com.nokia.example.capturetheflag.location.LocationManagerFactory;
+import com.nokia.example.capturetheflag.network.JoinRequest;
+import com.nokia.example.capturetheflag.network.model.Flag;
+import com.nokia.example.capturetheflag.network.model.Game;
+import com.nokia.example.capturetheflag.network.model.ModelConstants;
+import com.nokia.example.capturetheflag.network.model.Player;
+import com.nokia.example.capturetheflag.notifications.NotificationsManagerFactory;
+import com.nokia.example.capturetheflag.notifications.NotificationsManagerInterface;
+import com.nokia.example.capturetheflag.notifications.NotificationsManagerInterface.NotificationServiceType;
 
 /**
  * UI for creating a game. It uses user's current position and randomly creates 
@@ -111,16 +112,22 @@ public class CreateGameFragment
         if (validateFields()) {
             v.setVisibility(View.GONE);
             mProgressBar.setVisibility(View.VISIBLE);
-            GeoPosition pos = MapFactory.getPositioningManager().getPosition();
+            Location pos = LocationManagerFactory.getInstance(getActivity()).getCurrentLocation();
             
+            // Create new game
             Game game = new Game(Game.NEW_GAME);
             game.setName(mGameName.getText().toString());
             Controller controller = (Controller) getFragmentManager()
                     .findFragmentByTag(Controller.FRAGMENT_TAG);
             game.setPremium(controller.isPremium());
-            generateFlags(pos.getCoordinate(), game);
+            generateFlags(pos, game);
+
+            // Create player
             Player player = new Player(0, mPlayerName.getText().toString());
-            player.setRegistrationId(PushRegistrar.getRegistrationId(getActivity()));
+            NotificationsManagerInterface notificationManager = NotificationsManagerFactory.getInstance(getActivity());
+            player.setRegistrationId(notificationManager.getRegistrationId());
+            player.setPlatformType(notificationManager.getServiceType() == NotificationServiceType.NOKIA_NOTIFICATIONS ? Player.PLATFORM_NOKIA : Player.PLATFORM_GOOGLE);
+            
             Settings.setUsername(mPlayerName.getText().toString(), getActivity());
             
             switch (mTeamSelection.getCheckedRadioButtonId()) {
@@ -135,8 +142,8 @@ public class CreateGameFragment
                     break;
             }
             
-            player.setLatitude(pos.getCoordinate().getLatitude());
-            player.setLongitude(pos.getCoordinate().getLongitude());
+            player.setLatitude(pos.getLatitude());
+            player.setLongitude(pos.getLongitude());
             Controller.getInstance().getNetworkClient().emit(new JoinRequest(game, player));
         }
     }
@@ -171,7 +178,7 @@ public class CreateGameFragment
         return gamename && username;
     }
 
-    private void generateFlags(GeoCoordinate basePosition, Game g) {
+    private void generateFlags(Location basePosition, Game g) {
         g.setBlueFlag(createRandomCoordinate(basePosition));
         g.setRedFlag(createRandomCoordinate(basePosition));
     }
@@ -184,7 +191,7 @@ public class CreateGameFragment
      * @param basePosition The position respect to which place the flags.
      * @return A newly created flag object with position.
      */
-    private Flag createRandomCoordinate(GeoCoordinate basePosition) {
+    private Flag createRandomCoordinate(Location basePosition) {
         double dist = DISTANCE / EARTH_RADIUS;
         
         double bearing = Math.toRadians((new Random().nextDouble() * 360));

@@ -18,8 +18,6 @@ public class FlagCapturedResponse extends JSONResponse {
         setType(JSONResponse.FLAG_CAPTURED);
     }
 
-
-
     public void setCapturer(Player player) {
         mCapturer = player;
     }

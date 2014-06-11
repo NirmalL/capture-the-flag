@@ -48,6 +48,7 @@ var fullgame = {
         }
     ],
     "premium": false
-}
+};
+
 module.exports.mockgame = mockgame;
 module.exports.fullgame = fullgame;

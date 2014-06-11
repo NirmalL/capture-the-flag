@@ -5,18 +5,6 @@
 
 package com.nokia.example.capturetheflag.map.google;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.location.Location;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.util.DisplayMetrics;
-import android.util.Log;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
@@ -28,19 +16,35 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.nokia.example.capturetheflag.R;
-import com.nokia.example.capturetheflag.Settings;
 import com.nokia.example.capturetheflag.location.LocationManagerFactory;
-import com.nokia.example.capturetheflag.location.LocationManagerInterface;
 import com.nokia.example.capturetheflag.map.GameMapInterface;
 import com.nokia.example.capturetheflag.map.GameMapUtils;
 import com.nokia.example.capturetheflag.network.model.Game;
 import com.nokia.example.capturetheflag.network.model.Player;
 
+import android.app.Fragment;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+/**
+ * Google Maps specific {@link Fragment} that extends {@link MapFragment} and 
+ * is responsible for showing the map and handle map related actions like adding 
+ * map markers etc.
+ * 
+ * @see GameMapInterface.
+ */
 public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCameraChangeListener {
     private static final float DEFAULT_MAP_ZOOM_LEVEL_IN_GAME = 14;
     private static final String TAG = "CtF/GameMapGoogle";
     
-    private LocationManagerInterface mLocationManager;
     private GoogleMap mMap;
 
     private HashMap<Player, Marker> mPlayerMarkers = new HashMap<Player, Marker>();
@@ -64,7 +68,6 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
             mIsFirstTime = true;
         }
 
-        mLocationManager = LocationManagerFactory.getLocationManagerInterface(getActivity());
         mRedFlagBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.base_red);
         mBlueFlagBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.base_blue);
         mScaleThread = new HandlerThread("ScaleThread");
@@ -138,8 +141,9 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
         }
         
         // Flag markers
-        mRedFlag = mMap.addMarker(MarkerFactoryGoogle.createFlagMarker(game.getRedFlag(), mRedFlagBitmap, calculateMarkerSize()));
-        mBlueFlag = mMap.addMarker(MarkerFactoryGoogle.createFlagMarker(game.getBlueFlag(), mBlueFlagBitmap, calculateMarkerSize()));
+        final int markerSize = MarkerFactoryGoogle.calculateMarkerSize(getActivity().getResources().getDisplayMetrics(), mCurrentMetersPerPixels);
+        mRedFlag = mMap.addMarker(MarkerFactoryGoogle.createFlagMarker(game.getRedFlag(), mRedFlagBitmap, markerSize));
+        mBlueFlag = mMap.addMarker(MarkerFactoryGoogle.createFlagMarker(game.getBlueFlag(), mBlueFlagBitmap, markerSize));
 
         updateMetersPerPixel();        
     }
@@ -163,16 +167,33 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
         }
     }
 
+    /**
+     * Adds {@link Player} {@link Marker} to the map and stores references to 
+     * the {@link Player} and the created {@link Marker} in a {@link HashMap}.
+     * 
+     * @param player {@link Player} for which to add the created {@link Marker}.
+     * @param marker {@link MarkerOptions} to be used for the {@link Marker}.
+     */
     private void addPlayerMarker(Player player, MarkerOptions marker) {
         Marker m = mMap.addMarker(marker);
         Log.d(TAG, "Added marker:" + m.getPosition().latitude + ", " + m.getPosition().longitude);
         mPlayerMarkers.put(player, m);
     }
 
+    /**
+     * Returns a map {@link Marker} for the given {@link Player} from the {@link HashMap}.
+     * 
+     * @param player {@link Player} for which to return the {@link Marker} for.
+     * @return {@link Marker} for the given {@link Player}.
+     */
     private Marker getPlayerMarker(Player player) {
         return mPlayerMarkers.get(player);
     }
     
+    /**
+     * Removes all {@link Player} map {@link Marker} objects from the map and 
+     * the {@link HashMap}.
+     */
     private void removePlayerMarkers() {
         for (Marker marker : mPlayerMarkers.values()) {
             marker.remove();
@@ -180,50 +201,38 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
         mPlayerMarkers.clear();
     }
     
+    /**
+     * Updates the current meters per pixel value based on the current 
+     * {@link Location} and map zoom level.
+     */
     private void updateMetersPerPixel() {
-        mCurrentMetersPerPixels = GameMapUtils.calculateMetersPerPixel(mLocationManager.getCurrentLocation(), mZoomLevel);
+        mCurrentMetersPerPixels = GameMapUtils.calculateMetersPerPixel(
+                LocationManagerFactory.getInstance(getActivity()).getCurrentLocation(), mZoomLevel);
     }
 
     /**
-     * Scales markers asynchronously.
+     * Scales the map markers asynchronously.
      */
     private void scaleMarkers() {
         if (mRedFlag != null && mBlueFlag != null) {
             mScaleHandler.post(new Runnable() {
                 @Override
-                    public void run() {
-                        int size = calculateMarkerSize();
-                        final BitmapDescriptor redFlagBitmapDesc = BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(mRedFlagBitmap, size, size, true));                        
-                        final BitmapDescriptor blueFlagBitmapDesc = BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(mBlueFlagBitmap, size, size, true));
+                public void run() {
+                    final int markerSize = MarkerFactoryGoogle.calculateMarkerSize(getActivity().getResources().getDisplayMetrics(), mCurrentMetersPerPixels);
+                    final BitmapDescriptor redFlagBitmapDesc = BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(mRedFlagBitmap, markerSize, markerSize, true));                        
+                    final BitmapDescriptor blueFlagBitmapDesc = BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(mBlueFlagBitmap, markerSize, markerSize, true));
 
-                        mUIHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (mRedFlag != null && mBlueFlag != null) {
-                                    mRedFlag.setIcon(redFlagBitmapDesc);
-                                    mBlueFlag.setIcon(blueFlagBitmapDesc);
-                                }
+                    mUIHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mRedFlag != null && mBlueFlag != null) {
+                                mRedFlag.setIcon(redFlagBitmapDesc);
+                                mBlueFlag.setIcon(blueFlagBitmapDesc);
                             }
-                        });
-                    }
+                        }
+                    });
+                }
             });
         }
-    }
-
-    private int calculateMarkerSize() {
-        int size = (int) (Settings.BASE_SIZE / mCurrentMetersPerPixels);
-        int minimumSize = dpToPx(Settings.MINIMUM_MARKER_SIZE);
-        
-        if (size < minimumSize) {
-            size = minimumSize;
-        }
-        
-        return size;
-    }
-
-    private int dpToPx(double dp) {
-        DisplayMetrics displayMetrics = getActivity().getResources().getDisplayMetrics();
-        int px = (int)((dp * displayMetrics.density) + 0.5);
-        return px;
     }
 }

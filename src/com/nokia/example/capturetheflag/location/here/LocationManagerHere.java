@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) 2014 Microsoft Mobile.
+ * See the license text file delivered with this project for more information.
+ */
+
 package com.nokia.example.capturetheflag.location.here;
 
 import android.app.Activity;
@@ -55,6 +60,7 @@ public class LocationManagerHere extends LocationManagerBase implements Position
 
     @Override
     public void onPositionUpdated(LocationMethod arg0, GeoPosition arg1) {
+        // Convert GeoPosition to a more generic Location instance
         Location location = new Location("");
         GeoCoordinate coords = arg1.getCoordinate();
         location.setLatitude(coords.getLatitude());

@@ -8,9 +8,9 @@ package com.nokia.example.capturetheflag.network;
 import com.nokia.example.capturetheflag.network.model.Player;
 
 /**
- * Abstract base class for all JSON responses. The class has a static
- * createResponse() method which acts as a factory method for creating different
- * kind of responses based on the given JSON data.
+ * Base class for all JSON responses. The class has a static createResponse() 
+ * method which acts as a factory method for creating different kind of 
+ * responses based on the given JSON data.
  */
 public class JSONResponse {
     public static final int GAMELIST = 0;

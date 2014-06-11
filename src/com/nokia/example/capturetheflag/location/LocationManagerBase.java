@@ -10,7 +10,8 @@ import android.location.Location;
 /**
  * Base class for {@link LocationManagerInterface} implementations.
  * 
- * Contains implementation shared between Here and Google-specific implementations of {@link LocationManagerInterface}
+ * Contains implementation shared between Here and Google-specific 
+ * implementations of {@link LocationManagerInterface}.
  */
 public abstract class LocationManagerBase implements LocationManagerInterface {
 
@@ -32,7 +33,7 @@ public abstract class LocationManagerBase implements LocationManagerInterface {
      * Constructor.
      */
     protected LocationManagerBase() {
-    	super();
+        super();
     }
 
     /**
@@ -40,17 +41,19 @@ public abstract class LocationManagerBase implements LocationManagerInterface {
      * @param location New location, @see {@link Location}.
      */
     protected void notifyListener(Location location) {
-    	if(mListener != null) {
+        if(mListener != null) {
             mListener.onLocationUpdated(location);
         }
     }
     
     /**
-     * Notifies all the currently registered users that the LocationManager implementation is ready to provide location information or that the initialization failed.
+     * Notifies all the currently registered users that the Location Manager 
+     * implementation is ready to provide location information or if the 
+     * initialization failed.
      * @param success <code>true</code> if connection was successful, <code>false</code> if not.
      */
     protected void notifyManagerReady(boolean success) {
-    	if(mListener != null) {
+        if(mListener != null) {
             mListener.onLocationManagerReady(success);
         }
     }

@@ -1,31 +1,30 @@
 /**
- * Copyright (c) 2013-2014 Microsoft Mobile.
+ * Copyright (c) 2014 Microsoft Mobile.
  * See the license text file delivered with this project for more information.
  */
 
-package com.nokia.example.capturetheflag;
+package com.nokia.example.capturetheflag.notifications.nokia;
+
+import com.nokia.example.capturetheflag.notifications.NotificationsUtils;
+import com.nokia.push.PushBaseIntentService;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.nokia.example.capturetheflag.network.model.ModelConstants;
-import com.nokia.push.PushBaseIntentService;
-
 /**
- * IntentService responsible for handling push notification messages.
+ * Intent service responsible for handling Nokia Notifications push messages.
+ * @see {@link PushBaseIntentService}.
  */
-public class PushIntentService extends PushBaseIntentService {
+public class NokiaNotificationsIntentService extends PushBaseIntentService {
     public static final String SENDER_ID = "capture-the-flag"; // Sender ID for Nokia Notifications
-    public static final String PUSH_MESSAGE_ACTION = "com.nokia.example.capturetheflag.PUSH_MESSAGE_ACTION";
     private static final String TAG = "CtF/PushIntentService";
 
     /**
      * Constructor.
      */
-    public PushIntentService() {
+    public NokiaNotificationsIntentService() {
     }
 
     @Override
@@ -46,16 +45,16 @@ public class PushIntentService extends PushBaseIntentService {
     @Override
     protected void onMessage(Context context, Intent intent) {
         Log.i(TAG, "Received message. Extras: " + intent.getExtras());
+
         Bundle extras = intent.getExtras();
-        Intent i = new Intent(PUSH_MESSAGE_ACTION);
-        i.putExtra(ModelConstants.CAPTURER_KEY, extras.getString("payload"));
-        LocalBroadcastManager.getInstance(this).sendBroadcast(i);
+        NotificationsUtils.broadcastGameMessage(extras.getString("payload"), this);
+        
+        NokiaNotificationsBroadcastReceiver.completeWakefulIntent(intent);
     }
 
     @Override
     protected void onDeletedMessages(Context context, int total) {
-        Log.i(TAG, "Received deleted messages notification");
-       
+        Log.i(TAG, "Received deleted messages notification");       
     }
 
     @Override

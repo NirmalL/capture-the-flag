@@ -21,40 +21,41 @@ import com.nokia.example.capturetheflag.network.model.Player;
  */
 public interface GameMapInterface {
 
-	/**
-	 * Clears all markers from map.
-	 */
+    /**
+     * Clears all the markers from the game map.
+     */
     public void clearMarkers();
 
     /**
      * Updates existing player marker from new data.
-     * @param updated Updated player data, @see {@link Player}.
-     * @param old Old player data, @see {@link Player}.
+     * @param updated Updated {@link Player} data.
+     * @param old Old {@link Player} data.
      */
     public void updateMarkerForPlayer(Player updated, Player old);
     
     /**
      * Updates position of the given player's map marker.
-     * @param updated, Player to update, @see {@link Player}.
+     * @param updated, {@link Player} to update.
      */
     public void updatePlayerMarkerPosition(Player updated);
 
     /**
      * Checks whether a map marker already exists for the given player.
-     * @param player Player to check, @see {@link Player}.
+     * @param player {@link Player} to check.
      * @return <code>true</code> if a map marker exists, <code>false</code> if not.
      */
     public boolean playerHasMarker(Player player);
 
     /**
-     * Sets up map markers for the given game, @see {@link Game}.
-     * @param game The game to set up markers for, @see {@link Game}.
+     * Sets up map markers for the given {@link Game}.
+     * @param game The {@link Game} to set up markers for.
      */
     public void setMarkers(Game game);
 
     /**
-     * Centers the game map to the given position and resets the map zoom level to default.
-     * @param location Location to center the map to, @see {@link Location}.
+     * Centers the game map to the given {@link Location} and resets the map 
+     * zoom level to default.
+     * @param location {@link Location} to center the map to.
      */
     public void centerMapToPosition(Location location);
 

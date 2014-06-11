@@ -27,7 +27,8 @@ import com.nokia.example.capturetheflag.location.LocationManagerListener;
 /**
  * Location Manager implementation.
  * 
- * Implementation of {@link LocationManagerInterface} that uses Google and Google Play Services APIs, i.e. {@link LocationClient} and {@link Geocoder}.
+ * Implementation of {@link LocationManagerInterface} that uses Google and 
+ * Google Play Services APIs, i.e. {@link LocationClient} and {@link Geocoder}.
  * @see {@link LocationManagerInterface}, {@link LocationManagerListener}, {@link LocationClient} and {@link LocationListener}.
  */
 public class LocationManagerGoogle extends LocationManagerBase implements
@@ -48,8 +49,8 @@ public class LocationManagerGoogle extends LocationManagerBase implements
     private Geocoder mGeoCoder;
     
     /**
-     * Constructor
-     * @param activity
+     * Constructor.
+     * @param activity Activity.
      */
     public LocationManagerGoogle(Activity activity) {
         super();
@@ -97,7 +98,7 @@ public class LocationManagerGoogle extends LocationManagerBase implements
     public void onConnected(Bundle connectionHint) {
         Log.d(TAG, "Connected!");
 
-        // Create the LocationRequest object
+        // Create the LocationRequest object with desired accuracy and interval for updates.
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(UPDATE_INTERVAL);
@@ -125,11 +126,14 @@ public class LocationManagerGoogle extends LocationManagerBase implements
         
         String result = null;
         
+        // If any matches found, use the address from the first one.
         if(matches != null) {
             Address bestMatch = (matches.isEmpty() ? null : matches.get(0));
             if(bestMatch != null) {
                 result = bestMatch.getAddressLine(0);
             }
+        } else {
+            result = "Unable to find location";
         }
         
         listener.onReverseGeocodingResult(result);

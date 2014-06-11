@@ -18,6 +18,9 @@ import com.nokia.example.capturetheflag.network.FlagCapturedResponse;
 import com.nokia.example.capturetheflag.network.UpdatePlayerResponse;
 import com.nokia.example.capturetheflag.network.JoinedResponse;
 
+/**
+ * Offline version of the network client, @see {@link NetworkClient}.
+ */
 public class OfflineClient extends NetworkClient {
     private static final String TAG = "CaptureFlag/OfflineClient";
     private static final String SUB_TAG = "CaptureFlag/OpponentAdvance";

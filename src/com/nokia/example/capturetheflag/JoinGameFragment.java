@@ -10,7 +10,9 @@ import com.nokia.example.capturetheflag.location.LocationManagerInterface;
 import com.nokia.example.capturetheflag.network.JoinRequest;
 import com.nokia.example.capturetheflag.network.model.Game;
 import com.nokia.example.capturetheflag.network.model.Player;
-import com.nokia.push.PushRegistrar;
+import com.nokia.example.capturetheflag.notifications.NotificationsManagerFactory;
+import com.nokia.example.capturetheflag.notifications.NotificationsManagerInterface;
+import com.nokia.example.capturetheflag.notifications.NotificationsManagerInterface.NotificationServiceType;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -118,8 +120,12 @@ public class JoinGameFragment
     }
 
     private void joinGame() {
-        Player player = new Player(0, Settings.getUsername(getActivity()));
-        player.setRegistrationId(PushRegistrar.getRegistrationId(getActivity()));
+        // Create player
+        Player player = new Player(0, Settings.getUsername(getActivity()));        
+        NotificationsManagerInterface notificationManager = NotificationsManagerFactory.getInstance(getActivity());
+        player.setRegistrationId(notificationManager.getRegistrationId());
+        player.setPlatformType(notificationManager.getServiceType() == NotificationServiceType.NOKIA_NOTIFICATIONS ? Player.PLATFORM_NOKIA : Player.PLATFORM_GOOGLE);
+        
         RadioGroup group = (RadioGroup)getView().findViewById(R.id.radiobuttons);
         
         switch(group.getCheckedRadioButtonId()) {
@@ -134,7 +140,7 @@ public class JoinGameFragment
                 break;
         }
         
-        LocationManagerInterface locationManager = LocationManagerFactory.getLocationManagerInterface(getActivity());
+        LocationManagerInterface locationManager = LocationManagerFactory.getInstance(getActivity());
         Location location = locationManager.getCurrentLocation();
         player.setLocation(location);
 
