@@ -140,7 +140,7 @@ public class JoinGameFragment
                 break;
         }
         
-        LocationManagerInterface locationManager = LocationManagerFactory.getLocationManagerInterface(getActivity());
+        LocationManagerInterface locationManager = LocationManagerFactory.getInstance(getActivity());
         Location location = locationManager.getCurrentLocation();
         player.setLocation(location);
 

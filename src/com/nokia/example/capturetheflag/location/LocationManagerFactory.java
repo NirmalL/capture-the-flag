@@ -24,9 +24,9 @@ public class LocationManagerFactory {
     private static LocationManagerInterface mInstance;
 
     /**
-     * Are Here Positioning Services supported in this device
+     * Checks whether Here Positioning Services are supported on this device.
      * 
-     * @return true if Here Positioning Services are available
+     * @return <code>true</code> if Here Positioning Services are available, <code>false</code> if not.
      */
     public static boolean isHerePositioningAvailable() {
         boolean available = true;
@@ -38,12 +38,14 @@ public class LocationManagerFactory {
         return available;
     }
 
-    public static LocationManagerInterface getLocationManagerInterface(
-            Activity activity) {
+    /**
+     * Returns the Location Manager singleton instance.
+     * @param activity Activity
+     * @return {@link LocationManagerInterface}.
+     */
+    public static LocationManagerInterface getInstance(Activity activity) {
         if (mInstance == null) {
-            
             String className = isHerePositioningAvailable() ? HERE_LOCATION_CLASS_NAME : GOOGLE_LOCATION_CLASS_NAME;
-            
             try {
                 Constructor<?> constructor = Class.forName(className).getConstructor(Activity.class);
                 mInstance = (LocationManagerInterface)constructor.newInstance(activity);

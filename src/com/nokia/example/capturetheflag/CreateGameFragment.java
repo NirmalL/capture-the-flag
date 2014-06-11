@@ -112,7 +112,7 @@ public class CreateGameFragment
         if (validateFields()) {
             v.setVisibility(View.GONE);
             mProgressBar.setVisibility(View.VISIBLE);
-            Location pos = LocationManagerFactory.getLocationManagerInterface(getActivity()).getCurrentLocation();
+            Location pos = LocationManagerFactory.getInstance(getActivity()).getCurrentLocation();
             
             // Create new game
             Game game = new Game(Game.NEW_GAME);

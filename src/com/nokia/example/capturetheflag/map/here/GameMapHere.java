@@ -5,21 +5,6 @@
 
 package com.nokia.example.capturetheflag.map.here;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.location.Location;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnTouchListener;
-
 import com.here.android.common.GeoCoordinate;
 import com.here.android.common.Image;
 import com.here.android.mapping.FragmentInitListener;
@@ -30,23 +15,39 @@ import com.here.android.mapping.MapFactory;
 import com.here.android.mapping.MapFragment;
 import com.here.android.mapping.MapMarker;
 import com.nokia.example.capturetheflag.R;
-import com.nokia.example.capturetheflag.Settings;
 import com.nokia.example.capturetheflag.location.LocationManagerFactory;
-import com.nokia.example.capturetheflag.location.LocationManagerInterface;
 import com.nokia.example.capturetheflag.map.GameMapInterface;
 import com.nokia.example.capturetheflag.map.GameMapUtils;
+import com.nokia.example.capturetheflag.map.google.MarkerFactoryGoogle;
 import com.nokia.example.capturetheflag.network.model.Game;
 import com.nokia.example.capturetheflag.network.model.Player;
 
+import android.app.Fragment;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
- * Fragment that is responsible for showing the map and handle map related
- * actions like adding map markers etc.
+ * Here Maps specific {@link Fragment} that extends {@link MapFragment} and is 
+ * responsible for showing the map and handle map related actions like adding 
+ * map markers etc.
+ * 
+ * @see GameMapInterface.
  */
 public class GameMapHere extends MapFragment implements GameMapInterface {
     private static final double DEFAULT_MAP_ZOOM_LEVEL_IN_GAME = 14;
     private static final String TAG = "CtF/GameMap";
 
-    private LocationManagerInterface mLocationManager;
     private Map mMap;
     
     private HashMap<Player, MapMarker> mPlayerMarkers = new HashMap<Player, MapMarker>();
@@ -69,7 +70,6 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
         if (savedInstanceState == null) {
             mIsFirstTime = true;
         }
-        mLocationManager = LocationManagerFactory.getLocationManagerInterface(getActivity());
         mRedFlagBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.base_red);
         mBlueFlagBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.base_blue);
         mScaleThread = new HandlerThread("ScaleThread");
@@ -92,7 +92,9 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
                     
                     if (mIsFirstTime) {
                         mMap.setCenter(
-                                MapFactory.createGeoCoordinate(GameMapUtils.DEFAULT_LATITUDE, GameMapUtils.DEFAULT_LONGITUDE),
+                                MapFactory.createGeoCoordinate(
+                                        GameMapUtils.DEFAULT_LATITUDE, 
+                                        GameMapUtils.DEFAULT_LONGITUDE),
                                 MapAnimation.NONE);
                         
                         if (mZoomLevel > 0) {
@@ -162,7 +164,6 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
                     player, getResources().getDisplayMetrics(), getResources());
             Log.d(TAG, "New marker to: " + marker.getCoordinate().getLatitude()
                     + "; " + marker.getCoordinate().getLongitude());
-            //player.setMarker(marker);
             addPlayerMarker(player, marker);
         }
         else {
@@ -187,10 +188,9 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
             addPlayerMarker(player, marker);
         }
         
-        mRedFlag = MarkerFactoryHere.createFlagMarker(
-                game.getRedFlag(), mRedFlagBitmap, calculateMarkerSize());
-        mBlueFlag = MarkerFactoryHere.createFlagMarker(
-                game.getBlueFlag(), mBlueFlagBitmap, calculateMarkerSize());
+        final int markerSize = MarkerFactoryGoogle.calculateMarkerSize(getActivity().getResources().getDisplayMetrics(), mCurrentMetersPerPixels);
+        mRedFlag = MarkerFactoryHere.createFlagMarker(game.getRedFlag(), mRedFlagBitmap, markerSize);
+        mBlueFlag = MarkerFactoryHere.createFlagMarker(game.getBlueFlag(), mBlueFlagBitmap, markerSize);
         updateMetersPerPixel();
         
         mMap.addMapObject(mRedFlag);
@@ -200,117 +200,83 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
     @Override
     public void centerMapToPosition(Location location) {
         mZoomLevel = DEFAULT_MAP_ZOOM_LEVEL_IN_GAME;
-        setMapPosition(mLocationManager.getCurrentLocation(), mZoomLevel, MapAnimation.LINEAR);
-    }
-
-    public void setMapPosition(Location location, double zoomLevel, MapAnimation animation) {
-        mMap.setCenter(locationToGeoCoordinate(location), animation, zoomLevel, 0, 0);
-        
-        if (zoomLevel > 0 && mZoomLevel != zoomLevel) {
-            mZoomLevel = zoomLevel;
-        }
+        mMap.setCenter(locationToGeoCoordinate(location), MapAnimation.LINEAR, mZoomLevel, 0, 0);
     }
 
     /**
-     * Sets the map zoom level. The method verifies the validity of the given
-     * zoom level.
-     * 
-     * @param zoomLevel The zoom level to set.
-     * @param animation The animation to use for zooming.
+     * Updates the current meters per pixel value based on the current 
+     * {@link Location} and map zoom level.
      */
-    public void setZoomLevel(double zoomLevel, MapAnimation animation) {
-        if (mZoomLevel != zoomLevel
-                && zoomLevel >= mMap.getMinZoomLevel()
-                && zoomLevel <= mMap.getMaxZoomLevel())
-        {
-            try {
-                mMap.setZoomLevel(zoomLevel, animation);
-            }
-            catch (Exception e) {
-                Log.e(TAG, e.getMessage(), e);
-            }
-            
-            updateMetersPerPixel();
-            scaleMarkers();
-            mZoomLevel = zoomLevel;
-        }
-        else {
-            Log.d(TAG, "setMapZoomLevel(): " + zoomLevel
-                + " is invalid zoom level or matches the currently set zoom level. Valid zoom level is ["
-                + mMap.getMinZoomLevel() + ", " + mMap.getMaxZoomLevel() + "].");
-        }
-    }
-
-    public double getZoomLevel() {
-        return mZoomLevel;
-    }
-
     private void updateMetersPerPixel() {
-        mCurrentMetersPerPixels = GameMapUtils.calculateMetersPerPixel(mLocationManager.getCurrentLocation(), mZoomLevel);
+        mCurrentMetersPerPixels = GameMapUtils.calculateMetersPerPixel(
+                LocationManagerFactory.getInstance(getActivity()).getCurrentLocation(), mZoomLevel);
     }
 
     /**
-     * Scales markers asynchronously.
+     * Scales the map markers asynchronously.
      */
     private void scaleMarkers() {
         if (mRedFlag != null && mBlueFlag != null) {
             mScaleHandler.post(new Runnable() {
                 @Override
-                    public void run() {
-                        int size = calculateMarkerSize();
-                        
-                        final Image redFlagImage = MapFactory.createImage();
-                        redFlagImage.setBitmap(
-                                Bitmap.createScaledBitmap(mRedFlagBitmap, size, size, true));
-                        
-                        final Image blueFlagImage = MapFactory.createImage();
-                        blueFlagImage.setBitmap(
-                                Bitmap.createScaledBitmap(mBlueFlagBitmap, size, size, true));
-                        
-                        mUIHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (mRedFlag != null && mBlueFlag != null) {
-                                    mRedFlag.setIcon(redFlagImage);
-                                    mBlueFlag.setIcon(blueFlagImage);
-                                }
+                public void run() {
+                    final int markerSize = MarkerFactoryGoogle.calculateMarkerSize(getActivity().getResources().getDisplayMetrics(), mCurrentMetersPerPixels);
+                    
+                    final Image redFlagImage = MapFactory.createImage();
+                    redFlagImage.setBitmap(Bitmap.createScaledBitmap(mRedFlagBitmap, markerSize, markerSize, true));
+                    
+                    final Image blueFlagImage = MapFactory.createImage();
+                    blueFlagImage.setBitmap(Bitmap.createScaledBitmap(mBlueFlagBitmap, markerSize, markerSize, true));
+                    
+                    mUIHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mRedFlag != null && mBlueFlag != null) {
+                                mRedFlag.setIcon(redFlagImage);
+                                mBlueFlag.setIcon(blueFlagImage);
                             }
-                        });
-                    }
+                        }
+                    });
+                }
             });
         }
     }
-
-    private int calculateMarkerSize() {
-        int size = (int) (Settings.BASE_SIZE / mCurrentMetersPerPixels);
-        int minimumSize = dpToPx(Settings.MINIMUM_MARKER_SIZE);
-        
-        if (size < minimumSize) {
-            size = minimumSize;
-        }
-        
-        return size;
-    }
-
-    private int dpToPx(double dp) {
-        DisplayMetrics displayMetrics = getActivity().getResources().getDisplayMetrics();
-        int px = (int)((dp * displayMetrics.density) + 0.5);
-        return px;
-    }
     
+    /**
+     * Converts the given {@link Location} to {@link GeoCoordinate}.
+     * 
+     * @param location {@link Location} to convert.
+     * @return {@link GeoCoordinate}.
+     */
     private GeoCoordinate locationToGeoCoordinate(Location location) {
         return MapFactory.createGeoCoordinate(location.getLatitude(), location.getLongitude());
     }
 
+    /**
+     * Adds {@link Player} {@link MapMarker} to the map and stores references 
+     * to the {@link Player} and the {@link MapMarker} in a {@link HashMap}
+     * @param player
+     * @param marker
+     */
     private void addPlayerMarker(Player player, MapMarker marker) {
         mMap.addMapObject(marker);
         mPlayerMarkers.put(player, marker);
     }
 
+    /**
+     * Returns a map {@link MapMarker} for the given {@link Player} from the {@link HashMap}.
+     * 
+     * @param player {@link Player} for which to return the {@link MapMarker} for.
+     * @return {@link MapMarker} for the given {@link Player}.
+     */
     private MapMarker getPlayerMarker(Player player) {
         return mPlayerMarkers.get(player);
     }
     
+    /**
+     * Removes all {@link Player} map {@link MapMarker} objects from the map and 
+     * the {@link HashMap}.
+     */
     private void removePlayerMarkers() {
         for (MapMarker marker : mPlayerMarkers.values()) {
             mMap.removeMapObject(marker);

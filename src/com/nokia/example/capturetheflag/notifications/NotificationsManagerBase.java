@@ -23,6 +23,10 @@ public abstract class NotificationsManagerBase implements NotificationsManagerIn
         mContext = context;
     }
     
+    /**
+     * Checks whether a stored registration id exists and is valid.
+     * @return <code>true</code> if registration is found and is valid, <code>false</code> if not.
+     */
     protected boolean hasRegistrationId() {
         final String registrationId = getRegistrationId();
         return (registrationId != null) && !registrationId.isEmpty();

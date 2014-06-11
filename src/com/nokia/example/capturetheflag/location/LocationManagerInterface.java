@@ -13,8 +13,10 @@ import android.location.Location;
 /**
  * Interface for accessing platform-specific location services.
  * 
- * Use {@link LocationManagerFactory} to instantiate a class that implements this interface.
- * @See {@link LocationManagerHere} and {@link LocationManagerGoogle} for the platform-specific implementations.
+ * Use {@link LocationManagerFactory} to instantiate a class that implements
+ * this interface.
+ * @see {@link LocationManagerHere} and {@link LocationManagerGoogle} for the 
+ * platform-specific implementations.
  */
 public interface LocationManagerInterface {
 
@@ -23,8 +25,9 @@ public interface LocationManagerInterface {
      */
     public interface ReverseGeocodingResultListener {
         /**
-         * Called when reverse geocoding result has been received for a call to @see {@link LocationManagerInterface#reverseGeocodeLocation(Location, ReverseGeocodingResultListener)}.
-         * @param result Contains the reverse geocoded address for the given location or null if address could not be resolved.
+         * Called when reverse geocoding result has been received for a call 
+         * to @see {@link LocationManagerInterface#reverseGeocodeLocation(Location, ReverseGeocodingResultListener)}.
+         * @param result Contains the reverse geocoded address for the given location or <code>null</code> if address could not be resolved.
          */
         public void onReverseGeocodingResult(String result);
     }
@@ -46,8 +49,8 @@ public interface LocationManagerInterface {
     public void stop();
     
     /**
-     * Sets a listener that will receive location updates through @see {@link LocationManagerListener}.
-     * Any previously set listener will be removed.
+     * Sets a listener that will receive location updates through 
+     * {@link LocationManagerListener}. Any previously set listener will be removed.
      * @param listener to add @See {@link LocationManagerListener}.
      */
     public void setListener(LocationManagerListener listener);
@@ -65,8 +68,8 @@ public interface LocationManagerInterface {
     
     /**
      * Tries to reverse geocode a human-readable address for the given location.
-     * @param location Location to reverse geocode, @see {@link Location}.
-     * @param listener Listener to call when reverse geocoding is ready, @see {@link ReverseGeocodingResultListener}.
+     * @param location {@link Location} to be reverse geocoded.
+     * @param listener {@link ReverseGeocodingResultListener} to call when reverse geocoding is ready.
      */
     public void reverseGeocodeLocation(Location location, final ReverseGeocodingResultListener listener);
 

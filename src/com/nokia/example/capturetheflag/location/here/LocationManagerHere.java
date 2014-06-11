@@ -60,6 +60,7 @@ public class LocationManagerHere extends LocationManagerBase implements Position
 
     @Override
     public void onPositionUpdated(LocationMethod arg0, GeoPosition arg1) {
+        // Convert GeoPosition to a more generic Location instance
         Location location = new Location("");
         GeoCoordinate coords = arg1.getCoordinate();
         location.setLatitude(coords.getLatitude());

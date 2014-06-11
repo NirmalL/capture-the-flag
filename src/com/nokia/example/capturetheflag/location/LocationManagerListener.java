@@ -8,12 +8,14 @@ package com.nokia.example.capturetheflag.location;
 import android.location.Location;
 
 /**
- * Listener interface for receiving location updates from {@link LocationManagerInterface}.
+ * Listener interface for receiving location updates from
+ * {@link LocationManagerInterface}.
  */
 public interface LocationManagerListener {
     
     /**
-     * Called when Location Manager has connected to the underlying location information provider or if the connection failed.
+     * Called when Location Manager has connected to the underlying location 
+     * information provider or if the connection failed.
      * @param success <code>true</code> if connection was successful, <code>false</code> if not.
      */
     public void onLocationManagerReady(boolean success);

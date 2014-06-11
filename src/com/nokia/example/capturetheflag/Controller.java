@@ -118,7 +118,7 @@ public class Controller
         mOfflineClient = new OfflineClient();
         mOfflineClient.setListener(this);
         // TODO: Do we need a Singleton?
-        mLocationManager = LocationManagerFactory.getLocationManagerInterface(getActivity());
+        mLocationManager = LocationManagerFactory.getInstance(getActivity());
         mLocationManager.setListener(this);
     }
 

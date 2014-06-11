@@ -17,7 +17,7 @@ public class GameMapFactory {
     
     /**
      * Are Here Maps supported in this device
-     * @return    <code>true</code> if Here Maps are available, <code>false</code> if not.
+     * @return <code>true</code> if Here Maps are available, <code>false</code> if not.
      */
     public static boolean isHereMapsAvailable() {
         boolean available = true;
