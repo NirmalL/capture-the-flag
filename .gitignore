@@ -2,5 +2,8 @@ bin/
 gen/
 release/
 *.swp
-server/.idea/
+*.iml
+.idea/
+.gradle/
+build/
 server/node_modules/
