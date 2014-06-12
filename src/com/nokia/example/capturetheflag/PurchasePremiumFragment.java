@@ -46,7 +46,6 @@ public class PurchasePremiumFragment extends Fragment implements MainActivity.Ba
 	public static final String ITEM_TYPE_INAPP = "inapp";
     public static final String NOKIA_PREMIUM_PRODUCT_ID = "1023610"; // Test ID
     
-    //TODO for test purpose only, remove before release
     String base64EncodedPublicKey = "CONSTRUCT_YOUR_KEY_AND_PLACE_IT_HERE";
     
     static final String SKU_PREMIUM = "android.test.purchased";
