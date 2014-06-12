@@ -113,9 +113,11 @@ public class Controller
                 Settings.getServerPort(getActivity()));
         mOfflineClient = new OfflineClient();
         mOfflineClient.setListener(this);
-        // TODO: Do we need a Singleton?
+
         mLocationManager = LocationManagerFactory.getInstance(getActivity());
         mLocationManager.setListener(this);
+        
+        NotificationsManagerFactory.getInstance(getActivity()).register();
     }
 
     public void setMap(GameMapInterface map) {
