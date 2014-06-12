@@ -19,8 +19,7 @@ import com.nokia.example.capturetheflag.map.GameMapFactory;
 import com.nokia.example.capturetheflag.map.GameMapInterface;
 import com.nokia.example.capturetheflag.network.NetworkClient;
 import com.nokia.example.capturetheflag.network.model.Game;
-//import com.here.android.mapping.MapAnimation;
-//import com.nokia.push.PushRegistrar;
+import com.nokia.example.capturetheflag.notifications.NotificationsManagerFactory;
 
 /**
  * Main Activity of the application. This Activity is responsible for
@@ -38,8 +37,7 @@ public class MainActivity extends Activity implements
         GameEndedDialogFragment.DialogButtonListener {
     private static final String TAG = "CtF/MainActivity";
     
-    PurchasePremiumFragment mPremiumFragment;
-    
+    private PurchasePremiumFragment mPremiumFragment;
     private GameMapInterface mGameMap = null;
     private Controller mController = null;
     private MenuItem mBuyPremiumMenuItem = null;
@@ -68,7 +66,8 @@ public class MainActivity extends Activity implements
         fragmentTransaction.commit();
         mController.setMap(mGameMap);
 
-        setupPushNotification();
+        // Make sure the application is registered for receiving push notifications
+        NotificationsManagerFactory.getInstance(getApplicationContext()).register();
 
         if (savedInstanceState == null) {
             showGameMenu(null);
@@ -202,24 +201,34 @@ public class MainActivity extends Activity implements
      * Called when a game is started. Sets the markers (flags, other players),
      * centers the map to user position and adjusts the zoom level.
      * 
-     * @param game
-     *            The instance of the game that was started.
+     * @param game The instance of the {@link Game} that was started.
      */
     public void startGame(Game game) {
         Log.d(TAG, "startGame()");
         mGameMap.setMarkers(game);
     }
 
+    /**
+     * Unlocks the premium version of the application.
+     */
     public void unlockPremium() {
         if (mBuyPremiumMenuItem != null) {
             mBuyPremiumMenuItem.setVisible(false);
         }
     }
 
+    /**
+     * Sets the back callback.
+     * 
+     * @param callback {@link BackCallback} to set.
+     */
     public void setBackCallback(BackCallback callback) {
         mBackKeyCallback = callback;
     }
 
+    /**
+     * Removes the back callback.
+     */
     public void removeBackCallback() {
         mBackKeyCallback = null;
     }
@@ -227,9 +236,7 @@ public class MainActivity extends Activity implements
     /**
      * Shows the game menu.
      * 
-     * @param removable
-     *            The fragment to be removed from the activity when menu is
-     *            shown.
+     * @param removable The fragment to be removed from the activity when menu is shown.
      */
     protected void showGameMenu(Fragment removable) {
         FragmentTransaction transaction = getFragmentManager()
@@ -245,19 +252,6 @@ public class MainActivity extends Activity implements
                 GameMenuFragment.FRAGMENT_TAG);
         transaction.commit();
     }
-
-    private void setupPushNotification() {
-/*        Log.i(TAG, "Setting up Nokia Notifications...");
-        PushRegistrar.checkDevice(this);
-        PushRegistrar.checkManifest(this);
-        final String regId = PushRegistrar.getRegistrationId(this);
-
-        if (regId == null || regId.isEmpty()) {
-            Log.i(TAG, "No registration ID stored.");
-            PushRegistrar.register(this, PushIntentService.SENDER_ID);
-        }
-*/    }
-
 
     /**
      * Interface for classes that need to know when back is pressed. Only to be
