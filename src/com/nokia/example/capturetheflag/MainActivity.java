@@ -5,9 +5,6 @@
 
 package com.nokia.example.capturetheflag;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -18,7 +15,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.nokia.example.capturetheflag.iap.PremiumHandler;
 import com.nokia.example.capturetheflag.map.GameMapFactory;
 import com.nokia.example.capturetheflag.map.GameMapInterface;
 import com.nokia.example.capturetheflag.network.NetworkClient;
@@ -41,9 +37,7 @@ import com.nokia.example.capturetheflag.network.model.Game;
 public class MainActivity extends Activity implements
         GameEndedDialogFragment.DialogButtonListener {
     private static final String TAG = "CtF/MainActivity";
-    private static final String INAPP_PURCHASE_DATA_KEY = "INAPP_PURCHASE_DATA";
-    private static final String PRODUCT_ID_KEY = "productId";
-
+    
     PurchasePremiumFragment mPremiumFragment;
     
     private GameMapInterface mGameMap = null;
@@ -66,7 +60,7 @@ public class MainActivity extends Activity implements
             fragmanager.beginTransaction()
                     .add(mController, Controller.FRAGMENT_TAG).commit();
         }
-
+        
         // Create and add the map fragment to the UI.
         mGameMap = GameMapFactory.createGameMap();
         android.app.FragmentTransaction fragmentTransaction = fragmanager.beginTransaction();
@@ -120,7 +114,6 @@ public class MainActivity extends Activity implements
             if(mPremiumFragment == null) {
             	mPremiumFragment = new PurchasePremiumFragment();
             }
-            //PurchasePremiumFragment premiumFragment = new PurchasePremiumFragment();
             transaction.addToBackStack(null);
             transaction.add(R.id.fragmentcontainer, mPremiumFragment,
                     PurchasePremiumFragment.FRAGMENT_TAG);
@@ -139,7 +132,7 @@ public class MainActivity extends Activity implements
             break;
         case R.id.server_settings_menuitem:
             final MainActivity context = this;
-
+            
             ServerSettingsDialog dialog = new ServerSettingsDialog(this) {
                 @Override
                 public boolean onOkClicked(final String url, final String port) {
@@ -175,38 +168,11 @@ public class MainActivity extends Activity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    	if(mPremiumFragment != null) {
+    	if(mPremiumFragment != null && requestCode == PurchasePremiumFragment.RC_REQUEST) {
     		mPremiumFragment.handleActivityResult(requestCode, resultCode, data);
     	}
-    	
-        if (resultCode == Activity.RESULT_OK) {
-            if (data.getIntExtra("RESPONSE_CODE", -100) == 0) {
-                String purchaseData = data
-                        .getStringExtra(INAPP_PURCHASE_DATA_KEY);
-
-                try {
-                    JSONObject json = new JSONObject(purchaseData);
-                    String productId = json.getString(PRODUCT_ID_KEY);
-
-                    if (productId.equals(PremiumHandler.PREMIUM_PRODUCT_ID)) {
-                        /*
-                         * Hide the premium menu item since the premium version
-                         * has already been purchased.
-                         */
-                        unlockPremium();
-                        Settings.setPremium(productId, this);
-                        Log.d(TAG, "Premium version already purchased.");
-                        getFragmentManager().popBackStack();
-                    }
-                } catch (JSONException e) {
-                    Log.e(TAG,
-                            "Error in purchase result handling: "
-                                    + e.getMessage(), e);
-                }
-            }
-        }
     }
-
+    
     @Override
     public void onBackPressed() {
         if (mBackKeyCallback != null) {

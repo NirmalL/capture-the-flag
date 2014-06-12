@@ -44,16 +44,15 @@ public class PurchasePremiumFragment extends Fragment implements MainActivity.Ba
 	public static final String FRAGMENT_TAG = "PurchasePremiumFragment";
     
 	public static final String ITEM_TYPE_INAPP = "inapp";
-    public static final String PREMIUM_PRODUCT_ID = "1023610"; // Test ID
+    public static final String NOKIA_PREMIUM_PRODUCT_ID = "1023610"; // Test ID
     
     //TODO for test purpose only, remove before release
-    //String base64EncodedPublicKey   = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA8A4rv1uXF5mqJGrtGkQ5PQGpyNIgcZhvRD3yNLC5T+NlIlvMlkuGUmgZnXHfPdORZT/s5QXa2ytjffOyDVgXpHrZ0J9bRoR+hePP4o0ANzdEY/ehkt0EsifB2Kjhok+kTNpikplwuFtIJnIyFyukcesPAXksu2LTQAEzYwlMeJ8W4ToDHw6U5gEXLZcMKiDVTFA0pb89wVfb76Uerv9c6lrydKZiTn/gxg8J1yrz7vNzX7IzoWPO0+pXLnkcgqtEHePF2DIW1D29GkNJOt6xH3IvyS4ZI+1xs3wuSg8vWq3fQP/XIVHZQOqd5pmJY0tdgzboHuqq3ebtNrBI6Ky0SwIDAQAB";
     String base64EncodedPublicKey = "CONSTRUCT_YOUR_KEY_AND_PLACE_IT_HERE";
     
     static final String SKU_PREMIUM = "android.test.purchased";
     
     static {
-    	OpenIabHelper.mapSku(SKU_PREMIUM, OpenIabHelper.NAME_NOKIA, PREMIUM_PRODUCT_ID);
+    	OpenIabHelper.mapSku(SKU_PREMIUM, OpenIabHelper.NAME_NOKIA, NOKIA_PREMIUM_PRODUCT_ID);
     }
     
     OpenIabHelper mHelper;
@@ -158,6 +157,7 @@ public class PurchasePremiumFragment extends Fragment implements MainActivity.Ba
             Purchase premiumPurchase = inventory.getPurchase(SKU_PREMIUM);
             mIsPremium = (premiumPurchase != null && verifyDeveloperPayload(premiumPurchase));
             Log.d(TAG, "User is " + (mIsPremium ? "PREMIUM" : "NOT PREMIUM"));
+            
             if (mIsPremium) {
             	purchased();
 			}
@@ -174,6 +174,7 @@ public class PurchasePremiumFragment extends Fragment implements MainActivity.Ba
     private void purchased() {
     	mBuyButton.setText("Purchased");
     	mBuyButton.setEnabled(false);
+    	Settings.setPremium(SKU_PREMIUM, getActivity());
     	((MainActivity) getActivity()).unlockPremium();
     }
     

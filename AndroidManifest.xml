@@ -31,7 +31,9 @@
     <!--  Google Cloud Messaging permissions -->
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-        
+    
+    <uses-feature android:name="android.hardware.telephony" android:required="false"/>
+    
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
