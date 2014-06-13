@@ -114,7 +114,7 @@ public class PurchasePremiumFragment extends Fragment implements MainActivity.Ba
                     mWaitScreen = ProgressDialog.show(getActivity(), null, getText(R.string.fetching_product_info));
                     
                     //Query for already purchased items and 
-                    //SKU details(title, description, price) for items what user can buy
+                    //SKU details for items what user can buy
                     List<String> skus = new ArrayList<String>();
                     skus.add(SKU_PREMIUM);
                     mHelper.queryInventoryAsync(true, skus, mGotInventoryListener);
@@ -200,14 +200,8 @@ public class PurchasePremiumFragment extends Fragment implements MainActivity.Ba
         
     	String payload = p.getDeveloperPayload();
         if (payload.equals(mDeveloperPayload)) {
-        	
-        	Log.d(TAG, "Developer payload was successful");
-        	
         	return true;
 		} else {
-			
-			Log.d(TAG, "Developer payload failed");
-			
 			return false;
 		}
     }
