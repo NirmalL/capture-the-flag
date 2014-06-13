@@ -23,6 +23,7 @@ dependencies {
     compile files('libs/push.jar')
     compile files('libs/androidasync-1.2.4.jar')
     compile files('libs/OpenIAB-0.9.6.jar')
+    // requires Google Repository extra in SDK manager
     compile 'com.google.android.gms:play-services:4.0.+'
     // requires support repository extra in SDK manager
     compile 'com.android.support:support-v4:18.0.+'
