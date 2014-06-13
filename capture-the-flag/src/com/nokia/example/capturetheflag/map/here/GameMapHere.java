@@ -1,5 +1,5 @@
-/**
- * Copyright (c) 2014 Microsoft Mobile.
+/*
+ * Copyright (c) 2014 Microsoft Mobile. All rights reserved.
  * See the license text file delivered with this project for more information.
  */
 
@@ -46,7 +46,7 @@ import java.util.HashMap;
  */
 public class GameMapHere extends MapFragment implements GameMapInterface {
     private static final double DEFAULT_MAP_ZOOM_LEVEL_IN_GAME = 14;
-    private static final String TAG = "CtF/GameMap";
+    private static final String TAG = "CtF/GameMapHere";
 
     private Map mMap;
     

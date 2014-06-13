@@ -105,7 +105,7 @@ public class CreateGameFragment
     }
 
     /**
-     * Creates a new game based on the user selection.
+     * Creates a new game based on the user selections.
      */
     @Override
     public void onClick(View v) {
@@ -151,7 +151,7 @@ public class CreateGameFragment
     /**
      * Checks the validity of the user input.
      * 
-     * @return True if input is valid, false otherwise.
+     * @return <code>true</code> if input is valid, <code>false</code> otherwise.
      */
     private boolean validateFields() {
         boolean gamename = false;
@@ -178,9 +178,16 @@ public class CreateGameFragment
         return gamename && username;
     }
 
-    private void generateFlags(Location basePosition, Game g) {
-        g.setBlueFlag(createRandomCoordinate(basePosition));
-        g.setRedFlag(createRandomCoordinate(basePosition));
+    /**
+     * Generates flags for both teams of the given {@link Game} at random 
+     * locations around the given {@link Location}.
+     * 
+     * @param basePosition {@link Location} to use as base for flag locations.
+     * @param game The {@link Game} for which the flags are generated.
+     */
+    private void generateFlags(Location basePosition, Game game) {
+        game.setBlueFlag(createRandomCoordinate(basePosition));
+        game.setRedFlag(createRandomCoordinate(basePosition));
     }
 
     /**
