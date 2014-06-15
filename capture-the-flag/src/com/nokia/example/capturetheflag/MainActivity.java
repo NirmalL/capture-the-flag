@@ -108,15 +108,24 @@ public class MainActivity extends Activity implements
 
         switch (item.getItemId()) {
             case R.id.buy_premium_menuitem:
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-                if (mPremiumFragment == null) {
-                    mPremiumFragment = new PurchasePremiumFragment();
-                }
-                transaction.addToBackStack(null);
-                transaction.add(R.id.fragmentcontainer, mPremiumFragment,
+                FragmentManager fragmentManager = getFragmentManager();
+                Fragment fragment =
+                    fragmentManager.findFragmentByTag(PurchasePremiumFragment.FRAGMENT_TAG);
+                
+                // Check if the fragment is already visible
+                if (fragment == null || !fragment.isVisible()) {
+                    FragmentTransaction transaction = fragmentManager.beginTransaction();
+                    
+                    if (mPremiumFragment == null) {
+                        mPremiumFragment = new PurchasePremiumFragment();
+                    }
+                    
+                    transaction.addToBackStack(null);
+                    transaction.add(R.id.fragmentcontainer, mPremiumFragment,
                         PurchasePremiumFragment.FRAGMENT_TAG);
-                transaction.commit();
+                    transaction.commit();
+                }
+                
                 retval = true;
                 break;
             case R.id.help_menuitem:

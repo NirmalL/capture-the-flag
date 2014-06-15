@@ -48,7 +48,7 @@ public class PurchasePremiumFragment extends Fragment implements MainActivity.Ba
     private static final String NOKIA_PREMIUM_PRODUCT_ID = "1023610"; // Test ID
 
     // Google In-App Billing constants
-    private static final String Base64EncodedPublicKey = "AIzaSyAh3zPCUA6-mAjuTJnB-sQcXreOOOkz_GQ";
+    private static final String Base64EncodedPublicKey = "INSERT_YOUR_PUBLIC_KEY_HERE";
     private static final String SKU_PREMIUM = "android.test.purchased";
 
     static {
@@ -91,7 +91,7 @@ public class PurchasePremiumFragment extends Fragment implements MainActivity.Ba
 
         mDeveloperPayload = "You_should_pass_in_a_string_token_that_helps_your_application_to_identify_the_user_who_made_the_purchase";
 
-        if (Base64EncodedPublicKey.contains("CONSTRUCT_YOUR")) {
+        if (Base64EncodedPublicKey.contains("INSERT_YOUR")) {
             mBuyButton.setEnabled(false);
             alert("Please put your app's public key in PurchasePremiumFragment.java. See README.");
         } else {

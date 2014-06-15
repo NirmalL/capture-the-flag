@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    provided files('libs/com.here.android.sdk.jar')
+    provided files('here_lib/com.here.android.sdk.jar')
     compile files('libs/push.jar')
     compile files('libs/androidasync-1.2.4.jar')
     compile files('libs/OpenIAB-0.9.6.jar')
