@@ -27,10 +27,9 @@ import com.nokia.example.capturetheflag.network.model.Player;
  * Socket I/O version of the network client, @see {@link NetworkClient}.
  */
 public class SocketIONetworkClient
-    extends NetworkClient
-    implements ConnectCallback
-{
-    public static final int DISCONNECT_TIMEOUT = 1000 * 60; 
+        extends NetworkClient
+        implements ConnectCallback {
+    public static final int DISCONNECT_TIMEOUT = 1000 * 60;
     private static final String TAG = "CtF/SocketIONetworkClient";
 
     private Handler mHandler;
@@ -61,10 +60,10 @@ public class SocketIONetworkClient
             client.reconnect();
             return;
         }
-        
+
         mListener.onNetworkStateChange(true, SocketIONetworkClient.this);
         mSocketClient = client;
-        
+
         if (queuedMessage != null) {
             Log.d(TAG, "Sending message from queue");
             JSONArray arr = new JSONArray();
@@ -72,25 +71,25 @@ public class SocketIONetworkClient
             client.emit(queuedMessage.getEventName(), arr);
             queuedMessage = null;
         }
-        
+
         client.addListener("gamelist", new EventCallback() {
             @Override
             public void onEvent(final JSONArray argument, Acknowledge acknowledge) {
                 Log.d(TAG, "Game list event: " + argument.toString());
-                
+
                 try {
                     JSONObject msg = argument.getJSONObject(0);
                     JSONArray arr = msg.getJSONArray("games");
                     Game[] games = new Game[arr.length()];
-                    
+
                     for (int i = 0; i < arr.length(); i++) {
                         Game g = new Game(arr.getJSONObject(i));
                         games[i] = g;
                     }
-                    
+
                     final GameListResponse resp = new GameListResponse();
                     resp.setGames(games);
-                    
+
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -99,13 +98,12 @@ public class SocketIONetworkClient
                             }
                         }
                     });
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     Log.e(TAG, "JSON error: ", e);
                 }
             }
         });
-        
+
         client.addListener("joined", new EventCallback() {
             @Override
             public void onEvent(JSONArray argument, Acknowledge acknowledge) {
@@ -116,7 +114,7 @@ public class SocketIONetworkClient
                     joined.setJoinedGame(new Game(gameObj));
                     Log.d(TAG, "Joined response parsed");
                     joined.setPlayer(new Player(obj.getJSONObject("player")));
-                    
+
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -125,13 +123,12 @@ public class SocketIONetworkClient
                             }
                         }
                     });
-                }
-                catch (JSONException je) {
+                } catch (JSONException je) {
                     Log.e(TAG, "JSON error: ", je);
                 }
             }
         });
-        
+
         client.addListener("update-player", new EventCallback() {
             @Override
             public void onEvent(JSONArray argument, Acknowledge acknowledge) {
@@ -140,7 +137,7 @@ public class SocketIONetworkClient
                     Player p = new Player(obj.getJSONObject("update-player"));
                     final UpdatePlayerResponse resp = new UpdatePlayerResponse();
                     resp.setUpdatedPlayer(p);
-                    
+
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -149,13 +146,12 @@ public class SocketIONetworkClient
                             }
                         }
                     });
-                }
-                catch (JSONException e) {
+                } catch (JSONException e) {
                     Log.e(TAG, "JSON error: ", e);
                 }
             }
         });
-        
+
         client.addListener("error", new EventCallback() {
             @Override
             public void onEvent(JSONArray argument, Acknowledge acknowledge) {
@@ -163,7 +159,7 @@ public class SocketIONetworkClient
                     JSONObject errorObj = argument.getJSONObject(0);
                     final JSONResponse resp = new JSONResponse();
                     resp.setErrorCode(errorObj.optInt("code", -100));
-                    
+
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -172,8 +168,7 @@ public class SocketIONetworkClient
                             }
                         }
                     });
-                }
-                catch (JSONException e) {
+                } catch (JSONException e) {
                     Log.e(TAG, "JSON error: ", e);
                 }
             }
@@ -188,17 +183,16 @@ public class SocketIONetworkClient
                 queuedMessage = request;
                 return;
             }
-            
+
             Log.d(TAG, "Sending: " + request.getEventName());
             JSONArray args = new JSONArray();
-            
+
             if (request.getRequestData() != null) {
                 args.put(request.getRequestData());
             }
-            
+
             mSocketClient.emit(request.getEventName(), args);
-        }
-        else {
+        } else {
             Log.d(TAG, "Adding the request to the queue");
             queuedMessage = request;
         }
@@ -207,8 +201,8 @@ public class SocketIONetworkClient
     public void disconnect() {
         if (mSocketClient != null) {
             mSocketClient.disconnect();
-            
-            if(mListener != null) {
+
+            if (mListener != null) {
                 mListener.onNetworkStateChange(false, SocketIONetworkClient.this);
             }
         }
@@ -219,7 +213,7 @@ public class SocketIONetworkClient
         if (mSocketClient != null) {
             return mSocketClient.isConnected();
         }
-        
+
         return false;
     }
 
@@ -235,13 +229,12 @@ public class SocketIONetworkClient
                     }
                 }
             };
-            
+
             mTimer.schedule(mIdleTask, DISCONNECT_TIMEOUT);
-        }
-        else {
+        } else {
             if (mIdleTask != null) {
                 boolean isCanceled = mIdleTask.cancel();
-                
+
                 if (!isCanceled) {
                     if (mSocketClient != null) {
                         Log.d(TAG, "Not idle anymore, waking up...");
@@ -255,8 +248,8 @@ public class SocketIONetworkClient
     @Override
     public void cleanUp() {
         mListener = null;
-        
-        if(isConnected()) {
+
+        if (isConnected()) {
             disconnect();
         }
     }

@@ -19,9 +19,9 @@ public class NotificationsManagerNokia extends NotificationsManagerBase {
 
     /**
      * Constructor.
-     * 
+     * <p/>
      * Constructs the Nokia Notifications specific Notifications Manager instance.
-     * 
+     *
      * @param context Context.
      */
     public NotificationsManagerNokia(Context context) {
@@ -29,7 +29,7 @@ public class NotificationsManagerNokia extends NotificationsManagerBase {
     }
 
     /**
-     * Registers the application to the {@link PushRegistrar} for receiving 
+     * Registers the application to the {@link PushRegistrar} for receiving
      * push notifications. The {@link PushRegistrar} stores the registration id
      * internally.
      */
@@ -38,13 +38,14 @@ public class NotificationsManagerNokia extends NotificationsManagerBase {
         PushRegistrar.checkDevice(mContext);
         PushRegistrar.checkManifest(mContext);
 
-        if(!hasRegistrationId()) {
+        if (!hasRegistrationId()) {
             PushRegistrar.register(mContext, NokiaNotificationsIntentService.SENDER_ID);
         }
     }
 
-    /** 
+    /**
      * Returns the application's registration id.
+     *
      * @return The registration id if available, null otherwise.
      */
     @Override

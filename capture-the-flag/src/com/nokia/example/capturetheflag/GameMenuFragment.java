@@ -33,8 +33,8 @@ import com.nokia.example.capturetheflag.network.model.ModelConstants;
  * existing game.
  */
 public class GameMenuFragment
-    extends Fragment
-    implements View.OnClickListener, ReverseGeocodingResultListener //, ResultListener<Address>
+        extends Fragment
+        implements View.OnClickListener, ReverseGeocodingResultListener //, ResultListener<Address>
 {
     public static final String FRAGMENT_TAG = "GameMenuFragment";
     private static final String TAG = "CtF/GameMenuFragment";
@@ -54,19 +54,18 @@ public class GameMenuFragment
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
-                             Bundle savedInstanceState)
-    {
+                             Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.game_menu_fragment, container, false);
-        
+
         v.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return true;
             }
         });
-        
+
         mUserLocation = (TextView) v.findViewById(R.id.user_address);
-        mNewGameButton = (Button)v.findViewById(R.id.create_new_game);
+        mNewGameButton = (Button) v.findViewById(R.id.create_new_game);
         mNewGameButton.setOnClickListener(this);
         mProgressBar = (ProgressBar) v.findViewById(R.id.menu_loading_indicator);
         return v;
@@ -93,14 +92,14 @@ public class GameMenuFragment
             AlertDialog.Builder noLocationDialogBuilder = new AlertDialog.Builder(getActivity());
             noLocationDialogBuilder.setTitle(getString(R.string.no_location));
             noLocationDialogBuilder.setMessage(getString(R.string.location_required_to_start));
-            
+
             noLocationDialogBuilder.setPositiveButton(getString(android.R.string.ok), new OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
                 }
             });
-            
+
             noLocationDialogBuilder.create().show();
             return;
         }
@@ -108,8 +107,8 @@ public class GameMenuFragment
             FragmentTransaction transaction = manager.beginTransaction();
             CreateGameFragment createGameFragment = new CreateGameFragment();
             Controller controller =
-                    (Controller)getFragmentManager()
-                    .findFragmentByTag(Controller.FRAGMENT_TAG);
+                    (Controller) getFragmentManager()
+                            .findFragmentByTag(Controller.FRAGMENT_TAG);
             Bundle args = new Bundle();
             args.putBoolean(ModelConstants.IS_PREMIUM_KEY, controller.isPremium());
             createGameFragment.setArguments(args);
@@ -117,8 +116,7 @@ public class GameMenuFragment
             transaction.add(R.id.top_fragments,
                     createGameFragment, CreateGameFragment.FRAGMENT_TAG);
             transaction.commit();
-        }
-        else {
+        } else {
             Game game = (Game) view.getTag();
             FragmentTransaction transaction = manager.beginTransaction();
             JoinGameFragment join = new JoinGameFragment();
@@ -131,18 +129,18 @@ public class GameMenuFragment
 
     /**
      * Populates the view with "join game" buttons.
-     * 
+     *
      * @param games
      */
     public void setGames(Game[] games) {
         Log.d(TAG, "setGames()");
         mGames = games;
-        LinearLayout layout = (LinearLayout)getView().findViewById(R.id.open_game_area);
+        LinearLayout layout = (LinearLayout) getView().findViewById(R.id.open_game_area);
         layout.removeAllViews();
         mProgressBar.setVisibility(View.GONE);
-        
+
         for (Game g : mGames) {
-            Button b = (Button)getActivity().getLayoutInflater().inflate(R.layout.button, layout, false);
+            Button b = (Button) getActivity().getLayoutInflater().inflate(R.layout.button, layout, false);
             b.setTag(g);
             b.setText("Join \"" + g.getName() + "\"");
             b.setOnClickListener(this);
@@ -166,6 +164,6 @@ public class GameMenuFragment
                 }
             }
         }
-        
+
     }
 }

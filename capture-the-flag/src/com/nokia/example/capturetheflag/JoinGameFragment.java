@@ -34,9 +34,8 @@ import android.widget.TextView;
  * Shows the join game UI.
  */
 public class JoinGameFragment
-    extends Fragment
-    implements MainActivity.BackCallback
-{
+        extends Fragment
+        implements MainActivity.BackCallback {
     public static final String FRAGMENT_TAG = "JoinGameFragment";
     private Game mGame;
     private ProgressBar mProgressBar;
@@ -55,28 +54,27 @@ public class JoinGameFragment
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((MainActivity)activity).setBackCallback(this);
+        ((MainActivity) activity).setBackCallback(this);
     }
 
     @Override
     public void onDetach() {
-        ((MainActivity)getActivity()).removeBackCallback();
+        ((MainActivity) getActivity()).removeBackCallback();
         super.onDetach();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
-                             Bundle savedInstanceState)
-    {
+                             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.join_game_fragment, container, false);
-        TextView gameName = (TextView)root.findViewById(R.id.game_name);
+        TextView gameName = (TextView) root.findViewById(R.id.game_name);
         gameName.setText(mGame.getName());
-        mPlayerName = (EditText)root.findViewById(R.id.editText1);
+        mPlayerName = (EditText) root.findViewById(R.id.editText1);
         mPlayerName.setText(Settings.getUsername(getActivity()));
         mProgressBar = (ProgressBar) root.findViewById(R.id.join_loading_indicator);
         final Button joinGameButton = (Button) root.findViewById(R.id.join_game_button);
-        
+
         joinGameButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,14 +90,14 @@ public class JoinGameFragment
                 }
             }
         });
-        
+
         return root;
     }
 
     @Override
     public void onBackPressed() {
         MainActivity mainActivity = (MainActivity) getActivity();
-        
+
         if (mainActivity != null) {
             mainActivity.showGameMenu(this);
         }
@@ -114,21 +112,21 @@ public class JoinGameFragment
             mPlayerName.setError(null); // Clear error if present
             return true;
         }
-        
+
         mPlayerName.setError(getString(R.string.invalid_name));
         return false;
     }
 
     private void joinGame() {
         // Create player
-        Player player = new Player(0, Settings.getUsername(getActivity()));        
+        Player player = new Player(0, Settings.getUsername(getActivity()));
         NotificationsManagerInterface notificationManager = NotificationsManagerFactory.getInstance(getActivity());
         player.setRegistrationId(notificationManager.getRegistrationId());
         player.setPlatformType(notificationManager.getServiceType() == NotificationServiceType.NOKIA_NOTIFICATIONS ? Player.PLATFORM_NOKIA : Player.PLATFORM_GOOGLE);
-        
-        RadioGroup group = (RadioGroup)getView().findViewById(R.id.radiobuttons);
-        
-        switch(group.getCheckedRadioButtonId()) {
+
+        RadioGroup group = (RadioGroup) getView().findViewById(R.id.radiobuttons);
+
+        switch (group.getCheckedRadioButtonId()) {
             case R.id.blue_team_choice:
                 player.setTeam(Player.BLUE);
                 break;
@@ -139,7 +137,7 @@ public class JoinGameFragment
                 // TODO: Show validation error
                 break;
         }
-        
+
         LocationManagerInterface locationManager = LocationManagerFactory.getInstance(getActivity());
         Location location = locationManager.getCurrentLocation();
         player.setLocation(location);

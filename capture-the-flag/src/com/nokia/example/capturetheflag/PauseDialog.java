@@ -29,10 +29,10 @@ public class PauseDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setCancelable(false);
         builder.setTitle(getString(R.string.game_paused));
-        
-        builder.setItems(new String[] {
-                getString(R.string.resume_game),
-                getString(R.string.drop_out)},
+
+        builder.setItems(new String[]{
+                        getString(R.string.resume_game),
+                        getString(R.string.drop_out)},
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -44,17 +44,17 @@ public class PauseDialog extends DialogFragment {
                                 MainActivity main = (MainActivity) getActivity();
                                 main.showGameMenu(PauseDialog.this);
                                 Controller controller =
-                                        (Controller)getFragmentManager()
-                                        .findFragmentByTag(Controller.FRAGMENT_TAG);
+                                        (Controller) getFragmentManager()
+                                                .findFragmentByTag(Controller.FRAGMENT_TAG);
                                 controller.clearGame();
                                 break;
                             default:
                                 dismiss();
                                 break;
-                            }
+                        }
                     }
-        });
-        
+                });
+
         return builder.create();
     }
 

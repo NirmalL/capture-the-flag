@@ -25,9 +25,11 @@ public class JoinRequest extends JSONRequest {
         mGame = game;
         mPlayer = player;
     }
+
     public Game getGame() {
         return mGame;
     }
+
     public Player getPlayer() {
         return mPlayer;
     }
@@ -37,11 +39,10 @@ public class JoinRequest extends JSONRequest {
         JSONObject obj = new JSONObject();
         try {
             obj.put(ModelConstants.TYPE_KEY, ModelConstants.JOIN_VALUE);
-            obj.put(ModelConstants.GAME_ID_KEY,mGame.getId());
+            obj.put(ModelConstants.GAME_ID_KEY, mGame.getId());
             obj.put(ModelConstants.GAME_KEY, mGame.toJSON());
             obj.put(ModelConstants.PLAYER_KEY, mPlayer.toJSON());
-        }
-        catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 

@@ -35,16 +35,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Google Maps specific {@link Fragment} that extends {@link MapFragment} and 
- * is responsible for showing the map and handle map related actions like adding 
+ * Google Maps specific {@link Fragment} that extends {@link MapFragment} and
+ * is responsible for showing the map and handle map related actions like adding
  * map markers etc.
- * 
+ *
  * @see GameMapInterface.
  */
 public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCameraChangeListener {
     private static final float DEFAULT_MAP_ZOOM_LEVEL_IN_GAME = 14;
     private static final String TAG = "CtF/GameMapGoogle";
-    
+
     private GoogleMap mMap;
 
     private HashMap<Player, Marker> mPlayerMarkers = new HashMap<Player, Marker>();
@@ -55,11 +55,11 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
     private HandlerThread mScaleThread;
     private Handler mScaleHandler;
     private Handler mUIHandler;
-    
+
     private float mZoomLevel = -1.0f;
     private double mCurrentMetersPerPixels = 1;
     private boolean mIsFirstTime = false;
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,14 +78,14 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-       super.onActivityCreated(savedInstanceState);
+        super.onActivityCreated(savedInstanceState);
 
         mMap = getMap();
         mMap.setOnCameraChangeListener(this);
-    
+
         if (mIsFirstTime) {
             // Set up defaults
-            
+
             mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(GameMapUtils.DEFAULT_LATITUDE, GameMapUtils.DEFAULT_LONGITUDE)));
 
             if (mZoomLevel > 0) {
@@ -95,7 +95,7 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
             }
         }
     }
-    
+
     @Override
     public void clearMarkers() {
         removePlayerMarkers();
@@ -113,16 +113,16 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
     @Override
     public void updatePlayerMarkerPosition(Player player) {
         Log.d(TAG, "Updating player with ID " + player.getId());
-        
-        if(!playerHasMarker(player)) {
+
+        if (!playerHasMarker(player)) {
             // New player joined
             Log.d(TAG, "Adding new player with name " + player.getName());
-            MarkerOptions marker =  MarkerFactoryGoogle.createPlayerMarker(player, getResources().getDisplayMetrics(), getResources());
+            MarkerOptions marker = MarkerFactoryGoogle.createPlayerMarker(player, getResources().getDisplayMetrics(), getResources());
             addPlayerMarker(player, marker);
         } else {
             Log.d(TAG, "Updating marker of existing player with name " + player.getName() + "pos: " + player.getLatitude() + ", " + player.getLongitude());
             getPlayerMarker(player).setPosition(new LatLng(player.getLatitude(), player.getLongitude()));
-        }        
+        }
     }
 
     @Override
@@ -139,13 +139,13 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
             MarkerOptions marker = MarkerFactoryGoogle.createPlayerMarker(player, getResources().getDisplayMetrics(), getResources());
             addPlayerMarker(player, marker);
         }
-        
+
         // Flag markers
         final int markerSize = MarkerFactoryGoogle.calculateMarkerSize(getActivity().getResources().getDisplayMetrics(), mCurrentMetersPerPixels);
         mRedFlag = mMap.addMarker(MarkerFactoryGoogle.createFlagMarker(game.getRedFlag(), mRedFlagBitmap, markerSize));
         mBlueFlag = mMap.addMarker(MarkerFactoryGoogle.createFlagMarker(game.getBlueFlag(), mBlueFlagBitmap, markerSize));
 
-        updateMetersPerPixel();        
+        updateMetersPerPixel();
     }
 
     @Override
@@ -153,13 +153,13 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
         LatLng lat = new LatLng(location.getLatitude(), location.getLongitude());
         mZoomLevel = DEFAULT_MAP_ZOOM_LEVEL_IN_GAME;
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lat, mZoomLevel));
-        updateMetersPerPixel();        
+        updateMetersPerPixel();
     }
 
     @Override
     public void onCameraChange(CameraPosition position) {
         final float level = position.zoom;
-        
+
         if (level != mZoomLevel) {
             updateMetersPerPixel();
             scaleMarkers();
@@ -168,9 +168,9 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
     }
 
     /**
-     * Adds {@link Player} {@link Marker} to the map and stores references to 
+     * Adds {@link Player} {@link Marker} to the map and stores references to
      * the {@link Player} and the created {@link Marker} in a {@link HashMap}.
-     * 
+     *
      * @param player {@link Player} for which to add the created {@link Marker}.
      * @param marker {@link MarkerOptions} to be used for the {@link Marker}.
      */
@@ -182,16 +182,16 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
 
     /**
      * Returns a map {@link Marker} for the given {@link Player} from the {@link HashMap}.
-     * 
+     *
      * @param player {@link Player} for which to return the {@link Marker} for.
      * @return {@link Marker} for the given {@link Player}.
      */
     private Marker getPlayerMarker(Player player) {
         return mPlayerMarkers.get(player);
     }
-    
+
     /**
-     * Removes all {@link Player} map {@link Marker} objects from the map and 
+     * Removes all {@link Player} map {@link Marker} objects from the map and
      * the {@link HashMap}.
      */
     private void removePlayerMarkers() {
@@ -200,9 +200,9 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
         }
         mPlayerMarkers.clear();
     }
-    
+
     /**
-     * Updates the current meters per pixel value based on the current 
+     * Updates the current meters per pixel value based on the current
      * {@link Location} and map zoom level.
      */
     private void updateMetersPerPixel() {
@@ -219,7 +219,7 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
                 @Override
                 public void run() {
                     final int markerSize = MarkerFactoryGoogle.calculateMarkerSize(getActivity().getResources().getDisplayMetrics(), mCurrentMetersPerPixels);
-                    final BitmapDescriptor redFlagBitmapDesc = BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(mRedFlagBitmap, markerSize, markerSize, true));                        
+                    final BitmapDescriptor redFlagBitmapDesc = BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(mRedFlagBitmap, markerSize, markerSize, true));
                     final BitmapDescriptor blueFlagBitmapDesc = BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(mBlueFlagBitmap, markerSize, markerSize, true));
 
                     mUIHandler.post(new Runnable() {

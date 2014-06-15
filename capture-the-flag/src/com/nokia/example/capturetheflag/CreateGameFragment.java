@@ -33,13 +33,12 @@ import com.nokia.example.capturetheflag.notifications.NotificationsManagerInterf
 import com.nokia.example.capturetheflag.notifications.NotificationsManagerInterface.NotificationServiceType;
 
 /**
- * UI for creating a game. It uses user's current position and randomly creates 
+ * UI for creating a game. It uses user's current position and randomly creates
  * two flag positions that are DISTANCE km away from the user.
  */
 public class CreateGameFragment
-    extends Fragment
-    implements OnClickListener, MainActivity.BackCallback
-{
+        extends Fragment
+        implements OnClickListener, MainActivity.BackCallback {
     public static final String FRAGMENT_TAG = "CreateGameFragment";
     private static final String TAG = "CtF/CreateGameFragment";
     private static final double EARTH_RADIUS = 6371.0;
@@ -53,52 +52,50 @@ public class CreateGameFragment
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
-                             Bundle savedInstanceState)
-    {
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.create_game_fragment, container, false);
-        Button b = (Button)view.findViewById(R.id.create_game_start_game);
+        Button b = (Button) view.findViewById(R.id.create_game_start_game);
         b.setOnClickListener(this);
         mGameName = (EditText) view.findViewById(R.id.game_name_edit);
-        mPlayerName = (EditText)view.findViewById(R.id.create_game_player_name);
+        mPlayerName = (EditText) view.findViewById(R.id.create_game_player_name);
         mPlayerName.setText(Settings.getUsername(getActivity()));
         mTeamSelection = (RadioGroup) view.findViewById(R.id.create_game_team_group);
         mProgressBar = (ProgressBar) view.findViewById(R.id.create_game_indicator);
-        TextView note = (TextView)view.findViewById(R.id.premium_note);
+        TextView note = (TextView) view.findViewById(R.id.premium_note);
         TextView offlineNote = (TextView) view.findViewById(R.id.offline_note);
         boolean isPremium = getArguments().getBoolean(ModelConstants.IS_PREMIUM_KEY, false);
-        
+
         if (isPremium) {
             note.setVisibility(View.GONE);
         }
-        
+
         Controller controller = Controller.getInstance();
-        
+
         if (controller.getNetworkClient().isConnected()) {
             offlineNote.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             Controller.getInstance().switchOnlineMode(false);
         }
-        
+
         return view;
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((MainActivity)activity).setBackCallback(this);
+        ((MainActivity) activity).setBackCallback(this);
     }
 
     @Override
     public void onDetach() {
-        ((MainActivity)getActivity()).removeBackCallback();
+        ((MainActivity) getActivity()).removeBackCallback();
         super.onDetach();
     }
 
     @Override
     public void onBackPressed() {
-        MainActivity ma = (MainActivity)getActivity();
-        
+        MainActivity ma = (MainActivity) getActivity();
+
         if (ma != null) {
             ma.showGameMenu(this);
         }
@@ -113,7 +110,7 @@ public class CreateGameFragment
             v.setVisibility(View.GONE);
             mProgressBar.setVisibility(View.VISIBLE);
             Location pos = LocationManagerFactory.getInstance(getActivity()).getCurrentLocation();
-            
+
             // Create new game
             Game game = new Game(Game.NEW_GAME);
             game.setName(mGameName.getText().toString());
@@ -127,9 +124,9 @@ public class CreateGameFragment
             NotificationsManagerInterface notificationManager = NotificationsManagerFactory.getInstance(getActivity());
             player.setRegistrationId(notificationManager.getRegistrationId());
             player.setPlatformType(notificationManager.getServiceType() == NotificationServiceType.NOKIA_NOTIFICATIONS ? Player.PLATFORM_NOKIA : Player.PLATFORM_GOOGLE);
-            
+
             Settings.setUsername(mPlayerName.getText().toString(), getActivity());
-            
+
             switch (mTeamSelection.getCheckedRadioButtonId()) {
                 case R.id.radio0:
                     player.setTeam(Player.BLUE);
@@ -141,7 +138,7 @@ public class CreateGameFragment
                     player.setTeam(Player.BLUE);
                     break;
             }
-            
+
             player.setLatitude(pos.getLatitude());
             player.setLongitude(pos.getLongitude());
             Controller.getInstance().getNetworkClient().emit(new JoinRequest(game, player));
@@ -150,40 +147,38 @@ public class CreateGameFragment
 
     /**
      * Checks the validity of the user input.
-     * 
+     *
      * @return <code>true</code> if input is valid, <code>false</code> otherwise.
      */
     private boolean validateFields() {
         boolean gamename = false;
         boolean username = false;
-        
+
         if (mGameName.getText().toString().trim().length() > 0) {
             gamename = true;
             mGameName.setError(null);
-        }
-        else {
+        } else {
             mGameName.setError(getString(R.string.invalid_name));
             gamename = false;
         }
-        
+
         if (mPlayerName.getText().toString().trim().length() > 0) {
             mPlayerName.setError(null);
             username = true;
-        }
-        else {
+        } else {
             mPlayerName.setError(getString(R.string.invalid_name));
             username = false;
         }
-        
+
         return gamename && username;
     }
 
     /**
-     * Generates flags for both teams of the given {@link Game} at random 
+     * Generates flags for both teams of the given {@link Game} at random
      * locations around the given {@link Location}.
-     * 
+     *
      * @param basePosition {@link Location} to use as base for flag locations.
-     * @param game The {@link Game} for which the flags are generated.
+     * @param game         The {@link Game} for which the flags are generated.
      */
     private void generateFlags(Location basePosition, Game game) {
         game.setBlueFlag(createRandomCoordinate(basePosition));
@@ -194,30 +189,30 @@ public class CreateGameFragment
      * Randomly generate flag position from DISTANCE kilometers of user's
      * location. See http://www.movable-type.co.uk/scripts/latlong.html for
      * the theory behind the calculations.
-     * 
+     *
      * @param basePosition The position respect to which place the flags.
      * @return A newly created flag object with position.
      */
     private Flag createRandomCoordinate(Location basePosition) {
         double dist = DISTANCE / EARTH_RADIUS;
-        
+
         double bearing = Math.toRadians((new Random().nextDouble() * 360));
         double lat1 = Math.toRadians(basePosition.getLatitude());
         double lon1 = Math.toRadians(basePosition.getLongitude());
-        
+
         double lat2 = Math.asin(Math.sin(lat1) * Math.cos(dist)
                 + Math.cos(lat1) * Math.sin(dist) * Math.cos(bearing));
-        
+
         double a = Math.atan2(Math.sin(bearing) * Math.sin(dist) * Math.cos(lat1),
                 Math.cos(dist) - Math.sin(lat1) * Math.sin(lat2));
         double lon2 = lon1 + a;
         lon2 = (lon2 + 3 * Math.PI) % (2 * Math.PI) - Math.PI;
-        
+
         lat2 = Math.toDegrees(lat2);
         lon2 = Math.toDegrees(lon2);
-        
+
         Log.d(TAG, "createRandomCoordinate(): lat:" + lat2 + " lon:" + lon2);
-        
+
         return new Flag(lat2, lon2);
     }
 }

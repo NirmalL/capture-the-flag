@@ -48,7 +48,7 @@ public class PurchasePremiumFragment extends Fragment implements MainActivity.Ba
     private static final String NOKIA_PREMIUM_PRODUCT_ID = "1023610"; // Test ID
 
     // Google In-App Billing constants
-    private static final String Base64EncodedPublicKey = "CONSTRUCT_YOUR_KEY_AND_PLACE_IT_HERE";
+    private static final String Base64EncodedPublicKey = "AIzaSyAh3zPCUA6-mAjuTJnB-sQcXreOOOkz_GQ";
     private static final String SKU_PREMIUM = "android.test.purchased";
 
     static {

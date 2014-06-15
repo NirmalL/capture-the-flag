@@ -15,6 +15,7 @@ import android.util.Log;
 
 /**
  * Intent service responsible for handling Nokia Notifications push messages.
+ *
  * @see {@link PushBaseIntentService}.
  */
 public class NokiaNotificationsIntentService extends PushBaseIntentService {
@@ -29,7 +30,7 @@ public class NokiaNotificationsIntentService extends PushBaseIntentService {
 
     @Override
     protected String[] getSenderIds(Context context) {
-        return new String[] { SENDER_ID };
+        return new String[]{SENDER_ID};
     }
 
     @Override
@@ -48,13 +49,13 @@ public class NokiaNotificationsIntentService extends PushBaseIntentService {
 
         Bundle extras = intent.getExtras();
         NotificationsUtils.broadcastGameMessage(extras.getString("payload"), this);
-        
+
         NokiaNotificationsBroadcastReceiver.completeWakefulIntent(intent);
     }
 
     @Override
     protected void onDeletedMessages(Context context, int total) {
-        Log.i(TAG, "Received deleted messages notification");       
+        Log.i(TAG, "Received deleted messages notification");
     }
 
     @Override

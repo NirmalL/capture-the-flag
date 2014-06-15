@@ -28,12 +28,11 @@ public class GameEndedDialogFragment extends DialogFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        
+
         try {
             // Instantiate the NoticeDialogListener so we can send events to the host
             mListener = (DialogButtonListener) activity;
-        }
-        catch (ClassCastException e) {
+        } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
                     + " must implement DialogButtonListener");
@@ -47,7 +46,7 @@ public class GameEndedDialogFragment extends DialogFragment {
         String team = args.getString(TEAM_KEY);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage("Flag captured by " + name + ", team " + team + " wins");
-        
+
         builder.setPositiveButton(
                 getResources().getText(android.R.string.ok),
                 new DialogInterface.OnClickListener() {
@@ -55,8 +54,8 @@ public class GameEndedDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         mListener.OkClicked();
                     }
-        });
-        
+                });
+
         return builder.create();
     }
 

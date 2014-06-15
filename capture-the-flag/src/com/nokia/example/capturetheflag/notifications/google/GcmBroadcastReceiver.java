@@ -13,7 +13,7 @@ import android.support.v4.content.WakefulBroadcastReceiver;
 
 /**
  * Google Cloud Messaging {@link BroadcastReceiver}.
- * 
+ * <p/>
  * Receives GCM messages and passes them to {@link GcmIntentService}.
  */
 public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {

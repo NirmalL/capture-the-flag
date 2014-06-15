@@ -13,21 +13,21 @@ import android.support.v4.content.WakefulBroadcastReceiver;
 
 /**
  * Broadcast Receiver for Nokia Notifications.
- * 
- * Receives Nokia Notifications messages and passes them to 
+ * <p/>
+ * Receives Nokia Notifications messages and passes them to
  * {@link NokiaNotificationsIntentService}.
- * 
- * This implementation is necessary only for redefining the name of the intent 
- * service that will handle the received messages because the intent service 
- * used in this example application has a non-default package/name of 
- * com.nokia.example.capturetheflag.notifications.nokia.NokiaNotificationsIntentService 
- * due to organizing all notifications related implementation under the 
+ * <p/>
+ * This implementation is necessary only for redefining the name of the intent
+ * service that will handle the received messages because the intent service
+ * used in this example application has a non-default package/name of
+ * com.nokia.example.capturetheflag.notifications.nokia.NokiaNotificationsIntentService
+ * due to organizing all notifications related implementation under the
  * "notifications" package and its sub-packages.
- *
- * If the default name of .PushIntentService would be used for the intent 
- * service instead, this custom Broadcast Receiver implementation would not be 
+ * <p/>
+ * If the default name of .PushIntentService would be used for the intent
+ * service instead, this custom Broadcast Receiver implementation would not be
  * required.
- * 
+ *
  * @see <a href="http://developer.nokia.com/resources/library/nokia-x/nokia-notifications/nokia-notifications-developer-guide/nokia-notifications-client-api-guide.html">Nokia Notifications Client API Guide</a>.
  */
 public class NokiaNotificationsBroadcastReceiver extends WakefulBroadcastReceiver {

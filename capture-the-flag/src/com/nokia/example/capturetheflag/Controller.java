@@ -46,17 +46,16 @@ import com.nokia.example.capturetheflag.notifications.NotificationsManagerFactor
 
 /**
  * Controller class is responsible for communicating server responses back to
- * the UI. It listens for message events from the server. 
+ * the UI. It listens for message events from the server.
  * It also maintains a state about the current Game and Player objects.
- * 
+ * <p/>
  * The class is implemented as a Fragment but it's a retained fragment, meaning
  * that it doesn't have an UI and it will be kept alive if possible i.e. if
  * there is enough memory for it.
  */
 public class Controller
-    extends Fragment
-    implements NetworkClient.NetworkListener, LocationManagerListener
-{
+        extends Fragment
+        implements NetworkClient.NetworkListener, LocationManagerListener {
     public static final String FRAGMENT_TAG = "Controller";
     private static final String TAG = "CtF/Controller";
 
@@ -80,15 +79,14 @@ public class Controller
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d(TAG + ".mPushHandler", "Received broadcast");
-            
+
             try {
                 Player capturer = new Player(
                         new JSONObject(intent
                                 .getStringExtra(ModelConstants.CAPTURER_KEY))
                                 .getJSONObject(ModelConstants.CAPTURED_BY_PLAYER_KEY));
                 FlagCaptured(capturer);
-            }
-            catch (JSONException e) {
+            } catch (JSONException e) {
                 // Received corrupted data, do nothing
                 Log.e(TAG + ".mPushHandler", "Parse error: " + e.getMessage(), e);
             }
@@ -116,14 +114,14 @@ public class Controller
 
         mLocationManager = LocationManagerFactory.getInstance(getActivity());
         mLocationManager.setListener(this);
-        
+
         NotificationsManagerFactory.getInstance(getActivity()).register();
     }
 
     public void setMap(GameMapInterface map) {
         mMap = map;
     }
-    
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -133,7 +131,7 @@ public class Controller
     public void onDetach() {
         super.onDetach();
         mMap = null; // Remove the reference since map is not retained, would
-                     // leak everything
+        // leak everything
         Log.d(TAG, "onDetach(): getActivity() returns "
                 + (getActivity() == null ? "null" : "not null"));
     }
@@ -154,7 +152,7 @@ public class Controller
     public void onResume() {
         super.onResume();
         Log.d(TAG, "Registering broadcast receiver");
-        
+
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(
                 mPushHandler,
                 new IntentFilter(NotificationsManagerFactory.PUSH_MESSAGE_ACTION));
@@ -177,11 +175,11 @@ public class Controller
     @Override
     public void onGameListMessage(GameListResponse rsp) {
         FragmentManager manager = getFragmentManager();
-        
+
         if (manager != null) {
             GameMenuFragment menu = (GameMenuFragment) getFragmentManager()
                     .findFragmentByTag(GameMenuFragment.FRAGMENT_TAG);
-            
+
             if (menu != null && menu.isVisible()) {
                 Log.d(TAG, "Menu is not null");
                 menu.setGames(rsp.getGames());
@@ -193,12 +191,12 @@ public class Controller
     public void onJoinedMessage(JoinedResponse joined) {
         Fragment CreateGameFrg = getFragmentManager().findFragmentByTag(
                 CreateGameFragment.FRAGMENT_TAG);
-        
+
         if (CreateGameFrg != null) {
             getFragmentManager().beginTransaction().remove(CreateGameFrg)
                     .commit();
         }
-        
+
         setCurrentGame(joined.getJoinedGame());
         mPlayer = joined.getPlayer();
         ((MainActivity) getActivity()).startGame(joined.getJoinedGame());
@@ -209,10 +207,10 @@ public class Controller
         if (mCurrentGame == null) {
             return;
         }
-        
+
         Log.d(TAG, "onUpdatePlayerMessage()");
         Player updated = update.getUpdatedPlayer();
-        
+
         if (!mCurrentGame.getPlayers().contains(update.getUpdatedPlayer())) {
             mCurrentGame.getPlayers().add(updated);
         } else {
@@ -227,17 +225,16 @@ public class Controller
     @Override
     public void onError(JSONResponse error) {
         Log.w(TAG, "onError()");
-        
+
         AlertDialog.Builder errordialog = new AlertDialog.Builder(getActivity());
         errordialog.setTitle("Error");
-        
+
         if (error.getErrorCode() == JSONResponse.ERROR_GAME_FULL) {
             errordialog.setMessage(getString(R.string.game_full));
-        }
-        else if (error.getErrorCode() == JSONResponse.ERROR_EXCEPTION) {
+        } else if (error.getErrorCode() == JSONResponse.ERROR_EXCEPTION) {
             errordialog.setMessage(error.getException().getMessage());
         }
-        
+
         errordialog.setPositiveButton(getString(android.R.string.ok),
                 new OnClickListener() {
                     @Override
@@ -247,10 +244,10 @@ public class Controller
                         m.showGameMenu(null);
                     }
                 });
-        
+
         errordialog.create().show();
     }
-    
+
     /**
      * In case you don't want to use the push notifications to inform users that
      * the game has ended, you can enable the ending info to be sent via TCP
@@ -261,35 +258,35 @@ public class Controller
         Player p = captured.getCapturer();
         FlagCaptured(p);
     }
-    
+
     @Override
     public void onLocationManagerReady(boolean success) {
         Log.d(TAG, "Location Manager Ready -" + (success ? "SUCCESS" : "FAILED"));
-        if(success && mLocationManager.isLocationAvailable()) {
+        if (success && mLocationManager.isLocationAvailable()) {
             mLocationManager.start();
         } else {
-            showEnableGPSDialog();            
+            showEnableGPSDialog();
         }
     }
 
     @Override
     public void onLocationUpdated(Location position) {
-        if(!mIsLocationFound) {
+        if (!mIsLocationFound) {
             mMap.centerMapToPosition(position);
             mIsLocationFound = true;
         }
         //Log.d(TAG, "Position updated");
         Player user = getPlayer();
-        
+
         // Only if game is running, we send updated location to the server
         if (user != null && getCurrentGame() != null && !getCurrentGame().getHasEnded()) {
-            Log.d(TAG, "updating user position");            
+            Log.d(TAG, "updating user position");
             if (user.getLatitude() != position.getLatitude() || user.getLongitude() != position.getLongitude()) {
                 user.setLatitude(position.getLatitude());
                 user.setLongitude(position.getLongitude());
                 UpdatePlayerRequest upr = new UpdatePlayerRequest(user, getCurrentGame().getId());
                 mClient.emit(upr);
-                
+
                 // Update the marker
                 updatePlayerMarker(user);
             }
@@ -299,7 +296,7 @@ public class Controller
          * If the menu is visible, we create and send the reverse geocode
          * request so that we can update the user location in the fragment.
          */
-            
+
         GameMenuFragment menu = (GameMenuFragment) getFragmentManager()
                 .findFragmentByTag(GameMenuFragment.FRAGMENT_TAG);
         if (menu != null) {
@@ -316,21 +313,20 @@ public class Controller
             @Override
             public void run() {
                 boolean showToast = false;
-                
+
                 if (mIsConnected == -1
                         || (isConnected && mIsConnected == 0)
-                        || (!isConnected && mIsConnected == 1))
-                {
+                        || (!isConnected && mIsConnected == 1)) {
                     showToast = true;
                 }
-                
+
                 Activity activity = getActivity();
-                
+
                 if (showToast && activity != null) {
                     final int toastTextId = isConnected
                             ? R.string.connected_to_server
                             : R.string.not_connected_to_server;
-                    
+
                     Toast toast = Toast.makeText(activity,
                             getString(toastTextId), Toast.LENGTH_SHORT);
                     toast.show();
@@ -342,7 +338,7 @@ public class Controller
 
     /**
      * Checks from saved preferences if the app is the premium version.
-     * 
+     *
      * @return True if premium, false otherwise.
      */
     public boolean isPremium() {
@@ -353,7 +349,7 @@ public class Controller
         if (g != null) {
             Log.d(TAG, "Setting as current game: " + g.getId());
         }
-        
+
         mCurrentGame = g;
     }
 
@@ -379,20 +375,19 @@ public class Controller
     }
 
     public NetworkClient getNetworkClient() {
-    	return mClient;
+        return mClient;
     }
 
     /**
      * Switches to online/offline mode depending on the argument.
-     * 
+     *
      * @param online If true, will switch to online mode. Otherwise will switch
-     * to offline mode.
+     *               to offline mode.
      */
     public void switchOnlineMode(boolean online) {
         if (online) {
             mClient = mSocketClient;
-        }
-        else {
+        } else {
             mClient = mOfflineClient;
             mOfflineClient.connect(null, 0);
         }
@@ -412,28 +407,28 @@ public class Controller
         getFragmentManager().beginTransaction()
                 .add(dialog, GameEndedDialogFragment.FRAGMENT_TAG).commit();
 
-        if(mCurrentGame != null) {
+        if (mCurrentGame != null) {
             mCurrentGame.setHasEnded(true);
         }
     }
-    
+
     private void updatePlayerMarker(Player player) {
-        if(!mMap.playerHasMarker(player)) {
+        if (!mMap.playerHasMarker(player)) {
             Log.d(TAG, "New player - Show player joined toast");
             String text = getString(R.string.player) + " " + player.getName() + " " + getString(R.string.joined);
             Toast toast = Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
             toast.show();
-        }    
-        
+        }
+
         mMap.updatePlayerMarkerPosition(player);
     }
-    
+
 
     private void showEnableGPSDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(getResources().getText(R.string.gps_not_enabled));
-        
+
         builder.setPositiveButton(
                 getResources().getText(R.string.action_settings),
                 new OnClickListener() {
@@ -442,8 +437,8 @@ public class Controller
                         Intent i = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                         getActivity().startActivity(i);
                     }
-        });
-        
+                });
+
         builder.setNegativeButton(
                 getResources().getText(R.string.cancel),
                 new OnClickListener() {
@@ -451,8 +446,8 @@ public class Controller
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
-        });
-        
+                });
+
         builder.create().show();
-    }    
+    }
 }

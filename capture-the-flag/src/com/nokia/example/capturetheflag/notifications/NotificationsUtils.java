@@ -18,6 +18,7 @@ public class NotificationsUtils {
 
     /**
      * Broadcasts the given game message.
+     *
      * @param message The message to broadcast.
      * @param context Context.
      */

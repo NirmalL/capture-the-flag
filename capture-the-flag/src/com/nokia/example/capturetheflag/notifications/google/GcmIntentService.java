@@ -14,7 +14,7 @@ import android.os.Bundle;
 
 /**
  * Intent service responsible for handling Google Cloud Messaging (GCM) push messages.
- *
+ * <p/>
  * Receives GCM messages from {@link GcmBroadcastReceiver} and processes them.
  */
 public class GcmIntentService extends IntentService {
@@ -41,6 +41,6 @@ public class GcmIntentService extends IntentService {
         }
 
         // Release the wake lock provided by the GcmBroadcastReceiver.
-       GcmBroadcastReceiver.completeWakefulIntent(intent);
+        GcmBroadcastReceiver.completeWakefulIntent(intent);
     }
 }

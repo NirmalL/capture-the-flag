@@ -38,10 +38,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Here Maps specific {@link Fragment} that extends {@link MapFragment} and is 
- * responsible for showing the map and handle map related actions like adding 
+ * Here Maps specific {@link Fragment} that extends {@link MapFragment} and is
+ * responsible for showing the map and handle map related actions like adding
  * map markers etc.
- * 
+ *
  * @see GameMapInterface.
  */
 public class GameMapHere extends MapFragment implements GameMapInterface {
@@ -49,7 +49,7 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
     private static final String TAG = "CtF/GameMapHere";
 
     private Map mMap;
-    
+
     private HashMap<Player, MapMarker> mPlayerMarkers = new HashMap<Player, MapMarker>();
     private MapMarker mRedFlag = null;
     private MapMarker mBlueFlag = null;
@@ -66,7 +66,7 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         if (savedInstanceState == null) {
             mIsFirstTime = true;
         }
@@ -82,50 +82,48 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "onActivityCreated()");
-        
+
         init(new FragmentInitListener() {
             @Override
             public void onFragmentInitializationCompleted(InitError error) {
                 if (error == InitError.NONE) {
                     // Retrieve a reference of the map from the map fragment
                     mMap = getMap();
-                    
+
                     if (mIsFirstTime) {
                         mMap.setCenter(
                                 MapFactory.createGeoCoordinate(
-                                        GameMapUtils.DEFAULT_LATITUDE, 
+                                        GameMapUtils.DEFAULT_LATITUDE,
                                         GameMapUtils.DEFAULT_LONGITUDE),
                                 MapAnimation.NONE);
-                        
+
                         if (mZoomLevel > 0) {
                             mMap.setZoomLevel(mZoomLevel);
-                        }
-                        else {
+                        } else {
                             mMap.setZoomLevel((mMap.getMinZoomLevel() + mMap.getMaxZoomLevel()) / 2);
                         }
                     }
-                    
+
                     View view = GameMapHere.this.getView();
-                    
+
                     view.setOnTouchListener(new OnTouchListener() {
                         @Override
                         public boolean onTouch(View v, MotionEvent event) {
                             // Regardless of what happens, let's check zoom state
                             final double level = mMap.getZoomLevel();
-                            
+
                             if (level != mZoomLevel) {
                                 updateMetersPerPixel();
                                 scaleMarkers();
                                 mZoomLevel = level;
                             }
-                            
+
                             return false;
                         }
                     });
-                    
+
                     updateMetersPerPixel();
-                }
-                else {
+                } else {
                     Log.e(TAG, "Unable to init maps: " + error);
                 }
             }
@@ -156,17 +154,16 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
     @Override
     public void updatePlayerMarkerPosition(Player player) {
         Log.d(TAG, "Updating player with ID " + player.getId());
-        
+
         if (!playerHasMarker(player)) {
             // New player joined
             Log.d(TAG, "Adding new player with name " + player.getName());
-            MapMarker marker =  MarkerFactoryHere.createPlayerMarker(
+            MapMarker marker = MarkerFactoryHere.createPlayerMarker(
                     player, getResources().getDisplayMetrics(), getResources());
             Log.d(TAG, "New marker to: " + marker.getCoordinate().getLatitude()
                     + "; " + marker.getCoordinate().getLongitude());
             addPlayerMarker(player, marker);
-        }
-        else {
+        } else {
             Log.d(TAG, "Updating marker of existing player with name " + player.getName());
             MapMarker marker = getPlayerMarker(player);
             marker.setCoordinate(MapFactory.createGeoCoordinate(player.getLatitude(), player.getLongitude()));
@@ -181,18 +178,18 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
     @Override
     public void setMarkers(Game game) {
         ArrayList<Player> players = game.getPlayers();
-        
+
         for (Player player : players) {
             Log.d(TAG, "Adding marker to: " + player.getLatitude() + "; " + player.getLongitude() + ", name: " + player.getName() + ", id: " + player.getId());
             MapMarker marker = MarkerFactoryHere.createPlayerMarker(player, getResources().getDisplayMetrics(), getResources());
             addPlayerMarker(player, marker);
         }
-        
+
         final int markerSize = MarkerFactoryGoogle.calculateMarkerSize(getActivity().getResources().getDisplayMetrics(), mCurrentMetersPerPixels);
         mRedFlag = MarkerFactoryHere.createFlagMarker(game.getRedFlag(), mRedFlagBitmap, markerSize);
         mBlueFlag = MarkerFactoryHere.createFlagMarker(game.getBlueFlag(), mBlueFlagBitmap, markerSize);
         updateMetersPerPixel();
-        
+
         mMap.addMapObject(mRedFlag);
         mMap.addMapObject(mBlueFlag);
     }
@@ -204,7 +201,7 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
     }
 
     /**
-     * Updates the current meters per pixel value based on the current 
+     * Updates the current meters per pixel value based on the current
      * {@link Location} and map zoom level.
      */
     private void updateMetersPerPixel() {
@@ -221,13 +218,13 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
                 @Override
                 public void run() {
                     final int markerSize = MarkerFactoryGoogle.calculateMarkerSize(getActivity().getResources().getDisplayMetrics(), mCurrentMetersPerPixels);
-                    
+
                     final Image redFlagImage = MapFactory.createImage();
                     redFlagImage.setBitmap(Bitmap.createScaledBitmap(mRedFlagBitmap, markerSize, markerSize, true));
-                    
+
                     final Image blueFlagImage = MapFactory.createImage();
                     blueFlagImage.setBitmap(Bitmap.createScaledBitmap(mBlueFlagBitmap, markerSize, markerSize, true));
-                    
+
                     mUIHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -241,10 +238,10 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
             });
         }
     }
-    
+
     /**
      * Converts the given {@link Location} to {@link GeoCoordinate}.
-     * 
+     *
      * @param location {@link Location} to convert.
      * @return {@link GeoCoordinate}.
      */
@@ -253,8 +250,9 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
     }
 
     /**
-     * Adds {@link Player} {@link MapMarker} to the map and stores references 
+     * Adds {@link Player} {@link MapMarker} to the map and stores references
      * to the {@link Player} and the {@link MapMarker} in a {@link HashMap}
+     *
      * @param player
      * @param marker
      */
@@ -265,16 +263,16 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
 
     /**
      * Returns a map {@link MapMarker} for the given {@link Player} from the {@link HashMap}.
-     * 
+     *
      * @param player {@link Player} for which to return the {@link MapMarker} for.
      * @return {@link MapMarker} for the given {@link Player}.
      */
     private MapMarker getPlayerMarker(Player player) {
         return mPlayerMarkers.get(player);
     }
-    
+
     /**
-     * Removes all {@link Player} map {@link MapMarker} objects from the map and 
+     * Removes all {@link Player} map {@link MapMarker} objects from the map and
      * the {@link HashMap}.
      */
     private void removePlayerMarkers() {

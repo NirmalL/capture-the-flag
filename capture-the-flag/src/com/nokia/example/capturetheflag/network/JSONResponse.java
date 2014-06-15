@@ -8,8 +8,8 @@ package com.nokia.example.capturetheflag.network;
 import com.nokia.example.capturetheflag.network.model.Player;
 
 /**
- * Base class for all JSON responses. The class has a static createResponse() 
- * method which acts as a factory method for creating different kind of 
+ * Base class for all JSON responses. The class has a static createResponse()
+ * method which acts as a factory method for creating different kind of
  * responses based on the given JSON data.
  */
 public class JSONResponse {
@@ -56,7 +56,7 @@ public class JSONResponse {
     protected void setException(Exception exception) {
         mException = exception;
     }
-    
+
     protected void setType(int type) {
         mType = type;
     }

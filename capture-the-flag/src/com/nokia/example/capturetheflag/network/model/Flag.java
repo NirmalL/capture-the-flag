@@ -41,17 +41,16 @@ public class Flag {
         return mLongitude;
     }
 
-    public JSONObject toJSON(){
+    public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
-        
+
         try {
             obj.put(ModelConstants.LATITUDE_KEY, mLatitude);
             obj.put(ModelConstants.LONGITUDE_KEY, mLongitude);
-        }
-        catch (JSONException e) {
+        } catch (JSONException e) {
             Log.e("Flag", "error in toJSON", e);
         }
-        
+
         return obj;
     }
 }

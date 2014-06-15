@@ -26,18 +26,19 @@ import com.nokia.example.capturetheflag.location.LocationManagerInterface;
 
 /**
  * Location Manager implementation.
- * 
+ * <p/>
  * Implementation of {@link LocationManagerInterface} that uses Here APIs, i.e {@link PositioningManager}.
+ *
  * @see {@link LocationManagerInterface}, {@link LocationManagerBase} and {@link PositionListener}.
  */
 public class LocationManagerHere extends LocationManagerBase implements PositionListener {
 
     private PositioningManager mPosManager;
-    
+
     public LocationManagerHere(Activity activity) {
         super();
         MapFactory.initFactory(activity.getApplicationContext(), new FactoryInitListener() {
-            
+
             @Override
             public void onFactoryInitializationCompleted(InitError error) {
                 mPosManager = MapFactory.getPositioningManager();
@@ -52,7 +53,7 @@ public class LocationManagerHere extends LocationManagerBase implements Position
         LocationStatus status = mPosManager.getLocationStatus(LocationMethod.GPS);
         return status != LocationStatus.OUT_OF_SERVICE;
     }
-    
+
     @Override
     public void onPositionFixChanged(LocationMethod arg0, LocationStatus arg1) {
         // Not implemented        
@@ -68,19 +69,19 @@ public class LocationManagerHere extends LocationManagerBase implements Position
 
         notifyListener(location);
     }
-    
+
     @Override
     public void start() {
         if (mPosManager != null) {
             mPosManager.start(LocationMethod.GPS_NETWORK);
-        }        
+        }
     }
-    
+
     @Override
     public void stop() {
         if (mPosManager != null) {
             mPosManager.stop();
-        }        
+        }
     }
 
     @Override
@@ -101,14 +102,15 @@ public class LocationManagerHere extends LocationManagerBase implements Position
                 String result = null;
                 if (error != ErrorCode.NONE) {
                     result = "Unable to find location";
-                }
-                else {
+                } else {
                     result = new String(data.getStreet() + " " + data.getHouseNumber()).trim();
                 }
-                if(listener != null) {
+                if (listener != null) {
                     listener.onReverseGeocodingResult(result);
                 }
-            };
+            }
+
+            ;
         });
-    }    
+    }
 }

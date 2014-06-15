@@ -34,22 +34,22 @@ public class Game {
         this(jsonObj.getInt(ModelConstants.ID_KEY));
         setName(jsonObj.getString(ModelConstants.NAME_KEY));
         JSONArray jsonArray = jsonObj.getJSONArray(ModelConstants.PLAYERS_KEY);
-        
+
         for (int i = 0; i < jsonArray.length(); i++) {
             Player p = new Player(jsonArray.getJSONObject(i));
             addPlayer(p);
         }
-        
+
         JSONObject redflag = jsonObj.getJSONObject(ModelConstants.RED_FLAG_KEY);
         JSONObject blueflag = jsonObj.getJSONObject(ModelConstants.BLUE_FLAG_KEY);
-        
+
         mRedFlag = new Flag(
                 redflag.getDouble(ModelConstants.LATITUDE_KEY),
                 redflag.getDouble(ModelConstants.LONGITUDE_KEY));
         mBlueFlag = new Flag(
                 blueflag.getDouble(ModelConstants.LATITUDE_KEY),
                 blueflag.getDouble(ModelConstants.LONGITUDE_KEY));
-        
+
         mIsPremium = jsonObj.optBoolean(ModelConstants.IS_PREMIUM_KEY, false);
     }
 

@@ -17,21 +17,21 @@ import com.nokia.push.PushRegistrar;
  * instance.
  */
 public class NotificationsManagerFactory {
-    
+
     public static final String PUSH_MESSAGE_ACTION = "com.nokia.example.capturetheflag.PUSH_MESSAGE_ACTION";
     private static final String TAG = "CtF/NotificationsManagerFactory";
 
     private static NotificationsManagerInterface mInstance;
-    
+
     /**
      * Provides the Notifications Manager singleton instance.
-     * 
+     *
      * @param context The application context.
      * @return The singleton instance of this class.
      */
-    public static NotificationsManagerInterface getInstance(Context context) {        
+    public static NotificationsManagerInterface getInstance(Context context) {
         if (mInstance == null) {
-            
+
             // Check the device for supported notifications service
             try {
                 PushRegistrar.checkDevice(context);
@@ -41,13 +41,12 @@ public class NotificationsManagerFactory {
                 try {
                     mInstance = new NotificationsManagerGoogle(context);
                     Log.i(TAG, "Using Google Cloud Messaging");
-                }
-                catch (UnsupportedOperationException e2) {
+                } catch (UnsupportedOperationException e2) {
                     Log.w(TAG, "No supported notifications services!");
                 }
             }
         }
-        
+
         return mInstance;
     }
 }

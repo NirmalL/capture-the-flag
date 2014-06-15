@@ -26,30 +26,32 @@ import com.nokia.example.capturetheflag.location.LocationManagerListener;
 
 /**
  * Location Manager implementation.
- * 
- * Implementation of {@link LocationManagerInterface} that uses Google and 
+ * <p/>
+ * Implementation of {@link LocationManagerInterface} that uses Google and
  * Google Play Services APIs, i.e. {@link LocationClient} and {@link Geocoder}.
+ *
  * @see {@link LocationManagerInterface}, {@link LocationManagerListener}, {@link LocationClient} and {@link LocationListener}.
  */
 public class LocationManagerGoogle extends LocationManagerBase implements
-    GooglePlayServicesClient.ConnectionCallbacks, 
-    GooglePlayServicesClient.OnConnectionFailedListener, 
-    LocationListener {
-    
-    private static final String TAG ="CtF/LocationManagerGoogle";
+        GooglePlayServicesClient.ConnectionCallbacks,
+        GooglePlayServicesClient.OnConnectionFailedListener,
+        LocationListener {
+
+    private static final String TAG = "CtF/LocationManagerGoogle";
 
     private static final int MILLISECONDS_PER_SECOND = 1000;
     private static final int UPDATE_INTERVAL_IN_SECONDS = 5;
     private static final long UPDATE_INTERVAL = MILLISECONDS_PER_SECOND * UPDATE_INTERVAL_IN_SECONDS;
     private static final int FASTEST_INTERVAL_IN_SECONDS = 1;
-    private static final long FASTEST_INTERVAL = MILLISECONDS_PER_SECOND * FASTEST_INTERVAL_IN_SECONDS;    
-    
+    private static final long FASTEST_INTERVAL = MILLISECONDS_PER_SECOND * FASTEST_INTERVAL_IN_SECONDS;
+
     private LocationRequest mLocationRequest;
     private LocationClient mLocationClient;
     private Geocoder mGeoCoder;
-    
+
     /**
      * Constructor.
+     *
      * @param activity Activity.
      */
     public LocationManagerGoogle(Activity activity) {
@@ -59,7 +61,7 @@ public class LocationManagerGoogle extends LocationManagerBase implements
 
         mLocationClient.connect();
     }
-    
+
     @Override
     public boolean isLocationAvailable() {
         return true;
@@ -103,7 +105,7 @@ public class LocationManagerGoogle extends LocationManagerBase implements
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(UPDATE_INTERVAL);
         mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
-        
+
         // Connecting to LocationClient succeeded, notify the listeners.
         notifyManagerReady(true);
     }
@@ -123,19 +125,19 @@ public class LocationManagerGoogle extends LocationManagerBase implements
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
+
         String result = null;
-        
+
         // If any matches found, use the address from the first one.
-        if(matches != null) {
+        if (matches != null) {
             Address bestMatch = (matches.isEmpty() ? null : matches.get(0));
-            if(bestMatch != null) {
+            if (bestMatch != null) {
                 result = bestMatch.getAddressLine(0);
             }
         } else {
             result = "Unable to find location";
         }
-        
+
         listener.onReverseGeocodingResult(result);
     }
 }

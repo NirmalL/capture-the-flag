@@ -21,16 +21,17 @@ import com.nokia.example.capturetheflag.network.model.Player;
  * Helper class using Google APIs for creating map markers, e.g. player or flag marker.
  */
 public class MarkerFactoryGoogle extends MarkerFactoryBase {
-    
-    private static final float ANCHOR_U = 1.0f - (12.0f / (float)PLAYER_NAME_SIZE);
+
+    private static final float ANCHOR_U = 1.0f - (12.0f / (float) PLAYER_NAME_SIZE);
     private static final float ANCHOR_V = 1.0f;
 
     /**
-     * Creates and returns a {@link MarkerOptions} instance for a player marker 
+     * Creates and returns a {@link MarkerOptions} instance for a player marker
      * to be used for creating a new marker on the Google map.
-     * @param player Player data, @see {@link Player}.
+     *
+     * @param player  Player data, @see {@link Player}.
      * @param metrics Display metrics to use for size calculations.
-     * @param res Resources to use.
+     * @param res     Resources to use.
      * @return Map marker options for the player marker, @see {@link MarkerOptions}.
      */
     public static MarkerOptions createPlayerMarker(final Player player, DisplayMetrics metrics, Resources res) {
@@ -42,11 +43,12 @@ public class MarkerFactoryGoogle extends MarkerFactoryBase {
     }
 
     /**
-     * Creates and returns a {@link MarkerOptions} instance for a flag marker 
+     * Creates and returns a {@link MarkerOptions} instance for a flag marker
      * to be used for creating a new marker on the Google map.
-     * @param player Player data, @see {@link Player}.
+     *
+     * @param player  Player data, @see {@link Player}.
      * @param metrics Display metrics to use for size calculations.
-     * @param res Resources to use.
+     * @param res     Resources to use.
      * @return Map marker options for the player marker, @see {@link MarkerOptions}.
      */
     public static MarkerOptions createFlagMarker(Flag flag, Bitmap bitmap, int size) {

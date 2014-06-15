@@ -22,34 +22,36 @@ import com.nokia.example.capturetheflag.network.model.Player;
  * Helper class using Here APIs for creating map markers, e.g. player or flag marker.
  */
 public class MarkerFactoryHere extends MarkerFactoryBase {
- 
+
     /**
      * Creates a player marker.
-     * @param player Player data, @see {@link Player}.
+     *
+     * @param player  Player data, @see {@link Player}.
      * @param metrics Display metrics to use for size calculations.
-     * @param res Resources to use.
+     * @param res     Resources to use.
      * @return Map marker for the given player, @see {@link MapMarker}.
      */
     public static MapMarker createPlayerMarker(final Player player, DisplayMetrics metrics, Resources res) {
 
-        Bitmap bitmap = getBitmapForPlayer(player, metrics, res);        
+        Bitmap bitmap = getBitmapForPlayer(player, metrics, res);
         Image icon = MapFactory.createImage();
         icon.setBitmap(bitmap);
-        
+
         GeoCoordinate coords = MapFactory.createGeoCoordinate(
                 player.getLatitude(), player.getLongitude());
         MapMarker marker = MapFactory.createMapMarker(coords, icon);
         PointF anchor = new PointF(dpToPx(12, metrics), bitmap.getHeight());
         marker.setAnchorPoint(anchor);
-        
+
         return marker;
     }
 
     /**
      * Creates a flag marker.
-     * @param flag Flag data, @see {@link Flag}.
+     *
+     * @param flag   Flag data, @see {@link Flag}.
      * @param Bitmap Bitmap to use, @see {@link Bitmap}.
-     * @param size Marker size.
+     * @param size   Marker size.
      * @return Flag map marker, @see {@link MapMarker}.
      */
     public static MapMarker createFlagMarker(Flag flag, Bitmap bitmap, int size) {

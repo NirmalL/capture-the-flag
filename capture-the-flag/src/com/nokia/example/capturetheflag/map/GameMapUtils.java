@@ -18,9 +18,10 @@ public class GameMapUtils {
     public static final double DEFAULT_LONGITUDE = 23.770037;
 
     /**
-     * Calculates meters per pixel value based on the latitude of the given 
+     * Calculates meters per pixel value based on the latitude of the given
      * {@link Location} and map zoom level.
-     * @param location {@link Location} for latitude.
+     *
+     * @param location  {@link Location} for latitude.
      * @param zoomLevel Map zoom level.
      * @return Meters per pixel.
      */

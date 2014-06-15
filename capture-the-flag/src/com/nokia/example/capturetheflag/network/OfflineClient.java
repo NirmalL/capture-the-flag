@@ -7,6 +7,7 @@ package com.nokia.example.capturetheflag.network;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
 import android.util.Log;
 
 import com.nokia.example.capturetheflag.network.model.Flag;
@@ -29,8 +30,8 @@ public class OfflineClient extends NetworkClient {
     private static final long POSITION_UPDATE_INTERVAL = 5000; // Milliseconds
     private static final double SECONDS_PER_UPDATE_INTERVAL = POSITION_UPDATE_INTERVAL / 1000;
     private static final double ADVANCE_SPEED = 1 * SECONDS_PER_UPDATE_INTERVAL; // Meters
-                                                                                 // per
-                                                                                 // second
+    // per
+    // second
     private static final int OPPONENT_ID = 42;
 
     private TimerTask mOpponentAdvanceTask;
@@ -98,19 +99,18 @@ public class OfflineClient extends NetworkClient {
         if (request.getEventName() == JoinRequest.EVENT_NAME) {
             JoinRequest join = (JoinRequest) request;
             startGame(join.getGame(), join.getPlayer());
-        }
-        else if (request.getEventName() == UpdatePlayerRequest.EVENT_NAME) {
+        } else if (request.getEventName() == UpdatePlayerRequest.EVENT_NAME) {
             UpdatePlayerRequest update = (UpdatePlayerRequest) request;
             Player p = update.getUpdatedPlayer();
             final Flag targetFlag = p.getTeam() == Player.BLUE ? mGame
                     .getRedFlag() : mGame.getBlueFlag();
-            
+
             // Check if we are capturing the flag
             final double distanceToFlag = LocationUtils
                     .calculateDistanceInMetersInputInDegrees(p.getLatitude(),
                             p.getLongitude(), targetFlag.getLatitude(),
                             targetFlag.getLongitude());
-            
+
             if (distanceToFlag <= Settings.BASE_SIZE) {
                 stop();
                 FlagCapturedResponse resp = new FlagCapturedResponse();
@@ -135,10 +135,10 @@ public class OfflineClient extends NetworkClient {
         JoinedResponse joinedResponse = new JoinedResponse();
         joinedResponse.setJoinedGame(mGame);
         joinedResponse.setPlayer(player);
-        
+
         mTargetFlag = mOpponent.getTeam() == Player.BLUE ? game.getRedFlag()
                 : game.getBlueFlag();
-        
+
         mTimer = new Timer();
         mTimer.schedule(mOpponentAdvanceTask, POSITION_UPDATE_INTERVAL,
                 POSITION_UPDATE_INTERVAL);
@@ -153,7 +153,7 @@ public class OfflineClient extends NetworkClient {
 
     /**
      * Checks whether the opponent has reached the target base or not.
-     * 
+     *
      * @return True if the virtual opponent is in the base, false otherwise.
      */
     private boolean opponentIsInTheBase() {
@@ -163,11 +163,11 @@ public class OfflineClient extends NetworkClient {
                         mTargetFlag.getLatitude(), mTargetFlag.getLongitude());
         Log.d(TAG, "The distance between the virtual opponent and the flag is "
                 + distanceToFlag + " meters");
-        
+
         if (distanceToFlag <= Settings.BASE_SIZE) {
             return true;
         }
-        
+
         return false;
     }
 

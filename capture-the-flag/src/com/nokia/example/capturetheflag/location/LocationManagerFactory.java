@@ -12,9 +12,8 @@ import android.app.Activity;
 /**
  * Factory class for instantiating either Here or Google specific implementation
  * of the {@link LocationManagerInterface}.
- * 
+ *
  * @see LocationManagerInterface.ReverseGeocodingResultListener
- * 
  */
 public class LocationManagerFactory {
     private static final String HERE_POSITIONING_CLASS_NAME = "com.here.android.common.PositioningManager";
@@ -25,7 +24,7 @@ public class LocationManagerFactory {
 
     /**
      * Checks whether Here Positioning Services are supported on this device.
-     * 
+     *
      * @return <code>true</code> if Here Positioning Services are available, <code>false</code> if not.
      */
     public static boolean isHerePositioningAvailable() {
@@ -40,6 +39,7 @@ public class LocationManagerFactory {
 
     /**
      * Returns the Location Manager singleton instance.
+     *
      * @param activity Activity
      * @return {@link LocationManagerInterface}.
      */
@@ -48,7 +48,7 @@ public class LocationManagerFactory {
             String className = isHerePositioningAvailable() ? HERE_LOCATION_CLASS_NAME : GOOGLE_LOCATION_CLASS_NAME;
             try {
                 Constructor<?> constructor = Class.forName(className).getConstructor(Activity.class);
-                mInstance = (LocationManagerInterface)constructor.newInstance(activity);
+                mInstance = (LocationManagerInterface) constructor.newInstance(activity);
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

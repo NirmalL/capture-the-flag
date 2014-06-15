@@ -13,9 +13,9 @@ import android.location.Location;
 /**
  * Represents a single player in a game. Player object also contains the marker
  * object that is shown in the map.
- * 
+ * <p/>
  * Note: The equals and hashCode have been overwritten. Thus, only use the ID
- * to differentiate player objects. 
+ * to differentiate player objects.
  */
 public class Player {
     public static final String BLUE = "blue";
@@ -39,7 +39,7 @@ public class Player {
 
     public Player(JSONObject jsonObject) throws JSONException {
         this(jsonObject.getInt(ModelConstants.ID_KEY),
-             jsonObject.getString(ModelConstants.NAME_KEY));
+                jsonObject.getString(ModelConstants.NAME_KEY));
         mLatitude = jsonObject.getDouble(ModelConstants.LATITUDE_KEY);
         mLongitude = jsonObject.getDouble(ModelConstants.LONGITUDE_KEY);
         mTeam = jsonObject.getString(ModelConstants.TEAM_KEY);
@@ -51,11 +51,11 @@ public class Player {
         if (o == this) {
             return true;
         }
-        
+
         if (o instanceof Player) {
-            return ((Player)o).getId() == this.getId(); 
+            return ((Player) o).getId() == this.getId();
         }
-        
+
         return false;
     }
 
@@ -70,7 +70,7 @@ public class Player {
         mLatitude = location.getLatitude();
         mLongitude = location.getLongitude();
     }
-    
+
     public void setLatitude(double latitude) {
         mLatitude = latitude;
     }
@@ -118,11 +118,11 @@ public class Player {
     public String getRegistrationId() {
         return mRegId;
     }
-    
+
     public void setPlatformType(String platformType) {
         mPlatformType = platformType;
     }
-    
+
     public String getPlatformType() {
         return mPlatformType;
     }

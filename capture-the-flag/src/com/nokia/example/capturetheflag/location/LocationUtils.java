@@ -10,7 +10,6 @@ import android.util.Log;
 import com.here.android.common.GeoCoordinate;
 
 /**
- * 
  * See http://www.movable-type.co.uk/scripts/latlong.html for the basis of the
  * algorithms implemented by this class.
  */
@@ -21,13 +20,10 @@ public class LocationUtils {
     /**
      * Calculates the target coordinate from the given coordinate with the given
      * bearing (in radians) and the distance (in meters).
-     * 
-     * @param fromLatitudeInRads
-     *            Source latitude in radians.
-     * @param fromLongitudeInRads
-     *            Source longitude in radians.
-     * @param toBearingInRads
-     *            The bearing in radians.
+     *
+     * @param fromLatitudeInRads  Source latitude in radians.
+     * @param fromLongitudeInRads Source longitude in radians.
+     * @param toBearingInRads     The bearing in radians.
      * @param distanceInMeters
      * @return The target coordinates in degrees.
      */
@@ -57,7 +53,7 @@ public class LocationUtils {
         toLatitude = Math.toDegrees(toLatitude);
         toLongitude = Math.toDegrees(toLongitude);
 
-        return new double[] { toLatitude, toLongitude };
+        return new double[]{toLatitude, toLongitude};
     }
 
     /**
@@ -87,7 +83,7 @@ public class LocationUtils {
 
     /**
      * Calculates the distance (in meters) between the two given coordinates.
-     * 
+     *
      * @param latitude1InRads
      * @param longitude1InRads
      * @param latitude2InRads
@@ -122,7 +118,7 @@ public class LocationUtils {
     /**
      * Calculates the bearing (in radians) from the source coordinate to the
      * destination coordinate.
-     * 
+     *
      * @param fromLatitudeInRads
      * @param fromLongitudeInRads
      * @param toLatitudeInRads
@@ -130,8 +126,8 @@ public class LocationUtils {
      * @return The bearing in radians.
      */
     public static double calculateBearing(final double fromLatitudeInRads,
-            final double fromLongitudeInRads, final double toLatitudeInRads,
-            final double toLongitudeInRads) {
+                                          final double fromLongitudeInRads, final double toLatitudeInRads,
+                                          final double toLongitudeInRads) {
         final double latitudeDelta = toLatitudeInRads - fromLatitudeInRads;
         final double longitudeDelta = toLongitudeInRads - fromLongitudeInRads;
 

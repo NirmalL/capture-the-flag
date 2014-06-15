@@ -25,7 +25,7 @@ import com.nokia.example.capturetheflag.notifications.NotificationsManagerFactor
  * Main Activity of the application. This Activity is responsible for
  * initialisation and de-initialisation of push notifications. Also when IAP
  * request is made the results are received on the onActivityResult() method.
- * 
+ * <p/>
  * Note that this class overrides the default back button behavior because while
  * the game is running and user presses back, we first show a small dialog
  * (resume/drop out) and it requires diverting from the normal backstack
@@ -36,20 +36,20 @@ import com.nokia.example.capturetheflag.notifications.NotificationsManagerFactor
 public class MainActivity extends Activity implements
         GameEndedDialogFragment.DialogButtonListener {
     private static final String TAG = "CtF/MainActivity";
-    
+
     private PurchasePremiumFragment mPremiumFragment;
     private GameMapInterface mGameMap = null;
     private Controller mController = null;
     private MenuItem mBuyPremiumMenuItem = null;
     private BackCallback mBackKeyCallback = null;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+
         FragmentManager fragmanager = getFragmentManager();
-        
+
         mController = (Controller) fragmanager.findFragmentByTag(Controller.FRAGMENT_TAG);
 
         // First time or fragment couldn't be retained
@@ -58,11 +58,11 @@ public class MainActivity extends Activity implements
             fragmanager.beginTransaction()
                     .add(mController, Controller.FRAGMENT_TAG).commit();
         }
-        
+
         // Create and add the map fragment to the UI.
         mGameMap = GameMapFactory.createGameMap();
         android.app.FragmentTransaction fragmentTransaction = fragmanager.beginTransaction();
-        fragmentTransaction.add(R.id.mapfragment, (Fragment)mGameMap);
+        fragmentTransaction.add(R.id.mapfragment, (Fragment) mGameMap);
         fragmentTransaction.commit();
         mController.setMap(mGameMap);
 
@@ -101,64 +101,64 @@ public class MainActivity extends Activity implements
         mBuyPremiumMenuItem.setVisible(!mController.isPremium());
         return true;
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         boolean retval = false;
 
         switch (item.getItemId()) {
-        case R.id.buy_premium_menuitem:
-        	FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            
-            if(mPremiumFragment == null) {
-            	mPremiumFragment = new PurchasePremiumFragment();
-            }
-            transaction.addToBackStack(null);
-            transaction.add(R.id.fragmentcontainer, mPremiumFragment,
-                    PurchasePremiumFragment.FRAGMENT_TAG);
-            transaction.commit();
-            retval = true;
-            break;
-        case R.id.help_menuitem:
-            Intent intent = new Intent(this, HelpActivity.class);
-            startActivity(intent);
-            retval = true;
-            break;
-        case R.id.about_menuitem:
-            Intent i = new Intent(this, AboutActivity.class);
-            startActivity(i);
-            retval = true;
-            break;
-        case R.id.server_settings_menuitem:
-            final MainActivity context = this;
-            
-            ServerSettingsDialog dialog = new ServerSettingsDialog(this) {
-                @Override
-                public boolean onOkClicked(final String url, final String port) {
-                    Log.i(TAG, "Server URL set to " + url + " and port as "
-                            + port + ".");
-                    final int portAsInt = Integer.parseInt(port);
-                    Settings.setServerUrl(url, context);
-                    Settings.setServerPort(portAsInt, context);
+            case R.id.buy_premium_menuitem:
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-                    // Try to (re)connect
-                    NetworkClient client = mController.getNetworkClient();
-
-                    if (client.isConnected()) {
-                        client.disconnect();
-                    }
-
-                    client.connect(url, portAsInt);
-                    return true;
+                if (mPremiumFragment == null) {
+                    mPremiumFragment = new PurchasePremiumFragment();
                 }
-            };
+                transaction.addToBackStack(null);
+                transaction.add(R.id.fragmentcontainer, mPremiumFragment,
+                        PurchasePremiumFragment.FRAGMENT_TAG);
+                transaction.commit();
+                retval = true;
+                break;
+            case R.id.help_menuitem:
+                Intent intent = new Intent(this, HelpActivity.class);
+                startActivity(intent);
+                retval = true;
+                break;
+            case R.id.about_menuitem:
+                Intent i = new Intent(this, AboutActivity.class);
+                startActivity(i);
+                retval = true;
+                break;
+            case R.id.server_settings_menuitem:
+                final MainActivity context = this;
 
-            dialog.show();
-            retval = true;
-            break;
-        default:
-            retval = super.onOptionsItemSelected(item);
-            break;
+                ServerSettingsDialog dialog = new ServerSettingsDialog(this) {
+                    @Override
+                    public boolean onOkClicked(final String url, final String port) {
+                        Log.i(TAG, "Server URL set to " + url + " and port as "
+                                + port + ".");
+                        final int portAsInt = Integer.parseInt(port);
+                        Settings.setServerUrl(url, context);
+                        Settings.setServerPort(portAsInt, context);
+
+                        // Try to (re)connect
+                        NetworkClient client = mController.getNetworkClient();
+
+                        if (client.isConnected()) {
+                            client.disconnect();
+                        }
+
+                        client.connect(url, portAsInt);
+                        return true;
+                    }
+                };
+
+                dialog.show();
+                retval = true;
+                break;
+            default:
+                retval = super.onOptionsItemSelected(item);
+                break;
         }
 
         return retval;
@@ -167,11 +167,11 @@ public class MainActivity extends Activity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    	if(mPremiumFragment != null && requestCode == PurchasePremiumFragment.RC_REQUEST) {
-    		mPremiumFragment.handleActivityResult(requestCode, resultCode, data);
-    	}
+        if (mPremiumFragment != null && requestCode == PurchasePremiumFragment.RC_REQUEST) {
+            mPremiumFragment.handleActivityResult(requestCode, resultCode, data);
+        }
     }
-    
+
     @Override
     public void onBackPressed() {
         if (mBackKeyCallback != null) {
@@ -200,7 +200,7 @@ public class MainActivity extends Activity implements
     /**
      * Called when a game is started. Sets the markers (flags, other players),
      * centers the map to user position and adjusts the zoom level.
-     * 
+     *
      * @param game The instance of the {@link Game} that was started.
      */
     public void startGame(Game game) {
@@ -219,7 +219,7 @@ public class MainActivity extends Activity implements
 
     /**
      * Sets the back callback.
-     * 
+     *
      * @param callback {@link BackCallback} to set.
      */
     public void setBackCallback(BackCallback callback) {
@@ -235,7 +235,7 @@ public class MainActivity extends Activity implements
 
     /**
      * Shows the game menu.
-     * 
+     *
      * @param removable The fragment to be removed from the activity when menu is shown.
      */
     protected void showGameMenu(Fragment removable) {

@@ -12,17 +12,16 @@ import android.content.DialogInterface.OnClickListener;
 import android.widget.EditText;
 
 /**
- * 
+ *
  */
 public abstract class ServerSettingsDialog
-    extends AlertDialog.Builder
-    implements OnClickListener
-{
+        extends AlertDialog.Builder
+        implements OnClickListener {
     private final EditText mServerUrlAndPortEditText;
 
     /**
      * Constructor.
-     * 
+     *
      * @param context The application context.
      */
     public ServerSettingsDialog(Context context) {
@@ -40,30 +39,28 @@ public abstract class ServerSettingsDialog
 
     /**
      * @see android.content.DialogInterface.OnClickListener#onClick(
-     * android.content.DialogInterface, int)
+     *android.content.DialogInterface, int)
      */
     @Override
     public void onClick(DialogInterface dialog, int which) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
             String urlAndPort[] = mServerUrlAndPortEditText.getText().toString().split(":");
-            
+
             if (urlAndPort != null && urlAndPort.length >= 2) {
                 String url = urlAndPort[0];
                 String port = urlAndPort[urlAndPort.length - 1];
-                
+
                 if (urlAndPort.length > 2) {
                     url = urlAndPort[0] + ":" + urlAndPort[1];
                 }
-                
+
                 if (url != null && !url.isEmpty()
                         && port != null && !port.isEmpty()
-                        && onOkClicked(url, port))
-                {
+                        && onOkClicked(url, port)) {
                     dialog.dismiss();
                 }
             }
-        }
-        else {
+        } else {
             // Cancel was tapped
             dialog.dismiss();
         }
@@ -71,8 +68,8 @@ public abstract class ServerSettingsDialog
 
     /**
      * Called when OK is tapped.
-     * 
-     * @param url The server URL.
+     *
+     * @param url  The server URL.
      * @param port The server port.
      * @return True if the dialog should be closed, false otherwise.
      */

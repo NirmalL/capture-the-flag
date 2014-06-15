@@ -12,14 +12,14 @@ import org.json.JSONObject;
  */
 public abstract class JSONRequest {
     protected String mEventName;
-    
+
     public JSONRequest(String eventName) {
         mEventName = eventName;
     }
-    
+
     public String getEventName() {
         return mEventName;
     }
-    
+
     public abstract JSONObject getRequestData();
 }
