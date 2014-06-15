@@ -6,6 +6,6 @@
 	<classpathentry kind="lib" path="libs/OpenIAB-0.9.6.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="lib" path="libs/com.here.android.sdk.jar"/>
+	<classpathentry kind="lib" path="here_lib/com.here.android.sdk.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
