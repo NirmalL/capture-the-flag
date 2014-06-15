@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright (c) 2014 Microsoft Mobile.
+    Copyright (c) 2014 Microsoft Mobile. All rights reserved.
     See the license text file delivered with this project for more information. 
 -->
 <resources>
@@ -61,10 +61,10 @@ but don\'t worry; since this is an example application, the premium version is
 free or charge.
     </string>
     <string name="about_text">
-        <b>Version 1.0</b>\n\n
+        <b>Version 2.0</b>\n\n
 
-Capture the Flag is a Nokia example application demonstrating the use
-of Nokia services on Nokia X software platform: HERE Maps, Nokia Notifications
+Capture the Flag is a demo application demonstrating the use
+of Nokia X services on Nokia X software platform: HERE Maps, Nokia Notifications
 and Nokia In-App Payment.\n\n
 
 The app itself is based on the traditional outdoor game where two teams each
