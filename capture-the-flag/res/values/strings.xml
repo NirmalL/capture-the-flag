@@ -23,7 +23,7 @@
     <string name="name_game">Name your game</string>
     <string name="start_game">Start the game</string>
     <string name="thank_you">Thank you for playing Capture the Flag!</string>
-    <string name="upgrade_info">Upgrade your app to premium version and play with friends.With premium version there is no player limit.</string>
+    <string name="upgrade_info">Upgrade your app to premium version and play with friends. With premium version there is no player limit.</string>
     <string name="upgrade">Upgrade</string>
     <string name="cancel_purchase">Cancel purchase</string>
     <string name="fetching_product_info">Fetching product info</string>
