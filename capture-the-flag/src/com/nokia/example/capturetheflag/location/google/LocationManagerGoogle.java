@@ -5,9 +5,6 @@
 
 package com.nokia.example.capturetheflag.location.google;
 
-import java.io.IOException;
-import java.util.List;
-
 import android.app.Activity;
 import android.location.Address;
 import android.location.Geocoder;
@@ -23,6 +20,9 @@ import com.google.android.gms.location.LocationRequest;
 import com.nokia.example.capturetheflag.location.LocationManagerBase;
 import com.nokia.example.capturetheflag.location.LocationManagerInterface;
 import com.nokia.example.capturetheflag.location.LocationManagerListener;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Location Manager implementation.
@@ -122,8 +122,7 @@ public class LocationManagerGoogle extends LocationManagerBase implements
         try {
             matches = mGeoCoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Log.d(TAG, "IOException - GeoCoder not available!");
         }
 
         String result = null;
