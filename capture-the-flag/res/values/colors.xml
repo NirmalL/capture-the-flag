@@ -6,4 +6,7 @@
 <resources>
     <color name="fragment_background_color">#DDffffff</color>
     <color name="fragment_base_background_color">#fcfcfc</color>
+    <color name="blue_background_color">#0568ff</color>
+    <color name="white">#ffffff</color>
+    <color name="light_hyperlink_color">#ccddff</color>
 </resources>

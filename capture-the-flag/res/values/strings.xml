@@ -4,7 +4,7 @@
     See the license text file delivered with this project for more information. 
 -->
 <resources>
-    <string name="app_name">Capture The Flag</string>
+    <string name="app_name">Capture the Flag</string>
     <string name="action_settings">Settings</string>
     <string name="gps_not_enabled">GPS Service is not enabled. Do you want to open system settings?</string>
     <string name="ok">OK</string>
@@ -46,37 +46,31 @@
     <string name="joined">joined</string>
     <string name="game">Game</string>
     <string name="help_text">
-        <b>Instructions</b>\n\n
-
-To play, create a game or join an existing one. A server is required to play the
-online game <i>and it is not provided by Nokia</i>. See the documentation in
-GitHub (link available on about page) how to set up the server.\n\n
-
-If the app does not find the server, the game will function in offline mode:
-When a game is created, the virtual opponent, <i>WIMP</i>, will start to
-advance towards your flag.\n\n
-
-To have more than one person per team you need to purchase the premium version
-but don\'t worry; since this is an example application, the premium version is
-free or charge.
+        <b>Instructions</b>\n\nTo play, create a game or join an existing one. A
+server is required to play the online game <i>and it is not provided by
+Microsoft</i>. See the documentation in GitHub (link available on about page)
+how to set up the server.\n\nIf the app does not find the server, the game will
+function in offline mode: When a game is created, the virtual opponent,
+<i>WIMP</i>, will start to advance towards your flag.\n\nTo have more than one
+person per team you need to purchase the premium version but don\'t worry; since
+this is an example application, the premium version is free or charge.
     </string>
     <string name="about_text">
-        <b>Version 2.0</b>\n\n
-
-Capture the Flag is a demo application demonstrating the use
-of Nokia X services on Nokia X software platform: HERE Maps, Nokia Notifications
-and Nokia In-App Payment.\n\n
-
-The app itself is based on the traditional outdoor game where two teams each
-have their own flags, which the opposing team then tries to capture. The flags
-in the game are randomly placed on the map within a fixed distance of the player
-creating the game. The team who manages to get to the flag of the opposing team
-first wins.\n\n
-
-This demo application is hosted in GitHub where you can find the
-source code and documentation of the latest release:
+        <b>Version 2.0</b>\n\nCapture the Flag is a sample application
+demonstrating the use of Nokia X services on Nokia X software platform: HERE
+Maps, Nokia Notifications and Nokia In-App Payment. The application also
+implements the corresponding Google APIs and utilises them when the same APK
+file is installed on a Google services enabled phone. The detection of services
+is done run-time. OpenIAB is used to implement the in-app payment
+feature.\n\nThe app itself is based on the traditional outdoor game where two
+teams each have their own flags, which the opposing team then tries to capture.
+The flags in the game are randomly placed on the map within a fixed distance of
+the player creating the game. The team who manages to get to the flag of the
+opposing team first wins.\n\nThis demo application is hosted in GitHub where you
+can find the source code and documentation of the latest release:\n
     </string>
     <string name="github_url">https://github.com/nokia-developer/capture-the-flag</string>
     <string name="server_settings_dialog_info">Enter server URL and port in form "url:port"</string>
     <string name="server_url_and_port_hint_text">Server URL and port</string>
+    <string name="empty_content_description"></string>
 </resources>
