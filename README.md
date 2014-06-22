@@ -50,19 +50,52 @@ services*).
 **API keys and IDs**
 
 
+**Instructions for Eclipse**
 
+1. Import the project in Eclipse (*File* -> *Import...*)
+2. Import Google Play services library project (*File -> *Import...*)
+    * The library is located by default in
+      `<Android SDK path>/extras/google/google_play_services/libproject` folder,
+      when installed with the Android SDK Manager
+    * Make sure *Is Library* check box is checked in Google Play services
+      project properties (*Properties* -> *Android*)
+3. Add reference to Google Play services SDK
+    * Open Capture the Flag project properties
+    * In project properties window, select *Android* from the left hand side
+    * Click *Add* button in *Library* section
+    * Select Google Play services library and click *OK* 
+    * For more details, see http://developer.android.com/google/play-services/setup.html
+4. Check that the references are properly setup in *Java Build Path* (see the
+   following figures)
+    * Note that it is especially important that HERE Maps library is not
+      exported! Otherwise, the app will crash.
+
+![*Project properties: Libraries*](https://raw.githubusercontent.com/nokia-developer/capture-the-flag/master/doc/figures/eclipse_project_properties_1.png)
+
+![*Project properties: Order and Export*](https://raw.githubusercontent.com/nokia-developer/capture-the-flag/master/doc/figures/eclipse_project_properties_2.png)
+
+5. To run the app, select *Run* -> *Run As* -> *Android Application*
+
+**Instructions for Gradle**
+
+1. Open terminal/command prompt
+2. Navigate to the root of the project (not to the root of the client app, but
+   the entire project)
+3. Clean, build and deploy
+    * In Linux/Mac OS, run command: `./gradlew clean installDebug`
+    * In Windows, run command: `gradlew clean installDebug`
 
 Game server
 -------------------------------------------------------------------------------
 
 To play the online version of the game, a server is needed. The server software
 is provided with the project, see
-[`/server`](https://github.com/nokia-developer/capture-the-flag/tree/master/server).
+[`/server`](https://github.com/nokia-developer/capture-the-flag/tree/master/capture-the-flag-server).
 The software is implemented utilising node.js and socket.io library. To test
 the server, you can use free server services such as
 [Heroku](https://www.heroku.com/) or [Cloud9](https://c9.io/). For more
 information see the
-[README](https://github.com/nokia-developer/capture-the-flag/blob/master/server/README.md)
+[README](https://github.com/nokia-developer/capture-the-flag/blob/master/capture-the-flag-server/README.md)
 for the server software and the
 [project wiki](https://github.com/nokia-developer/capture-the-flag/wiki).
 
