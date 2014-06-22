@@ -49,7 +49,25 @@ services*).
 
 **API keys and IDs**
 
-
+* HERE Maps
+    * *Application ID* and *application token* required
+    * Default ID and token provided for this sample (not guaranteed to work)
+    * See http://developer.nokia.com/resources/library/nokia-x/here-maps/here-api-prerequisites.html
+* Nokia Notifications
+    * Sender ID required for registering to service
+    * API key required for sending push notifications (server side)
+    * A default ID provided for this sample
+    * See http://developer.nokia.com/resources/library/nokia-x/nokia-notifications/nokia-notifications-developer-guide.html
+* Nokia In-App Payment/Google In-App Billing
+    * Nokia In-App Payment does not require a key, but since OpenIAB is used, a
+      public is needed (because of the Google dependency)
+    * See https://github.com/onepf/OpenIAB/blob/master/README.md
+    * For testing purposes, you may try the key provided with
+      [Trivial Drive sample](https://github.com/onepf/OpenIAB/blob/master/samples/trivialdrive/src/org/onepf/trivialdrive/MainActivity.java#L172)
+* Google Maps: See https://developers.google.com/maps/documentation/android/start
+    * A default key provided with the project, is not guaranteed to work
+* Google Cloud Messaging: See https://support.google.com/googleplay/android-developer/answer/2663268
+    
 **Instructions for Eclipse**
 
 1. Import the project in Eclipse (*File* -> *Import...*)
@@ -70,9 +88,9 @@ services*).
     * Note that it is especially important that HERE Maps library is not
       exported! Otherwise, the app will crash.
 
-![*Project properties: Libraries*](https://raw.githubusercontent.com/nokia-developer/capture-the-flag/master/doc/figures/eclipse_project_properties_1.png)
+    ![*Project properties: Libraries*](https://raw.githubusercontent.com/nokia-developer/capture-the-flag/master/doc/figures/eclipse_project_properties_1.png)
 
-![*Project properties: Order and Export*](https://raw.githubusercontent.com/nokia-developer/capture-the-flag/master/doc/figures/eclipse_project_properties_2.png)
+    ![*Project properties: Order and Export*](https://raw.githubusercontent.com/nokia-developer/capture-the-flag/master/doc/figures/eclipse_project_properties_2.png)
 
 5. To run the app, select *Run* -> *Run As* -> *Android Application*
 
