@@ -206,8 +206,14 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
      * {@link Location} and map zoom level.
      */
     private void updateMetersPerPixel() {
-        mCurrentMetersPerPixels = GameMapUtils.calculateMetersPerPixel(
-                LocationManagerFactory.getInstance(getActivity()).getCurrentLocation(), mZoomLevel);
+        Location location = LocationManagerFactory.getInstance(getActivity()).getCurrentLocation();
+        
+        if (location != null) {
+            mCurrentMetersPerPixels = GameMapUtils.calculateMetersPerPixel(location, mZoomLevel);
+        }
+        else {
+            Log.d(TAG, "No location!");
+        }
     }
 
     /**

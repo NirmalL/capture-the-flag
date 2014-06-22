@@ -64,6 +64,7 @@ services*).
     * See https://github.com/onepf/OpenIAB/blob/master/README.md
     * For testing purposes, you may try the key provided with
       [Trivial Drive sample](https://github.com/onepf/OpenIAB/blob/master/samples/trivialdrive/src/org/onepf/trivialdrive/MainActivity.java#L172)
+    * The product IDs used are test IDs
 * Google Maps: See https://developers.google.com/maps/documentation/android/start
     * A default key provided with the project, is not guaranteed to work
 * Google Cloud Messaging: See https://support.google.com/googleplay/android-developer/answer/2663268
