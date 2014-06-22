@@ -57,6 +57,7 @@ public class CreateGameFragment
         Button b = (Button) view.findViewById(R.id.create_game_start_game);
         b.setOnClickListener(this);
         mGameName = (EditText) view.findViewById(R.id.game_name_edit);
+        mGameName.setText(Settings.getGameName(getActivity()));
         mPlayerName = (EditText) view.findViewById(R.id.create_game_player_name);
         mPlayerName.setText(Settings.getUsername(getActivity()));
         mTeamSelection = (RadioGroup) view.findViewById(R.id.create_game_team_group);
@@ -118,6 +119,8 @@ public class CreateGameFragment
                     .findFragmentByTag(Controller.FRAGMENT_TAG);
             game.setPremium(controller.isPremium());
             generateFlags(pos, game);
+
+            Settings.setGameName(mGameName.getText().toString(), getActivity());
 
             // Create player
             Player player = new Player(0, mPlayerName.getText().toString());

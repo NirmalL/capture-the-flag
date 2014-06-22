@@ -72,18 +72,20 @@ public class PurchasePremiumFragment extends Fragment implements MainActivity.Ba
     private ProgressDialog mWaitScreen;
 
     /**
-     * Callback for when setup is finished. See OpenIAB documentation for details.
+     * Callback for when setup is finished. See OpenIAB documentation for
+     * details.
      */
-    private IabHelper.OnIabSetupFinishedListener mSetupListener = new IabHelper.OnIabSetupFinishedListener() {
+    private IabHelper.OnIabSetupFinishedListener mSetupListener =
+        new IabHelper.OnIabSetupFinishedListener() {
+        
         @Override
         public void onIabSetupFinished(IabResult result) {
             if (!result.isSuccess()) {
-                toast("Problem setting up in-app billing: " + result);
+                toast(getString(R.string.problem_setting_up_iap) + result);
                 Log.e(TAG, "Problem setting up in-app billing: " + result);
             } else {
-                mSetupDone = true;
                 Log.d(TAG, "Setup successful. Querying inventory.");
-
+                mSetupDone = true;
                 mWaitScreen = ProgressDialog.show(getActivity(), null, getText(R.string.fetching_product_info));
 
                 // Query for already purchased items and SKU details for items what user can buy.
@@ -97,29 +99,27 @@ public class PurchasePremiumFragment extends Fragment implements MainActivity.Ba
     /**
      * Callback for when inventory query is finished. See OpenIAB documentation for details.
      */
-    private IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
+    private IabHelper.QueryInventoryFinishedListener mGotInventoryListener =
+        new IabHelper.QueryInventoryFinishedListener() {
+        
         public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
-            Log.d(TAG, "Query inventory finished.");
-
             if (result.isFailure()) {
                 Log.d(TAG, "Failed to query inventory: " + result);
-
-                toast("Failed to query inventory: " + result);
-                mTitleLine.setText("Failed to fetch product info");
+                toast(getString(R.string.failed_to_query_inventory, result));
+                mTitleLine.setText(getString(R.string.failed_to_fetch_product_info));
             } else {
                 Log.d(TAG, "Query inventory was successful.");
-
                 SkuDetails premiumDetails = inventory.getSkuDetails(SKU_PREMIUM);
+                
                 if (premiumDetails != null) {
                     String title = premiumDetails.getTitle();
                     String description = premiumDetails.getDescription();
                     String price = premiumDetails.getPrice();
-
                     mTitleLine.setText(title);
                     mDescriptionLine.setText(description);
-                    mPriceLine.setText("Upgrade to premium (" + price + ") (user not charged!)");
+                    mPriceLine.setText(getString(R.string.upgrade_to_premium, price));
                 } else {
-                    mTitleLine.setText("Failed to fetch product info");
+                    mTitleLine.setText(getString(R.string.failed_to_fetch_product_info));
                 }
 
                 // Do we already have the premium upgrade purchased?
@@ -131,6 +131,7 @@ public class PurchasePremiumFragment extends Fragment implements MainActivity.Ba
                     purchased();
                 }
             }
+            
             dismissWaitScreen();
         }
     };
@@ -138,23 +139,28 @@ public class PurchasePremiumFragment extends Fragment implements MainActivity.Ba
     /**
      * Callback for when a purchase is finished. See OpenIAB documentation for details.
      */
-    private IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
+    private IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener =
+        new IabHelper.OnIabPurchaseFinishedListener() {
+        
         public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
             Log.d(TAG, "Purchase finished: " + result + ", purchase: " + purchase);
+            
             if (result.isFailure()) {
                 Log.d(TAG, "Error purchasing: " + result);
-                alert("Error purchasing: " + result);
+                alert(getString(R.string.error_purchasing, result));
             } else if (!verifyDeveloperPayload(purchase)) {
-                alert("Error purchasing. Authenticity verification failed.");
+                alert(getString(R.string.error_purchasing,
+                    getString(R.string.authenticity_verification_failed)));
             } else {
                 Log.d(TAG, "Purchase successful.");
 
                 if (purchase.getSku().equals(SKU_PREMIUM)) {
-                    toast("Thank you for upgrading to premium!");
+                    toast(getString(R.string.thank_you_for_purchasing));
                     mIsPremium = true;
                     purchased();
                 }
             }
+            
             dismissWaitScreen();
         }
     };
@@ -185,13 +191,21 @@ public class PurchasePremiumFragment extends Fragment implements MainActivity.Ba
 
         if (Base64EncodedPublicKey.contains("INSERT_YOUR")) {
             mBuyButton.setEnabled(false);
-            alert("Please put your app's public key in PurchasePremiumFragment.java. See documentation.");
+            mTitleLine.setText(getString(R.string.failed_to_fetch_product_info));
+            alert(getString(R.string.missing_iap_key, "PurchasePremiumFragment"));
         } else {
             Map<String, String> storeKeys = new HashMap<String, String>();
             storeKeys.put(OpenIabHelper.NAME_GOOGLE, Base64EncodedPublicKey);
 
-            mHelper = new OpenIabHelper(getActivity(), storeKeys);
-            mHelper.startSetup(mSetupListener);
+            try {
+                mHelper = new OpenIabHelper(getActivity(), storeKeys);
+                mHelper.startSetup(mSetupListener);
+            }
+            catch (IllegalArgumentException e) {
+                mBuyButton.setEnabled(false);
+                mTitleLine.setText(getString(R.string.failed_to_fetch_product_info));
+                alert(getString(R.string.invalid_iap_key, "PurchasePremiumFragment"));
+            }
         }
 
         return v;
@@ -266,13 +280,13 @@ public class PurchasePremiumFragment extends Fragment implements MainActivity.Ba
      */
     public void purchasePremium() {
         if (!mSetupDone) {
-            toast("Billing setup is not completed yet, try again after a while.");
+            toast(getString(R.string.billing_setup_not_complete_yet));
         } else {
             if (!mIsPremium) {
                 mWaitScreen = ProgressDialog.show(getActivity(), null, getText(R.string.purchasing_product));
                 mHelper.launchPurchaseFlow(getActivity(), SKU_PREMIUM, RC_REQUEST, mPurchaseFinishedListener, mDeveloperPayload);
             } else {
-                toast("Premium already purchased.");
+                toast(getString(R.string.premium_already_purchased));
                 mBuyButton.setEnabled(false);
             }
         }
@@ -307,7 +321,7 @@ public class PurchasePremiumFragment extends Fragment implements MainActivity.Ba
     private void alert(String message) {
         AlertDialog.Builder bld = new AlertDialog.Builder(getActivity());
         bld.setMessage(message);
-        bld.setNeutralButton("OK", null);
+        bld.setNeutralButton(getString(R.string.ok), null);
         bld.create().show();
     }
 }

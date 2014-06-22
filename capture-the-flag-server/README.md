@@ -20,8 +20,7 @@ If you just want to use the server in `localhost`:
 
 The server is started at port 8080.
 
-
-**Running on Heroku**
+**Installing and running in Heroku**
 
 1. Sign up to Heroku (https://www.heroku.com/)
 2. Install Heroku Toolbelt (https://toolbelt.heroku.com/)
@@ -38,3 +37,14 @@ The server is started at port 8080.
 If you make changes to the code and want to update the changes to Heroku, just
 do a normal git commit and push changes with `git push heroku master` and it
 will update the server to use new changes.
+
+
+**Installing and running in Cloud9**
+
+1. Sign up to Cloud9 (https://c9.io/)
+2. Create a project and open the workspace
+2. Upload the server software files to your workspace
+3. Open the terminal tab
+4. Run command `npm install`
+5. Open `server.js`
+6. Click **Run** button

@@ -224,7 +224,7 @@ public class SocketIONetworkClient
                 @Override
                 public void run() {
                     if (mSocketClient != null) {
-                        Log.d(TAG, "Idle,  disconnecting...");
+                        Log.d(TAG, "Idle, disconnecting...");
                         mSocketClient.disconnect();
                     }
                 }

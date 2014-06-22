@@ -1,9 +1,12 @@
 Capture the Flag
 ================
 
-Capture the Flag is a Nokia example application demonstrating the use of Nokia
+Capture the Flag is a sample application demonstrating the use of Nokia X
 services on Nokia X software platform: HERE Maps, Nokia Notifications and Nokia
-In-App Payment.
+In-App Payment. The application also implements the corresponding Google APIs
+and utilises them when the same APK file is installed on a Google services
+enabled phone. The detection of services is done run-time. OpenIAB is used to
+implement the in-app payment feature.
 
 The app itself is based on the traditional outdoor game where two teams each
 have their own flags, which the opposing team then tries to capture. The flags
@@ -21,6 +24,33 @@ source code and documentation of the latest release.
 Visit the project wiki for documentation:
 https://github.com/nokia-developer/capture-the-flag/wiki
 
+Offline documentation is provided with this project in `doc` folder.
+
+
+How to set up and build the project
+-------------------------------------------------------------------------------
+
+**Dependencies**
+
+The example is dependent on the following libraries, which are provided with
+the project:
+
+* *AndroidAsync* is a low level network protocol library. The project is
+  hosted in GitHub: https://github.com/koush/AndroidAsync
+* *HERE API library* (`com.here.android.sdk.jar`)
+* *Nokia Notifications helper library* (`push.jar`)
+* *OpenIAB* provides cross-platform in-app payment functionality and
+  encapsulates both Nokia In-App Payment API and Google In-App Billing API.
+  The project is hosted in GitHub: https://github.com/onepf/OpenIAB
+
+In order to build the project you will also need Google Play services library.
+The library can be installed via Android SDK Manager (*Extras* -> *Google Play
+services*).
+
+**API keys and IDs**
+
+
+
 
 Game server
 -------------------------------------------------------------------------------
@@ -35,18 +65,6 @@ information see the
 [README](https://github.com/nokia-developer/capture-the-flag/blob/master/server/README.md)
 for the server software and the
 [project wiki](https://github.com/nokia-developer/capture-the-flag/wiki).
-
-
-Dependencies
--------------------------------------------------------------------------------
-
-The example is dependent on the following libraries, which are provided with
-the project:
-
-* **AndroidAsync** is a low level network protocol library. The project is
-  hosted in GitHub: https://github.com/koush/AndroidAsync
-* **HERE API library** (`com.here.android.sdk.jar`)
-* **Nokia Notifications helper library** (`push.jar`)
 
 
 License
@@ -69,4 +87,7 @@ Related documentation
 Version history
 -------------------------------------------------------------------------------
 
+* Version 2.0: One APK solution update - Maps/location, notifications and in-app
+  payment services selected run-time based on which services are available on
+  the phone (either Nokia X or Google services).
 * Version 1.0: The initial release.

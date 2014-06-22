@@ -1,5 +1,5 @@
-/**
- * Copyright (c) 2014 Microsoft Mobile.
+/*
+ * Copyright (c) 2014 Microsoft Mobile. All rights reserved.
  * See the license text file delivered with this project for more information.
  */
  

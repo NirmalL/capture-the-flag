@@ -19,14 +19,14 @@ public class Settings {
 
     private static final String SERVER_URL_KEY = "server_url";
     private static final String SERVER_PORT_KEY = "server_port";
-    private static final String USERNAME_KEY = "username";
     private static final String PREMIUM_KEY = "premium";
+    private static final String USERNAME_KEY = "username";
+    private static final String GAME_NAME_KEY = "game_name";
 
     /* When testing with emulator user 10.0.2.2 and your server is running on
      * the same computer.
      */
-//    private static final String DEFAULT_SOCKET_URL = "http://capturetheflag-c9-nokiadeveloper.c9.io";
-    private static final String DEFAULT_SOCKET_URL = "http://ctf-octo3.herokuapp.com";
+    private static final String DEFAULT_SOCKET_URL = "http://capturetheflag-c9-nokiadeveloper.c9.io";
     private static final int DEFAULT_SOCKET_PORT = 80;
 
     public static String getServerUrl(Context context) {
@@ -67,5 +67,15 @@ public class Settings {
     public static boolean setPremium(String productId, Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         return preferences.edit().putString(PREMIUM_KEY, productId).commit();
+    }
+
+    public static String getGameName(Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getString(GAME_NAME_KEY, "");
+    }
+
+    public static boolean setGameName(String name, Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.edit().putString(GAME_NAME_KEY, name).commit();
     }
 }

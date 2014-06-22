@@ -190,6 +190,8 @@ public class MainActivity extends Activity implements
              * If no back callback, we check if the game is running and if it
              * is, we show the pause dialog.
              */
+            Log.d(TAG, "No back callback.");
+            
             if (mController.getCurrentGame() != null
                     && !mController.getCurrentGame().getHasEnded()) {
                 PauseDialog dialog = new PauseDialog();
@@ -248,8 +250,7 @@ public class MainActivity extends Activity implements
      * @param removable The fragment to be removed from the activity when menu is shown.
      */
     protected void showGameMenu(Fragment removable) {
-        FragmentTransaction transaction = getFragmentManager()
-                .beginTransaction();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
         if (removable != null) {
             transaction.remove(removable);

@@ -34,7 +34,7 @@ import com.nokia.example.capturetheflag.network.model.ModelConstants;
  */
 public class GameMenuFragment
         extends Fragment
-        implements View.OnClickListener, ReverseGeocodingResultListener //, ResultListener<Address>
+        implements View.OnClickListener, ReverseGeocodingResultListener
 {
     public static final String FRAGMENT_TAG = "GameMenuFragment";
     private static final String TAG = "CtF/GameMenuFragment";
