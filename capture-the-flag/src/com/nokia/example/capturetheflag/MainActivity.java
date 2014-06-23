@@ -120,7 +120,6 @@ public class MainActivity extends Activity implements
                         mPremiumFragment = new PurchasePremiumFragment();
                     }
                     
-                    transaction.addToBackStack(null);
                     transaction.add(R.id.fragmentcontainer, mPremiumFragment,
                         PurchasePremiumFragment.FRAGMENT_TAG);
                     transaction.commit();
@@ -183,8 +182,6 @@ public class MainActivity extends Activity implements
 
     @Override
     public void onBackPressed() {
-        Log.d(TAG, "onBackPressed()");
-        
         if (mBackKeyCallback != null) {
             mBackKeyCallback.onBackPressed();
         } else {
@@ -192,10 +189,11 @@ public class MainActivity extends Activity implements
              * If no back callback, we check if the game is running and if it
              * is, we show the pause dialog.
              */
-            Log.d(TAG, "No back callback.");
+            Log.d(TAG, "onBackPressed(): No back callback.");
             
             if (mController.getCurrentGame() != null
-                    && !mController.getCurrentGame().getHasEnded()) {
+                    && !mController.getCurrentGame().getHasEnded())
+            {
                 PauseDialog dialog = new PauseDialog();
                 dialog.show(getFragmentManager(), PauseDialog.FRAGMENT_TAG);
             } else {

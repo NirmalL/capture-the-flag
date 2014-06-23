@@ -95,10 +95,10 @@ public class CreateGameFragment
 
     @Override
     public void onBackPressed() {
-        MainActivity ma = (MainActivity) getActivity();
+        MainActivity mainActivity = (MainActivity) getActivity();
 
-        if (ma != null) {
-            ma.showGameMenu(this);
+        if (mainActivity != null) {
+            mainActivity.showGameMenu(this);
         }
     }
 
