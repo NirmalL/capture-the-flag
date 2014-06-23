@@ -1,6 +1,6 @@
 # In-app payment #
 
-**NOTE**: The SKU product identifiers used in the example application are for
+**Note**: The SKU product identifiers used in the example application are for
 test products and should be replaced with real products IDs. Also the Google
 In-App Billing public key needs to be replaced with a valid key for the in-app
 purchase to work.
@@ -51,5 +51,5 @@ in-app purchase process.
 
 ## Related documentation ##
 
-- [OpenIAB on GitHub](https://github.com/onepf/OpenIAB)
-- [Nokia In-App Payment API documentation (Nokia X Developer's Libary)](http://developer.nokia.com/resources/library/nokia-x/nokia-in-app-payment.html)
+* [OpenIAB on GitHub](https://github.com/onepf/OpenIAB)
+* [Nokia In-App Payment API documentation (Nokia X Developer's Libary)](http://developer.nokia.com/resources/library/nokia-x/nokia-in-app-payment.html)
