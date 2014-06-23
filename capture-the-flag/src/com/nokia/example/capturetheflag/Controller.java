@@ -189,12 +189,11 @@ public class Controller
 
     @Override
     public void onJoinedMessage(JoinedResponse joined) {
-        Fragment CreateGameFrg = getFragmentManager().findFragmentByTag(
-                CreateGameFragment.FRAGMENT_TAG);
+        Fragment createGameFragment =
+                getFragmentManager().findFragmentByTag(CreateGameFragment.FRAGMENT_TAG);
 
-        if (CreateGameFrg != null) {
-            getFragmentManager().beginTransaction().remove(CreateGameFrg)
-                    .commit();
+        if (createGameFragment != null) {
+            getFragmentManager().beginTransaction().remove(createGameFragment).commit();
         }
 
         setCurrentGame(joined.getJoinedGame());
@@ -328,7 +327,9 @@ public class Controller
      * Displays the connection status using a toast message.
      */
     @Override
-    public void onNetworkStateChange(final boolean isConnected, NetworkClient client) {
+    public void onNetworkStateChange(final boolean isConnected, final NetworkClient client) {
+        Log.d(TAG, "onNetworkStateChange(): " + (isConnected ? "Online" : "Offline"));
+
         mUIHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -351,6 +352,15 @@ public class Controller
                             getString(toastTextId), Toast.LENGTH_SHORT);
                     toast.show();
                     mIsConnected = isConnected ? 1 : 0;
+                }
+
+                // Hide the progress bar from game menu fragment, if visible
+                GameMenuFragment gameMenuFragment =
+                        (GameMenuFragment)getFragmentManager().findFragmentByTag(
+                                GameMenuFragment.FRAGMENT_TAG);
+
+                if (gameMenuFragment != null && gameMenuFragment.isVisible()) {
+                    gameMenuFragment.setProgressBarVisibility(false);
                 }
             }
         });
@@ -405,9 +415,19 @@ public class Controller
      *               to offline mode.
      */
     public void switchOnlineMode(boolean online) {
+        if (mOfflineClient == null || mSocketClient == null) {
+            Log.d(TAG, "switchOnlineMode(): Not initialised yet.");
+            return;
+        }
+        
         if (online) {
+            mOfflineClient.disconnect();
             mClient = mSocketClient;
+            mSocketClient.connect(
+                    Settings.getServerUrl(getActivity()),
+                    Settings.getServerPort(getActivity()));
         } else {
+            mSocketClient.disconnect();
             mClient = mOfflineClient;
             mOfflineClient.connect(null, 0);
         }

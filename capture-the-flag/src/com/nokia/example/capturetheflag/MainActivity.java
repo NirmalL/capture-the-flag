@@ -261,6 +261,9 @@ public class MainActivity extends Activity implements
         transaction.add(R.id.fragmentcontainer, newFragment,
                 GameMenuFragment.FRAGMENT_TAG);
         transaction.commit();
+
+        // If previously in offline mode, try to connect to server again
+        mController.switchOnlineMode(true);
     }
 
     /**

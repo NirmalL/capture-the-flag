@@ -137,14 +137,29 @@ public class GameMenuFragment
         mGames = games;
         LinearLayout layout = (LinearLayout) getView().findViewById(R.id.open_game_area);
         layout.removeAllViews();
-        mProgressBar.setVisibility(View.GONE);
+        setProgressBarVisibility(false);
 
-        for (Game g : mGames) {
-            Button b = (Button) getActivity().getLayoutInflater().inflate(R.layout.button, layout, false);
-            b.setTag(g);
-            b.setText("Join \"" + g.getName() + "\"");
-            b.setOnClickListener(this);
-            layout.addView(b);
+        for (Game game : mGames) {
+            Button button = (Button) getActivity().getLayoutInflater().inflate(R.layout.button, layout, false);
+            button.setTag(game);
+            button.setText("Join \"" + game.getName() + "\"");
+            button.setOnClickListener(this);
+            layout.addView(button);
+        }
+    }
+
+    /**
+     * Helper method to toggle the progress bar visibility.
+     * 
+     * @param visible If true will show the progress bar, if false will hide it.
+     */
+    public void setProgressBarVisibility(boolean visible) {
+        if (isVisible()) {
+            int visibility = (visible ? View.VISIBLE : View.GONE);
+            
+            if (mProgressBar.getVisibility() != visibility) {
+                mProgressBar.setVisibility(visibility);
+            }
         }
     }
 

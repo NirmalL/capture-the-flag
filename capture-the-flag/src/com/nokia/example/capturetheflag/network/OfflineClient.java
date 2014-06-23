@@ -37,7 +37,6 @@ public class OfflineClient extends NetworkClient {
     private Game mGame = null;
     private Flag mTargetFlag = null;
     private Player mOpponent = null;
-    private boolean mIsConnected = false;
 
     public OfflineClient() {
     }
@@ -91,7 +90,7 @@ public class OfflineClient extends NetworkClient {
             }
         };
         
-        mIsConnected = true;
+        mState = State.CONNECTED ;
     }
 
     @Override
@@ -148,7 +147,7 @@ public class OfflineClient extends NetworkClient {
     @Override
     public void disconnect() {
         stop();
-        mIsConnected = false;
+        mState = State.IDLE;
     }
 
     /**
@@ -191,7 +190,7 @@ public class OfflineClient extends NetworkClient {
 
     @Override
     public boolean isConnected() {
-        return mIsConnected;
+        return (mState == State.CONNECTED);
     }
 
     @Override

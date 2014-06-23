@@ -10,7 +10,14 @@ package com.nokia.example.capturetheflag.network;
  */
 public abstract class NetworkClient {
 
+    protected enum State {
+        IDLE,
+        CONNECTING,
+        CONNECTED
+    };
+
     protected NetworkListener mListener;
+    protected State mState = State.IDLE;
 
     /**
      * Connects to the server.

@@ -31,7 +31,8 @@ public class SocketIONetworkClient
         implements ConnectCallback {
     public static final int DISCONNECT_TIMEOUT = 1000 * 60;
     private static final String TAG = "CtF/SocketIONetworkClient";
-
+    private static final int MAX_RECONNECT_ATTEMPTS = 10;
+    
     private Handler mHandler;
     private SocketIOClient mSocketClient;
     private JSONRequest queuedMessage;
@@ -39,6 +40,7 @@ public class SocketIONetworkClient
     private TimerTask mIdleTask;
     private String mUrl;
     private int mPort;
+    private int mReconnectAttempts;
 
     public SocketIONetworkClient() {
         mHandler = new Handler();
@@ -46,6 +48,12 @@ public class SocketIONetworkClient
     }
 
     public void connect(final String url, final int port) {
+        if (mState == State.CONNECTED || mState == State.CONNECTING) {
+            Log.d(TAG, "connect(): Already connected or trying to connect!");
+            return;
+        }
+        
+        mState = State.CONNECTING;
         mUrl = url;
         mPort = port;
         SocketIOClient.connect(AsyncHttpClient.getDefaultInstance(),
@@ -54,19 +62,28 @@ public class SocketIONetworkClient
 
     @Override
     public void onConnectCompleted(Exception ex, SocketIOClient client) {
+        mSocketClient = client;
+        
         if (ex != null) {
-            Log.e(TAG, "Connection failed, trying to reconnect...");
+            mReconnectAttempts++;
             
-            if (mListener != null) {
-                mListener.onNetworkStateChange(false, SocketIONetworkClient.this);
+            if (mReconnectAttempts > MAX_RECONNECT_ATTEMPTS) {
+                Log.e(TAG, "Connection failed. Maximum number of reconnect attempts exceeded. Aborting...");
+                disconnect();
+                return;
             }
             
-            client.reconnect();
+            Log.e(TAG, "Connection failed, trying to reconnect (attempt "
+                    + mReconnectAttempts + "/" + MAX_RECONNECT_ATTEMPTS
+                    + ")..." /*, ex*/);
+            
+            mSocketClient.reconnect();
             return;
         }
 
+        mState = State.CONNECTED;
+        mReconnectAttempts = 0;
         mListener.onNetworkStateChange(true, SocketIONetworkClient.this);
-        mSocketClient = client;
 
         if (queuedMessage != null) {
             Log.d(TAG, "Sending message from queue");
@@ -210,6 +227,9 @@ public class SocketIONetworkClient
                 mListener.onNetworkStateChange(false, SocketIONetworkClient.this);
             }
         }
+
+        mState = State.IDLE;
+        mReconnectAttempts = 0;
     }
 
     @Override
@@ -230,6 +250,8 @@ public class SocketIONetworkClient
                     if (mSocketClient != null) {
                         Log.d(TAG, "Idle, disconnecting...");
                         mSocketClient.disconnect();
+                        mState = State.IDLE;
+                        mReconnectAttempts = 0;
                     }
                 }
             };
