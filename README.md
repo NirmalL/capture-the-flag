@@ -95,6 +95,12 @@ services*).
 
 5. To run the app, select *Run* -> *Run As* -> *Android Application*
 
+**Importing the project in IntelliJ IDEA**
+
+1. Launch the IDE (with projects closed) and select *Import Project*
+2. Browse to the root of the project and select `settings.gradle` file
+3. Select option *Use default gradle wrapper (recommended)* and click *OK*
+
 **Instructions for Gradle**
 
 1. Open terminal/command prompt
