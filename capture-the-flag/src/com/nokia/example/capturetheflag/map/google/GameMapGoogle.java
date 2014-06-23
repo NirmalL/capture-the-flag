@@ -47,7 +47,7 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
 
     private GoogleMap mMap;
 
-    private HashMap<Player, Marker> mPlayerMarkers = new HashMap<Player, Marker>();
+    private HashMap<Integer, Marker> mPlayerMarkers = new HashMap<Integer, Marker>();
     private Marker mRedFlag;
     private Marker mBlueFlag;
     private Bitmap mRedFlagBitmap;
@@ -106,7 +106,7 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
     @Override
     public void updateMarkerForPlayer(Player updated, Player old) {
         Marker marker = getPlayerMarker(old);
-        mPlayerMarkers.put(updated, marker);
+        mPlayerMarkers.put(updated.getId(), marker);
         mPlayerMarkers.remove(old);
     }
 
@@ -127,7 +127,7 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
 
     @Override
     public boolean playerHasMarker(Player player) {
-        return mPlayerMarkers.containsKey(player);
+        return mPlayerMarkers.containsKey(player.getId());
     }
 
     @Override
@@ -177,7 +177,7 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
     private void addPlayerMarker(Player player, MarkerOptions marker) {
         Marker m = mMap.addMarker(marker);
         Log.d(TAG, "Added marker:" + m.getPosition().latitude + ", " + m.getPosition().longitude);
-        mPlayerMarkers.put(player, m);
+        mPlayerMarkers.put(player.getId(), m);
     }
 
     /**
@@ -187,7 +187,7 @@ public class GameMapGoogle extends MapFragment implements GameMapInterface, OnCa
      * @return {@link Marker} for the given {@link Player}.
      */
     private Marker getPlayerMarker(Player player) {
-        return mPlayerMarkers.get(player);
+        return mPlayerMarkers.get(player.getId());
     }
 
     /**

@@ -208,18 +208,35 @@ public class Controller
             return;
         }
 
-        Log.d(TAG, "onUpdatePlayerMessage()");
-        Player updated = update.getUpdatedPlayer();
+        Player updatedPlayer = update.getUpdatedPlayer();
 
         if (!mCurrentGame.getPlayers().contains(update.getUpdatedPlayer())) {
-            mCurrentGame.getPlayers().add(updated);
+            Log.d(TAG, "onUpdatePlayerMessage(): New player");
+            mCurrentGame.getPlayers().add(updatedPlayer);
+            
+            /* Show a toast message informing the user that a new player has
+             * joined the game.
+             */
+            final String playerName = updatedPlayer.getName();
+            
+            mUIHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    String text = getString(R.string.new_player_joined, playerName);
+                    Toast toast = Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+                    toast.show();
+                }
+            });
         } else {
-            int i = mCurrentGame.getPlayers().indexOf(updated);
+            Log.d(TAG, "onUpdatePlayerMessage(): Existing player");
+            int i = mCurrentGame.getPlayers().indexOf(updatedPlayer);
             Player old = mCurrentGame.getPlayers().get(i);
-            mMap.updateMarkerForPlayer(updated, old);
-            mCurrentGame.getPlayers().set(i, updated);
+            mMap.updateMarkerForPlayer(updatedPlayer, old);
+            mCurrentGame.getPlayers().set(i, updatedPlayer);
         }
-        updatePlayerMarker(updated);
+        
+        mMap.updatePlayerMarkerPosition(updatedPlayer);
     }
 
     @Override
@@ -275,20 +292,23 @@ public class Controller
             mMap.centerMapToPosition(position);
             mIsLocationFound = true;
         }
-        //Log.d(TAG, "Position updated");
+
         Player user = getPlayer();
 
         // Only if game is running, we send updated location to the server
         if (user != null && getCurrentGame() != null && !getCurrentGame().getHasEnded()) {
-            Log.d(TAG, "updating user position");
-            if (user.getLatitude() != position.getLatitude() || user.getLongitude() != position.getLongitude()) {
+            if (user.getLatitude() != position.getLatitude()
+                    || user.getLongitude() != position.getLongitude())
+            {
+                Log.d(TAG, "onLocationUpdated(): Sending updated position to server and updating the player marker.");
                 user.setLatitude(position.getLatitude());
                 user.setLongitude(position.getLongitude());
-                UpdatePlayerRequest upr = new UpdatePlayerRequest(user, getCurrentGame().getId());
-                mClient.emit(upr);
+                UpdatePlayerRequest updatePlayerRequest =
+                        new UpdatePlayerRequest(user, getCurrentGame().getId());
+                mClient.emit(updatePlayerRequest);
 
                 // Update the marker
-                updatePlayerMarker(user);
+                mMap.updatePlayerMarkerPosition(user);
             }
         }
   
@@ -411,19 +431,6 @@ public class Controller
             mCurrentGame.setHasEnded(true);
         }
     }
-
-    private void updatePlayerMarker(Player player) {
-        if (!mMap.playerHasMarker(player)) {
-            Log.d(TAG, "New player - Show player joined toast");
-            String text = getString(R.string.player) + " " + player.getName() + " " + getString(R.string.joined);
-            Toast toast = Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
-            toast.show();
-        }
-
-        mMap.updatePlayerMarkerPosition(player);
-    }
-
 
     private void showEnableGPSDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

@@ -50,7 +50,7 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
 
     private Map mMap;
 
-    private HashMap<Player, MapMarker> mPlayerMarkers = new HashMap<Player, MapMarker>();
+    private HashMap<Integer, MapMarker> mPlayerMarkers = new HashMap<Integer, MapMarker>();
     private MapMarker mRedFlag = null;
     private MapMarker mBlueFlag = null;
     private Bitmap mRedFlagBitmap;
@@ -147,7 +147,7 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
     @Override
     public void updateMarkerForPlayer(Player updated, Player old) {
         MapMarker marker = getPlayerMarker(old);
-        mPlayerMarkers.put(updated, marker);
+        mPlayerMarkers.put(updated.getId(), marker);
         mPlayerMarkers.remove(old);
     }
 
@@ -172,7 +172,7 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
 
     @Override
     public boolean playerHasMarker(Player player) {
-        return mPlayerMarkers.containsKey(player);
+        return mPlayerMarkers.containsKey(player.getId());
     }
 
     @Override
@@ -258,7 +258,7 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
      */
     private void addPlayerMarker(Player player, MapMarker marker) {
         mMap.addMapObject(marker);
-        mPlayerMarkers.put(player, marker);
+        mPlayerMarkers.put(player.getId(), marker);
     }
 
     /**
@@ -268,7 +268,7 @@ public class GameMapHere extends MapFragment implements GameMapInterface {
      * @return {@link MapMarker} for the given {@link Player}.
      */
     private MapMarker getPlayerMarker(Player player) {
-        return mPlayerMarkers.get(player);
+        return mPlayerMarkers.get(player.getId());
     }
 
     /**

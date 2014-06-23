@@ -55,8 +55,12 @@ public class SocketIONetworkClient
     @Override
     public void onConnectCompleted(Exception ex, SocketIOClient client) {
         if (ex != null) {
-            mListener.onNetworkStateChange(false, SocketIONetworkClient.this);
             Log.e(TAG, "Connection failed, trying to reconnect...");
+            
+            if (mListener != null) {
+                mListener.onNetworkStateChange(false, SocketIONetworkClient.this);
+            }
+            
             client.reconnect();
             return;
         }

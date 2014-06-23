@@ -29,9 +29,7 @@ public class OfflineClient extends NetworkClient {
     private static final String OPPONENT_NAME = "WIMP";
     private static final long POSITION_UPDATE_INTERVAL = 5000; // Milliseconds
     private static final double SECONDS_PER_UPDATE_INTERVAL = POSITION_UPDATE_INTERVAL / 1000;
-    private static final double ADVANCE_SPEED = 1 * SECONDS_PER_UPDATE_INTERVAL; // Meters
-    // per
-    // second
+    private static final double ADVANCE_SPEED = 1 * SECONDS_PER_UPDATE_INTERVAL; // Meters per second
     private static final int OPPONENT_ID = 42;
 
     private TimerTask mOpponentAdvanceTask;
@@ -51,6 +49,7 @@ public class OfflineClient extends NetworkClient {
             @Override
             public void run() {
                 Log.d(SUB_TAG, "opponent moving");
+                
                 if (mOpponent == null || mTargetFlag == null) {
                     Log.e(SUB_TAG, "Objects are null!");
                     stop();
@@ -91,6 +90,7 @@ public class OfflineClient extends NetworkClient {
                 }
             }
         };
+        
         mIsConnected = true;
     }
 

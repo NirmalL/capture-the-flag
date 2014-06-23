@@ -183,6 +183,8 @@ public class MainActivity extends Activity implements
 
     @Override
     public void onBackPressed() {
+        Log.d(TAG, "onBackPressed()");
+        
         if (mBackKeyCallback != null) {
             mBackKeyCallback.onBackPressed();
         } else {

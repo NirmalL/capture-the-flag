@@ -41,7 +41,7 @@
     <string name="missing_iap_key">Missing public key in %1$s. See the documentation.</string>
     <string name="invalid_iap_key">Invalid public key in %1$s. See the documentation.</string>
     <string name="you_are_at">You are at </string>
-    <string name="finding_location">Finding your location</string>
+    <string name="finding_location">Finding your location&#8230;</string>
     <string name="game_full">Game is full.</string>
     <string name="game_paused">Game paused</string>
     <string name="drop_out">Drop out</string>
@@ -53,6 +53,7 @@
     <string name="no_street_address">No street address for location</string>
     <string name="no_location">No location</string>
     <string name="location_required_to_start">Location is required in order to start or join a game.</string>
+    <string name="new_player_joined">New player, %1$s, joined the game!</string>
     <string name="player">Player</string>
     <string name="joined">joined</string>
     <string name="game">Game</string>
